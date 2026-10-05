@@ -1,6 +1,6 @@
 # 🌱 Kebiasaan Baik — Gentle Habit Tracker + To-Do
 
-![CI](https://github.com/YOUR_USERNAME/habit-tracker/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 
 > A calm, forgiving productivity app: max 3 daily priorities, tolerant streaks, nightly reflection. UI in English.
 
