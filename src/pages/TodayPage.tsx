@@ -62,17 +62,6 @@ export function TodayPage(): ReactNode {
             onAdd={(title) => addTask(title, true)}
             icon="🎯"
           />
-          <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
-            <TaskList
-              title="Other List"
-              subtitle="Extra tasks, no pressure."
-              tasks={others}
-              onToggle={toggleTask}
-              onRemove={removeTask}
-              onAdd={(title) => addTask(title, false)}
-              icon="📝"
-            />
-          </div>
         </div>
 
         <div className="col-span-3 space-y-8 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 md:border-l md:border-cream-200 md:pl-10 dark:max-md:border-slate-800 dark:md:border-slate-800">
@@ -111,6 +100,19 @@ export function TodayPage(): ReactNode {
           </section>
           <HabitForm onAdd={addHabit} disabled={activeHabits.length >= MAX_ACTIVE_HABITS} />
         </div>
+      </div>
+
+      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <TaskList
+          title="Other List"
+          subtitle="Extra tasks, no pressure."
+          tasks={others}
+          onToggle={toggleTask}
+          onRemove={removeTask}
+          onAdd={(title) => addTask(title, false)}
+          icon="📝"
+          twoCol
+        />
       </div>
     </div>
   );
