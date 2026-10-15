@@ -7,6 +7,7 @@ interface Props {
   onNavigate: (p: PageKey) => void;
   dark: boolean;
   onToggleDark: () => void;
+  hud: ReactNode;
   children: ReactNode;
 }
 
@@ -19,7 +20,7 @@ const ITEMS: { key: PageKey; label: string; icon: string }[] = [
 
 // App shell: slim top bar with hamburger (settings) left,
 // centered segmented nav for fast switching, theme toggle right.
-export function Layout({ page, onNavigate, dark, onToggleDark, children }: Props): ReactNode {
+export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: Props): ReactNode {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -52,7 +53,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, children }: Props
             >
               <span aria-hidden="true">☰</span>
             </button>
-            <p className="text-lg font-extrabold max-lg:hidden">🌱 Good Habits</p>
+            <p className="text-lg font-extrabold max-lg:hidden">🧬 Evolve</p>
           </div>
 
           <nav aria-label="Main navigation" className="flex min-w-0 justify-center">
@@ -76,14 +77,17 @@ export function Layout({ page, onNavigate, dark, onToggleDark, children }: Props
             </div>
           </nav>
 
-          <button
-            type="button"
-            onClick={onToggleDark}
-            aria-label={dark ? 'Turn off dark mode' : 'Turn on dark mode'}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-xl hover:bg-cream-200/70 dark:hover:bg-slate-800"
-          >
-            <span aria-hidden="true">{dark ? '☀️' : '🌙'}</span>
-          </button>
+          <div className="flex items-center gap-1">
+            {hud}
+            <button
+              type="button"
+              onClick={onToggleDark}
+              aria-label={dark ? 'Turn off dark mode' : 'Turn on dark mode'}
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-xl hover:bg-cream-200/70 dark:hover:bg-slate-800"
+            >
+              <span aria-hidden="true">{dark ? '☀️' : '🌙'}</span>
+            </button>
+          </div>
         </div>
       </header>
 

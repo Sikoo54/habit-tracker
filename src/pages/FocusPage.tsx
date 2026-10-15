@@ -1,12 +1,10 @@
 import { useState, type ReactNode } from 'react';
 import { EmptyState } from '../components/EmptyState';
 import { Pomodoro } from '../components/Pomodoro';
-import { useTasks } from '../hooks/useTasks';
-import { todayKey } from '../utils/dates';
+import type { useTasks } from '../hooks/useTasks';
 
-export function FocusPage(): ReactNode {
-  const today = todayKey();
-  const { todayTasks } = useTasks(today);
+export function FocusPage({ tasksApi }: { tasksApi: ReturnType<typeof useTasks> }): ReactNode {
+  const { todayTasks } = tasksApi;
   const open = todayTasks.filter((t) => !t.done);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [custom, setCustom] = useState<string | null>(null);
@@ -17,20 +15,20 @@ export function FocusPage(): ReactNode {
     <div className="mx-auto w-full max-w-2xl space-y-8">
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Focus session</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">🍅 Focus</h1>
+        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">🍅 Focus Arena</h1>
         <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
-          One task, 25 minutes. Then rest 5. Small steps finish big things.
+          One quest, 25 minutes. Then rest 5. Small steps finish big things.
         </p>
       </div>
 
       {open.length === 0 && !custom ? (
-        <EmptyState message="No open tasks today." hint="Type a custom focus below, or add tasks on the Today page. 🌱" />
+        <EmptyState message="No open quests today." hint="Type a custom focus below, or add quests on the Today page. 🌱" />
       ) : null}
 
       {open.length > 0 ? (
         <div>
           <label htmlFor="focus-task" className="section-title text-slate-400 dark:text-slate-500">
-            From today's tasks
+            From today's quests
           </label>
           <select
             id="focus-task"

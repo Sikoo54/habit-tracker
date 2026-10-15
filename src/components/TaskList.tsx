@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
+import { xpForTask } from '../game/xp';
 import type { Task } from '../types';
 import { EmptyState } from './EmptyState';
 
@@ -94,6 +95,11 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
               >
                 {t.title}
               </span>
+              {t.done ? (
+                <span className="shrink-0 text-xs font-extrabold text-amber-600 tabular-nums dark:text-amber-300">
+                  +{xpForTask(t.priority)}
+                </span>
+              ) : null}
               <button
                 type="button"
                 onClick={() => onRemove(t.id)}

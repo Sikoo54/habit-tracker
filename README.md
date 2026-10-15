@@ -1,8 +1,8 @@
-# 🌱 Kebiasaan Baik — Gentle Habit Tracker + To-Do
+# 🧬 Evolve — Gamified Habit Tracker + To-Do
 
 ![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 
-> A calm, forgiving productivity app: max 3 daily priorities, tolerant streaks, nightly reflection. UI in English.
+> A calm, forgiving productivity app turned adventure: earn XP, evolve a companion creature, clear daily quests. UI in English.
 
 **Live demo:** https://ascend-habit.vercel.app
 **Screenshots:** _(add `docs/screenshot-today.png`, `docs/screenshot-stats.png`, `docs/screenshot-reflection.png`)_
@@ -17,7 +17,9 @@ Most habit apps punish users: one missed day kills the streak, endless task list
 
 ## Features
 
-- **Today page** — 3 priorities + overflow list, daily habit checklist (full/small version), date + progress bar.
+- **Gamification (Evolve theme)** — XP for everything (full habit +20, small +10, priority quest +25, side +15, reflection +15/+20), levels, level-up celebration, and a companion creature evolving 🥚→🌱→🌿→🌳→🌸→🦉→🐉→👑.
+- **12 achievements** — First Step, Perfect Day, On Fire, Unstoppable, Week Warrior, and more, with progress counters.
+- **Today page** — main/side quest boards, daily training list with streaks, greeting hero + XP summary.
 - **Habits (max 5 active)** — name, full version, small version, trigger (habit stacking).
 - **Tolerant streaks** — 🔥 counter + friendly messages, at-risk warning after 1 missed day.
 - **Nightly reflection** — "what went well / what to change", history accordion, optional mood/energy 1–5.

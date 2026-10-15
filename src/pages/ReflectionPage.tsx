@@ -1,15 +1,15 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { EmptyState } from '../components/EmptyState';
 import { ScorePicker } from '../components/ScorePicker';
-import { useReflections } from '../hooks/useReflections';
+import type { useReflections } from '../hooks/useReflections';
 import { formatTanggalID, todayKey } from '../utils/dates';
 
 const fieldCls =
   'mt-2 min-h-[44px] w-full resize-y rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 leading-relaxed focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900';
 
-export function ReflectionPage(): ReactNode {
+export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<typeof useReflections> }): ReactNode {
   const today = todayKey();
-  const { reflections, saveReflection } = useReflections();
+  const { reflections, saveReflection } = reflectionsApi;
   const existing = reflections.find((r) => r.date === today);
 
   const [wentWell, setWentWell] = useState(existing?.wentWell ?? '');
@@ -31,14 +31,14 @@ export function ReflectionPage(): ReactNode {
   return (
     <div className="mx-auto w-full max-w-2xl">
       <p className="section-title text-sage-600 dark:text-emerald-300">{formatTanggalID(today)}</p>
-      <h1 className="mt-1 text-3xl font-extrabold tracking-tight">🌙 Evening Reflection</h1>
+      <h1 className="mt-1 text-3xl font-extrabold tracking-tight">🌙 Campfire Tales</h1>
       <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
-        Two minutes, no grades. Honest beats perfect.
+        Two minutes by the fire, no grades. Honest beats perfect. +15 XP (+5 with mood & energy).
       </p>
 
       <form onSubmit={submit} aria-label="Today's reflection" className="mt-8">
         <label htmlFor="rw" className="text-lg font-bold">
-          What went well today?
+          What loot did today drop? ✨
         </label>
         <textarea
           id="rw"
@@ -50,7 +50,7 @@ export function ReflectionPage(): ReactNode {
           className={fieldCls}
         />
         <label htmlFor="ri" className="mt-6 block text-lg font-bold">
-          What do you want to change tomorrow?
+          What quest needs a new strategy tomorrow?
         </label>
         <textarea
           id="ri"
@@ -66,18 +66,18 @@ export function ReflectionPage(): ReactNode {
           <ScorePicker label="Energy (1–5, optional)" value={energy} onChange={setEnergy} />
         </div>
         <button type="submit" className="mt-6 min-h-[48px] w-full rounded-full bg-slate-800 px-4 font-semibold text-white hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500">
-          Save reflection
+          Save tale
         </button>
         {saved ? (
           <p role="status" className="mt-2 text-center text-sm text-sage-700 dark:text-emerald-300">
-            Saved. Thanks for being honest today. 🌙
+            Saved to the adventure log. 🌙
           </p>
         ) : null}
       </form>
 
-      <h2 className="section-title mt-12 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">History</h2>
+      <h2 className="section-title mt-12 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">Past tales</h2>
       {sorted.length === 0 ? (
-        <EmptyState message="No reflections saved yet." hint="Write the first one tonight — one sentence is enough. 🌙" />
+        <EmptyState message="No tales recorded yet." hint="Write the first one tonight — one sentence is enough. 🌙" />
       ) : (
         <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
           {sorted.map((r) => {
@@ -96,10 +96,10 @@ export function ReflectionPage(): ReactNode {
                 {open ? (
                   <div className="pb-4 text-[15px] leading-relaxed">
                     <p>
-                      <strong>Went well:</strong> {r.wentWell || '—'}
+                      <strong>Loot:</strong> {r.wentWell || '—'}
                     </p>
                     <p className="mt-1">
-                      <strong>Change tomorrow:</strong> {r.toImprove || '—'}
+                      <strong>Next strategy:</strong> {r.toImprove || '—'}
                     </p>
                     <p className="mt-1 text-sm text-slate-400">
                       Mood: {r.mood ?? '—'} · Energy: {r.energy ?? '—'}

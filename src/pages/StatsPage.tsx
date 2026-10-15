@@ -1,15 +1,23 @@
 import { useMemo, type ReactNode } from 'react';
+import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
-import { useCheckins } from '../hooks/useCheckins';
-import { useHabits } from '../hooks/useHabits';
+import type { GameStats } from '../hooks/useGame';
+import type { useCheckins } from '../hooks/useCheckins';
+import type { useHabits } from '../hooks/useHabits';
 import { addDays, parseDateKey, startOfWeekMonday, todayKey } from '../utils/dates';
 import { compareWeeks, formatPercent } from '../utils/stats';
 
 const HARI_SINGKAT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-export function StatsPage(): ReactNode {
-  const { habits } = useHabits();
-  const { checkins } = useCheckins();
+interface Props {
+  habitsApi: Pick<ReturnType<typeof useHabits>, 'habits'>;
+  checkinsApi: Pick<ReturnType<typeof useCheckins>, 'checkins'>;
+  game: GameStats;
+}
+
+export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
+  const { habits } = habitsApi;
+  const { checkins } = checkinsApi;
   const today = todayKey();
 
   const cmp = useMemo(() => compareWeeks(habits, checkins, today), [habits, checkins, today]);
@@ -19,8 +27,11 @@ export function StatsPage(): ReactNode {
     return (
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Weekly Stats</h1>
+        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>
         <EmptyState message="No active habits to measure yet." hint="Add a habit on the Today page first. 🌱" />
+        <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
+          <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
+        </div>
       </div>
     );
   }
@@ -42,7 +53,7 @@ export function StatsPage(): ReactNode {
             {deltaTxt}
           </span>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {cmp.thisWeek.totalDone} of {cmp.thisWeek.totalSlots} check-ins this week.
+            {cmp.thisWeek.totalDone} of {cmp.thisWeek.totalSlots} check-ins this week · +{game.xp} XP all time.
           </p>
         </div>
       </div>
@@ -95,6 +106,10 @@ export function StatsPage(): ReactNode {
           </li>
         ))}
       </ul>
+
+      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
+      </div>
       <p className="mt-4 text-xs text-slate-400">Weeks start Monday ({startOfWeekMonday(today)}).</p>
     </div>
   );
