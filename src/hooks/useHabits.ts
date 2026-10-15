@@ -1,18 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { seedHabits } from '../data/seed';
-import type { Habit } from '../types';
+import type { Habit, HabitInput } from '../types';
 import { createId } from '../utils/dates';
 import { localStorageAdapter } from '../storage/localStorageAdapter';
 import { useStorage } from '../storage/StorageContext';
 
 export const MAX_ACTIVE_HABITS = 5;
-
-export interface NewHabitInput {
-  name: string;
-  fullVersion: string;
-  smallVersion: string;
-  trigger: string;
-}
 
 export function useHabits() {
   const storage = useStorage();
@@ -60,17 +53,17 @@ export function useHabits() {
   }, [habits, storage]);
 
   const addHabit = useCallback(
-    (input: NewHabitInput): { ok: boolean; reason?: string } => {
+    (input: HabitInput): { ok: boolean; reason?: string } => {
       const active = habits.filter((h) => h.active).length;
       if (active >= MAX_ACTIVE_HABITS) {
-        return { ok: false, reason: `Max ${MAX_ACTIVE_HABITS} active habits. Pause one first.` };
+        return { ok: false, reason: `Max ${MAX_ACTIVE_HABITS} active habits.` };
       }
       if (!input.name.trim()) return { ok: false, reason: 'Habit name is required.' };
       const h: Habit = {
         id: createId('habit'),
         name: input.name.trim(),
         fullVersion: input.fullVersion.trim() || input.name.trim(),
-        smallVersion: input.smallVersion.trim() || 'Versi 2 menit',
+        smallVersion: input.smallVersion.trim() || '2-minute version',
         trigger: input.trigger.trim(),
         active: true,
         createdAt: new Date().toISOString(),
@@ -81,13 +74,30 @@ export function useHabits() {
     [habits],
   );
 
-  const toggleActive = useCallback((id: string) => {
-    setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, active: !h.active } : h)));
-  }, []);
+  const updateHabit = useCallback(
+    (id: string, input: HabitInput): { ok: boolean; reason?: string } => {
+      if (!input.name.trim()) return { ok: false, reason: 'Habit name is required.' };
+      setHabits((prev) =>
+        prev.map((h) =>
+          h.id === id
+            ? {
+                ...h,
+                name: input.name.trim(),
+                fullVersion: input.fullVersion.trim() || input.name.trim(),
+                smallVersion: input.smallVersion.trim() || '2-minute version',
+                trigger: input.trigger.trim(),
+              }
+            : h,
+        ),
+      );
+      return { ok: true };
+    },
+    [],
+  );
 
   const removeHabit = useCallback((id: string) => {
     setHabits((prev) => prev.filter((h) => h.id !== id));
   }, []);
 
-  return { habits, loading, addHabit, toggleActive, removeHabit, setHabits };
+  return { habits, loading, addHabit, updateHabit, removeHabit, setHabits };
 }

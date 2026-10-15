@@ -1,7 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
+import type { HabitInput } from '../types';
 
 interface Props {
-  onAdd: (input: { name: string; fullVersion: string; smallVersion: string; trigger: string }) => { ok: boolean; reason?: string };
+  onAdd: (input: HabitInput) => { ok: boolean; reason?: string };
   disabled: boolean;
 }
 

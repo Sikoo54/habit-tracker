@@ -12,6 +12,13 @@ export interface Habit {
   createdAt: string; // ISO timestamp
 }
 
+export interface HabitInput {
+  name: string;
+  fullVersion: string;
+  smallVersion: string;
+  trigger: string;
+}
+
 export interface Task {
   id: string;
   title: string;

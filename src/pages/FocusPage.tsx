@@ -9,7 +9,9 @@ export function FocusPage(): ReactNode {
   const { todayTasks } = useTasks(today);
   const open = todayTasks.filter((t) => !t.done);
   const [focusId, setFocusId] = useState<string | null>(null);
-  const focusTitle = open.find((t) => t.id === focusId)?.title ?? open[0]?.title ?? '';
+  const [custom, setCustom] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+  const focusTitle = custom ?? open.find((t) => t.id === focusId)?.title ?? open[0]?.title ?? '';
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8">
@@ -21,12 +23,14 @@ export function FocusPage(): ReactNode {
         </p>
       </div>
 
-      {open.length === 0 ? (
-        <EmptyState message="No open tasks today." hint="Add one on the Today page, then come back to focus. 🌱" />
-      ) : (
+      {open.length === 0 && !custom ? (
+        <EmptyState message="No open tasks today." hint="Type a custom focus below, or add tasks on the Today page. 🌱" />
+      ) : null}
+
+      {open.length > 0 ? (
         <div>
           <label htmlFor="focus-task" className="section-title text-slate-400 dark:text-slate-500">
-            Focusing on
+            From today's tasks
           </label>
           <select
             id="focus-task"
@@ -42,7 +46,56 @@ export function FocusPage(): ReactNode {
             ))}
           </select>
         </div>
-      )}
+      ) : null}
+
+      <div>
+        <label htmlFor="focus-custom" className="section-title text-slate-400 dark:text-slate-500">
+          Or a custom focus
+        </label>
+        {custom ? (
+          <div className="mt-2 flex items-center gap-2 rounded-2xl bg-sage-100 px-4 py-3 dark:bg-emerald-950">
+            <span className="flex-1 text-[15px] font-semibold">🍅 {custom}</span>
+            <button
+              type="button"
+              onClick={() => setCustom(null)}
+              aria-label="Clear custom focus"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-500 hover:text-red-600 dark:text-slate-400"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <form
+            className="mt-2 flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const v = draft.trim();
+              if (v) {
+                setCustom(v);
+                setDraft('');
+              }
+            }}
+          >
+            <label htmlFor="focus-custom" className="sr-only">
+              Custom focus
+            </label>
+            <input
+              id="focus-custom"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="e.g. Read chapter 4, fix login bug…"
+              maxLength={120}
+              className="min-h-[48px] flex-1 rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
+            />
+            <button
+              type="submit"
+              className="min-h-[48px] rounded-2xl bg-slate-800 px-5 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+            >
+              Set
+            </button>
+          </form>
+        )}
+      </div>
 
       <Pomodoro focusTitle={focusTitle} />
     </div>

@@ -79,6 +79,19 @@ export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
           5′
         </button>
       </div>
+      <div className="mx-auto mt-8 max-w-xs border-t border-sage-600/15 pt-5 dark:border-slate-700">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          🎧 Try to focus with cozy lofi hiphop songs?
+        </p>
+        <a
+          href="https://sikozy.vercel.app/"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-2 flex min-h-[48px] items-center justify-center gap-2 rounded-full border border-slate-300 px-4 text-sm font-semibold hover:bg-cream-200/60 dark:border-slate-600 dark:hover:bg-slate-700"
+        >
+          <span aria-hidden="true">▶</span> Open Sikozy Lofi
+        </a>
+      </div>
     </section>
   );
 }

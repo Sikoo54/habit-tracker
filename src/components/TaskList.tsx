@@ -10,11 +10,9 @@ interface Props {
   onRemove: (id: string) => void;
   onAdd: (title: string) => { ok: boolean; reason?: string };
   icon: string;
-  /** Render list in 2 CSS columns on desktop (for full-width zones). */
-  twoCol?: boolean;
 }
 
-export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon, twoCol = false }: Props): ReactNode {
+export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon }: Props): ReactNode {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -75,7 +73,7 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
       {tasks.length === 0 ? (
         <EmptyState message="Nothing here yet." hint="Add one small step above. 🌱" />
       ) : (
-        <ul className={`mt-2 divide-y divide-cream-200 dark:divide-slate-800 ${twoCol ? 'md:columns-2 md:gap-10' : ''}`}>
+        <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
           {tasks.map((t) => (
             <li key={t.id} className="group flex items-center gap-3 py-2.5">
               <button

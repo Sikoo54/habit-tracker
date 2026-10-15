@@ -18,7 +18,7 @@ function greeting(hour: number): string {
 
 export function TodayPage(): ReactNode {
   const today = todayKey();
-  const { habits, addHabit, toggleActive, removeHabit } = useHabits();
+  const { habits, addHabit, updateHabit, removeHabit } = useHabits();
   const { priorities, others, addTask, toggleTask, removeTask } = useTasks(today);
   const { checkins, toggleCheckin, checkinFor } = useCheckins();
 
@@ -52,7 +52,7 @@ export function TodayPage(): ReactNode {
       </div>
 
       <div className="mt-8 grid grid-cols-5 items-start gap-x-10 gap-y-10 max-md:grid-cols-1">
-        <div className="col-span-2 max-md:col-span-1">
+        <div className="col-span-2 space-y-8 max-md:col-span-1">
           <TaskList
             title={`Priorities (${priorities.length}/${MAX_PRIORITIES})`}
             subtitle="The 3 that matter. The rest can wait."
@@ -62,6 +62,17 @@ export function TodayPage(): ReactNode {
             onAdd={(title) => addTask(title, true)}
             icon="🎯"
           />
+          <div className="border-t border-cream-200 pt-8 dark:border-slate-800">
+            <TaskList
+              title="Other List"
+              subtitle="Extra tasks, no pressure."
+              tasks={others}
+              onToggle={toggleTask}
+              onRemove={removeTask}
+              onAdd={(title) => addTask(title, false)}
+              icon="📝"
+            />
+          </div>
         </div>
 
         <div className="col-span-3 space-y-8 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 md:border-l md:border-cream-200 md:pl-10 dark:max-md:border-slate-800 dark:md:border-slate-800">
@@ -90,7 +101,7 @@ export function TodayPage(): ReactNode {
                       checked={Boolean(c)}
                       variant={c?.variant ?? null}
                       onToggle={(v) => toggleCheckin(h.id, today, v)}
-                      onToggleActive={() => toggleActive(h.id)}
+                      onUpdate={(input) => updateHabit(h.id, input)}
                       onRemove={() => removeHabit(h.id)}
                     />
                   );
@@ -100,19 +111,6 @@ export function TodayPage(): ReactNode {
           </section>
           <HabitForm onAdd={addHabit} disabled={activeHabits.length >= MAX_ACTIVE_HABITS} />
         </div>
-      </div>
-
-      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
-        <TaskList
-          title="Other List"
-          subtitle="Extra tasks, no pressure."
-          tasks={others}
-          onToggle={toggleTask}
-          onRemove={removeTask}
-          onAdd={(title) => addTask(title, false)}
-          icon="📝"
-          twoCol
-        />
       </div>
     </div>
   );
