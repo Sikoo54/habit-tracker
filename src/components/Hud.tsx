@@ -48,7 +48,7 @@ export function LevelUpModal({
           autoFocus
           className="mt-5 min-h-[48px] w-full rounded-full bg-slate-800 font-semibold text-white hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
         >
-          Keep evolving →
+          Keep ascending →
         </button>
       </div>
     </div>

@@ -11,15 +11,32 @@ interface Props {
   children: ReactNode;
 }
 
+function Icon({ d }: { d: string }): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  );
+}
+
+function BrandMark(): ReactNode {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 19 10 6l4 7 3-4 4 10H3Z" fill="currentColor" opacity="0.9" />
+      <path d="M10 6l4 7 1.5-2" stroke="#f5b942" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const ITEMS: { key: PageKey; label: string; icon: string }[] = [
-  { key: 'today', label: 'Today', icon: '🏠' },
-  { key: 'focus', label: 'Focus', icon: '🍅' },
-  { key: 'stats', label: 'Stats', icon: '📊' },
-  { key: 'reflection', label: 'Reflect', icon: '🌙' },
+  { key: 'today', label: 'Today', icon: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
+  { key: 'focus', label: 'Focus', icon: 'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z' },
+  { key: 'stats', label: 'Stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
+  { key: 'reflection', label: 'Reflect', icon: 'M20 13A8 8 0 0 1 11 4a6.5 6.5 0 0 0 9 9Z' },
 ];
 
-// App shell: slim top bar with hamburger (settings) left,
-// centered segmented nav for fast switching, theme toggle right.
+// AscendHabit shell: slim top bar, game-HUD nav pills (no emoji),
+// settings drawer, full-screen content.
 export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: Props): ReactNode {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -53,27 +70,35 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             >
               <span aria-hidden="true">☰</span>
             </button>
-            <p className="text-lg font-extrabold max-lg:hidden">🧬 Evolve</p>
+            <p className="flex items-center gap-1.5 text-lg font-extrabold tracking-tight max-lg:hidden">
+              <span className="text-sage-600 dark:text-emerald-400">
+                <BrandMark />
+              </span>
+              AscendHabit
+            </p>
           </div>
 
           <nav aria-label="Main navigation" className="flex min-w-0 justify-center">
-            <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-cream-200/60 p-1 dark:bg-slate-800">
-              {ITEMS.map((it) => (
-                <button
-                  key={it.key}
-                  type="button"
-                  onClick={() => onNavigate(it.key)}
-                  aria-current={page === it.key ? 'page' : undefined}
-                  className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-sm font-semibold transition-colors max-md:px-2.5 ${
-                    page === it.key
-                      ? 'bg-cream-50 text-sage-700 shadow-sm dark:bg-slate-900 dark:text-emerald-300'
-                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
-                  }`}
-                >
-                  <span aria-hidden="true">{it.icon}</span>
-                  <span className="max-md:text-[13px]">{it.label}</span>
-                </button>
-              ))}
+            <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              {ITEMS.map((it) => {
+                const active = page === it.key;
+                return (
+                  <button
+                    key={it.key}
+                    type="button"
+                    onClick={() => onNavigate(it.key)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all max-md:px-2.5 ${
+                      active
+                        ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
+                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
+                    }`}
+                  >
+                    <Icon d={it.icon} />
+                    <span className="max-md:text-[13px]">{it.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </nav>
 
@@ -102,7 +127,12 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
           />
           <aside className="absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-cream-50 p-4 shadow-xl dark:bg-slate-800">
             <div className="flex items-center justify-between">
-              <p className="px-2 text-xl font-extrabold">⚙️ Settings</p>
+              <p className="flex items-center gap-1.5 px-2 text-xl font-extrabold">
+                <span className="text-sage-600 dark:text-emerald-400">
+                  <BrandMark />
+                </span>
+                AscendHabit
+              </p>
               <button
                 ref={closeRef}
                 type="button"

@@ -155,7 +155,7 @@ const DEFS: Def[] = [
   {
     id: 'evolving',
     icon: '🐣',
-    name: 'Evolving',
+    name: 'Ascension',
     desc: 'Reach level 2.',
     check: (d) => ({ unlocked: d.level >= 2, progress: `Lv ${d.level}/2` }),
   },

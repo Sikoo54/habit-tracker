@@ -1,8 +1,8 @@
-# 🧬 Evolve — Gamified Habit Tracker + To-Do
+# ⛰️ AscendHabit — Gamified Habit Tracker + To-Do
 
 ![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 
-> A calm, forgiving productivity app turned adventure: earn XP, evolve a companion creature, clear daily quests. UI in English.
+> A calm, forgiving productivity app turned ascension quest: earn XP, climb ranks, evolve a spirit companion, clear daily quests. UI in English.
 
 **Live demo:** https://ascend-habit.vercel.app
 **Screenshots:** _(add `docs/screenshot-today.png`, `docs/screenshot-stats.png`, `docs/screenshot-reflection.png`)_
@@ -17,7 +17,7 @@ Most habit apps punish users: one missed day kills the streak, endless task list
 
 ## Features
 
-- **Gamification (Evolve theme)** — XP for everything (full habit +20, small +10, priority quest +25, side +15, reflection +15/+20), levels, level-up celebration, and a companion creature evolving 🥚→🌱→🌿→🌳→🌸→🦉→🐉→👑.
+- **Gamification (Ascend theme)** — XP for everything (full habit +20, small +10, priority quest +25, side +15, reflection +15/+20), levels, level-up celebration, and a spirit companion ascending 🥚→🌱→🌿→🌳→🌸→🦉→🐉→👑.
 - **12 achievements** — First Step, Perfect Day, On Fire, Unstoppable, Week Warrior, and more, with progress counters.
 - **Today page** — main/side quest boards, daily training list with streaks, greeting hero + XP summary.
 - **Habits (max 5 active)** — name, full version, small version, trigger (habit stacking).

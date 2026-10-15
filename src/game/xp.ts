@@ -61,7 +61,7 @@ export function levelProgress(xp: number): LevelProgress {
   return { level, xp, current, needed, pct: needed === 0 ? 100 : Math.round((current / needed) * 100) };
 }
 
-// --- Evolve creature: your companion grows with your level ---
+// --- Ascension spirit: your companion climbs with your level ---
 
 export interface CreatureStage {
   level: number;
@@ -76,8 +76,8 @@ export const CREATURE_STAGES: CreatureStage[] = [
   { level: 3, emoji: '🌿', name: 'Sapling', tagline: 'Growing steady, day by day.' },
   { level: 4, emoji: '🌳', name: 'Grove Guardian', tagline: 'Roots deep. You show up.' },
   { level: 5, emoji: '🌸', name: 'Bloom', tagline: 'Consistency looks good on you.' },
-  { level: 6, emoji: '🦉', name: 'Night Owl', tagline: 'Wise. Reflective. Evolving.' },
-  { level: 7, emoji: '🐉', name: 'Evolve Dragon', tagline: 'Small steps, mythical results.' },
+  { level: 6, emoji: '🦉', name: 'Night Owl', tagline: 'Wise. Reflective. Ascending.' },
+  { level: 7, emoji: '🐉', name: 'Sky Dragon', tagline: 'Small steps, mythical heights.' },
   { level: 8, emoji: '👑', name: 'Ascendant', tagline: 'Peak form. Maintain the flame.' },
 ];
 
