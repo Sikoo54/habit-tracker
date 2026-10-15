@@ -4,7 +4,7 @@
 
 > A calm, forgiving productivity app: max 3 daily priorities, tolerant streaks, nightly reflection. UI in English.
 
-**Live demo:** https://your-app.vercel.app _(replace with your Vercel URL)_
+**Live demo:** https://habit-tracker-gamma-lime.vercel.app
 **Screenshots:** _(add `docs/screenshot-today.png`, `docs/screenshot-stats.png`, `docs/screenshot-reflection.png`)_
 
 ## Problem statement
