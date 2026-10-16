@@ -44,7 +44,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
     <div>
       <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
       <div className="mt-1 flex flex-wrap items-end gap-x-6 gap-y-2">
-        <h1 className="text-5xl font-extrabold tracking-tight tabular-nums">{formatPercent(cmp.thisWeek.rate)}</h1>
+        <h1 className="font-display text-6xl font-semibold tabular-nums tracking-tight">{formatPercent(cmp.thisWeek.rate)}</h1>
         <div className="pb-1.5">
           <span
             className={`rounded-full px-3 py-1 text-sm font-semibold ${deltaGood ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200'}`}

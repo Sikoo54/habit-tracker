@@ -21,9 +21,10 @@ function Icon({ d }: { d: string }): ReactNode {
 
 function BrandMark(): ReactNode {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M3 19 10 6l4 7 3-4 4 10H3Z" fill="currentColor" opacity="0.9" />
-      <path d="M10 6l4 7 1.5-2" stroke="#f5b942" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+      <rect width="64" height="64" rx="14" fill="#55805f" />
+      <path d="M10 46 26 18l10 17 7-9 11 20H10Z" fill="#fffdf7" />
+      <path d="M26 18l10 17 3.5-4.5" stroke="#f5b942" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

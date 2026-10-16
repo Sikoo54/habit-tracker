@@ -15,7 +15,7 @@ export function FocusPage({ tasksApi }: { tasksApi: ReturnType<typeof useTasks> 
     <div className="mx-auto w-full max-w-2xl space-y-8">
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Focus session</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">Focus Arena</h1>
+        <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight">Focus arena</h1>
         <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
           One quest, 25 minutes. Then rest 5. Small steps finish big things.
         </p>

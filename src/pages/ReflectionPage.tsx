@@ -31,7 +31,7 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
   return (
     <div className="mx-auto w-full max-w-2xl">
       <p className="section-title text-sage-600 dark:text-emerald-300">{formatTanggalID(today)}</p>
-      <h1 className="mt-1 text-3xl font-extrabold tracking-tight">🌙 Campfire Tales</h1>
+      <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight">Campfire tales</h1>
       <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
         Two minutes by the fire, no grades. Honest beats perfect. +15 XP (+5 with mood & energy).
       </p>

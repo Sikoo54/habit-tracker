@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
+import { AscentTrail } from '../components/AscentTrail';
 import { CreatureCard } from '../components/CreatureCard';
 import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
 import { HabitForm } from '../components/HabitForm';
-import { ProgressBar } from '../components/ProgressBar';
 import { TaskList } from '../components/TaskList';
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
@@ -37,6 +37,8 @@ export function TodayPage({ habitsApi, tasksApi, checkinsApi, game }: Props): Re
   const totalItems = activeHabits.length + priorities.length + others.length;
   const doneItems = doneHabits.length + doneTasks;
   const allDone = totalItems > 0 && doneItems === totalItems;
+  const headline =
+    totalItems === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
 
   return (
     <div>
@@ -44,19 +46,17 @@ export function TodayPage({ habitsApi, tasksApi, checkinsApi, game }: Props): Re
       <div className="grid grid-cols-5 items-stretch gap-6 max-md:grid-cols-1">
         <div className="col-span-3 flex flex-col justify-center max-md:col-span-1">
           <p className="section-title text-sage-600 dark:text-emerald-300">{formatTanggalID(today)}</p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight">
-            {greeting(new Date().getHours())}, Adventurer 🌱
+          <h1 className="mt-1 font-display text-5xl font-semibold leading-[1.05] tracking-tight max-md:text-4xl">
+            {greeting(new Date().getHours())}. {headline}
           </h1>
-          <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
+          <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-slate-500 dark:text-slate-400">
             {totalItems === 0
               ? 'A fresh quest board. Add one tiny quest below.'
               : allDone
-                ? 'All quests cleared. Rest easy — you earned it. 🎉'
-                : `${doneItems} of ${totalItems} done · +${game.xp} XP total. Small versions count too.`}
+                ? 'Everything cleared. Rest easy — you earned it.'
+                : `${doneItems} of ${totalItems} behind you · +${game.xp} XP banked. Small versions count too.`}
           </p>
-          <div className="mt-4 w-full max-w-sm">
-            <ProgressBar done={doneItems} total={totalItems} label="Today's progress" />
-          </div>
+          <AscentTrail done={doneItems} total={totalItems} />
         </div>
         <div className="col-span-2 max-md:col-span-1">
           <CreatureCard creature={game.creature} progress={game.progress} next={game.next} />

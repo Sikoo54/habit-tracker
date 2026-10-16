@@ -4,6 +4,7 @@
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
   --color-sage-50: #f4f7f4;
   --color-sage-100: #e6efe6;
   --color-sage-500: #6b9e78;
@@ -12,6 +13,9 @@
   --color-cream-50: #fffdf7;
   --color-cream-100: #faf4e8;
   --color-cream-200: #e7d9bc;
+  --color-pine-800: #22332b;
+  --color-summit-500: #d99a2b;
+  --color-summit-600: #b87e1c;
 }
 
 html {
@@ -34,10 +38,46 @@ body {
   transform: scale(0.9);
 }
 
-/* Real-app section rhythm: airy uppercase eyebrow headings, hairlines, no stacked cards */
+/* Real-app section rhythm: one quiet eyebrow style, hairlines, no stacked cards */
 .section-title {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+/* Quality floor: visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-summit-500);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* One orchestrated moment: trail draws once on load (reduced-motion safe) */
+@keyframes trail-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.trail-draw {
+  stroke-dasharray: 1;
+  animation: trail-draw 1.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-draw {
+    animation: none;
+  }
+}
+.trail-marker {
+  transition:
+    cx 0.8s ease,
+    cy 0.8s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-marker {
+    transition: none;
+  }
 }
