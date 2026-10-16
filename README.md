@@ -18,6 +18,7 @@ Most habit apps punish users: one missed day kills the streak, endless task list
 ## Features
 
 - **Gamification (Ascend theme)** — XP for everything (full habit +20, small +10, priority quest +25, side +15, reflection +15/+20), levels, level-up celebration, and a spirit companion ascending 🥚→🌱→🌿→🌳→🌸→🦉→🐉→👑.
+- **Daily streak + frost decay** — any activity keeps the streak alive; one fully idle day freezes it and burns 15% XP (min 30), enough to drop a level.
 - **12 achievements** — First Step, Perfect Day, On Fire, Unstoppable, Week Warrior, and more, with progress counters.
 - **Today page** — main/side quest boards, daily training list with streaks, greeting hero + XP summary.
 - **Habits (max 5 active)** — name, full version, small version, trigger (habit stacking).

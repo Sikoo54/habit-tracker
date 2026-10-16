@@ -1,9 +1,18 @@
 import type { ReactNode } from 'react';
 import type { CreatureStage, LevelProgress } from '../game/xp';
 
-export function HudStats({ progress, creature }: { progress: LevelProgress; creature: CreatureStage }): ReactNode {
+export function HudStats({ progress, creature, streak }: { progress: LevelProgress; creature: CreatureStage; streak: number }): ReactNode {
   return (
-    <div className="flex items-center gap-2" title={`${progress.xp} XP total`}>
+    <div className="flex items-center gap-2" title={`${progress.xp} XP total · ${streak}-day streak`}>
+      <span
+        className={`flex min-h-[32px] items-center gap-1 rounded-full px-2.5 text-xs font-extrabold tabular-nums ${
+          streak > 0
+            ? 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300'
+            : 'bg-cream-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
+        }`}
+      >
+        <span aria-hidden="true">{streak > 0 ? '🔥' : '❄️'}</span> {streak}
+      </span>
       <span className="flex min-h-[32px] items-center gap-1 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600">
         Lv {progress.level} <span aria-hidden="true">{creature.emoji}</span>
       </span>

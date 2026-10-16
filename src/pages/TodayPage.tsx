@@ -5,6 +5,8 @@ import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
 import { HabitForm } from '../components/HabitForm';
 import { TaskList } from '../components/TaskList';
+import type { AppliedPenalty } from '../game/decay';
+import { penaltyFor } from '../game/decay';
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
@@ -23,9 +25,11 @@ interface Props {
   tasksApi: ReturnType<typeof useTasks>;
   checkinsApi: ReturnType<typeof useCheckins>;
   game: GameStats;
+  penaltyNotice: AppliedPenalty[] | null;
+  onDismissPenalty: () => void;
 }
 
-export function TodayPage({ habitsApi, tasksApi, checkinsApi, game }: Props): ReactNode {
+export function TodayPage({ habitsApi, tasksApi, checkinsApi, game, penaltyNotice, onDismissPenalty }: Props): ReactNode {
   const today = todayKey();
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
   const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;
@@ -39,9 +43,44 @@ export function TodayPage({ habitsApi, tasksApi, checkinsApi, game }: Props): Re
   const allDone = totalItems > 0 && doneItems === totalItems;
   const headline =
     totalItems === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
+  const frostTotal = (penaltyNotice ?? []).reduce((s, p) => s + p.amount, 0);
 
   return (
     <div>
+      {penaltyNotice && penaltyNotice.length > 0 ? (
+        <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-sky-100 p-4 dark:bg-sky-950">
+          <span className="text-2xl" aria-hidden="true">
+            ❄️
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-sky-900 dark:text-sky-100">
+              The ascent froze over — {frostTotal} XP lost.
+            </p>
+            <p className="text-sm text-sky-800 dark:text-sky-200">
+              {penaltyNotice.length} idle {penaltyNotice.length === 1 ? 'day' : 'days'} with zero activity.
+              Do one small thing today to thaw it.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onDismissPenalty}
+            aria-label="Dismiss frost warning"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-sky-800 hover:bg-sky-200/60 dark:text-sky-200 dark:hover:bg-sky-900"
+          >
+            ✕
+          </button>
+        </div>
+      ) : game.streak > 0 && !game.todayActive ? (
+        <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
+          <span className="text-2xl" aria-hidden="true">
+            ⚠️
+          </span>
+          <p className="text-sm text-amber-900 dark:text-amber-100">
+            <strong>{game.streak}-day streak at risk.</strong> Finish anything today, or frost burns ~
+            {penaltyFor(game.xp)} XP overnight.
+          </p>
+        </div>
+      ) : null}
       {/* Hero: greeting + companion side by side */}
       <div className="grid grid-cols-5 items-stretch gap-6 max-md:grid-cols-1">
         <div className="col-span-3 flex flex-col justify-center max-md:col-span-1">
