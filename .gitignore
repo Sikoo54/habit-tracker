@@ -31,3 +31,7 @@ Thumbs.db
 .env.*.local
 
 .vercel
+
+# local agent skill environment (not part of the portfolio repo)
+.agents/
+skills-lock.json
