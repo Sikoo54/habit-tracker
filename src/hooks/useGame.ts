@@ -12,9 +12,12 @@ import {
   creatureForLevel,
   levelProgress,
   nextStage,
+  RANKS,
+  rankForLevel,
   totalXp,
   type CreatureStage,
   type LevelProgress,
+  type Rank,
 } from '../game/xp';
 import type { Checkin, Habit, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
@@ -26,6 +29,8 @@ export interface GameStats {
   streak: number;
   todayActive: boolean;
   progress: LevelProgress;
+  rank: Rank;
+  nextRank: Rank | null;
   creature: CreatureStage;
   next: CreatureStage | null;
   achievements: Achievement[];
@@ -44,6 +49,7 @@ export function useGameStats(
     const grossXp = totalXp(checkins, tasks, reflections);
     const xp = Math.max(0, grossXp - decayTotal);
     const progress = levelProgress(xp);
+    const rank = rankForLevel(progress.level);
     const creature = creatureForLevel(progress.level);
     const dates = activeDates(checkins, tasks, reflections);
     const achievements = evaluateAchievements({
@@ -61,6 +67,8 @@ export function useGameStats(
       streak: dailyStreak(dates, todayKey),
       todayActive: dates.has(todayKey),
       progress,
+      rank,
+      nextRank: RANKS.find((r) => r.level === progress.level + 1) ?? null,
       creature,
       next: nextStage(progress.level),
       achievements,

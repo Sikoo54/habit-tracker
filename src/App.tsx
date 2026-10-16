@@ -76,7 +76,7 @@ function Shell({
       onNavigate={onNavigate}
       dark={dark}
       onToggleDark={onToggleDark}
-      hud={<HudStats progress={game.progress} creature={game.creature} streak={game.streak} />}
+      hud={<HudStats progress={game.progress} creature={game.creature} streak={game.streak} rank={game.rank} />}
     >
       {page === 'today' ? (
         <TodayPage
@@ -96,7 +96,7 @@ function Shell({
         <ReflectionPage reflectionsApi={reflectionsApi} />
       )}
       {levelUp.show ? (
-        <LevelUpModal level={game.progress.level} creature={game.creature} onClose={levelUp.dismiss} />
+        <LevelUpModal level={game.progress.level} rank={game.rank} creature={game.creature} onClose={levelUp.dismiss} />
       ) : null}
     </Layout>
   );

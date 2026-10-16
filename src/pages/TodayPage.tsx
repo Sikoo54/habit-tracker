@@ -98,7 +98,7 @@ export function TodayPage({ habitsApi, tasksApi, checkinsApi, game, penaltyNotic
           <AscentTrail done={doneItems} total={totalItems} />
         </div>
         <div className="col-span-2 max-md:col-span-1">
-          <CreatureCard creature={game.creature} progress={game.progress} next={game.next} />
+          <CreatureCard creature={game.creature} progress={game.progress} next={game.next} rank={game.rank} nextRank={game.nextRank} />
         </div>
       </div>
 

@@ -92,3 +92,30 @@ export function creatureForLevel(level: number): CreatureStage {
 export function nextStage(level: number): CreatureStage | null {
   return CREATURE_STAGES.find((s) => s.level > level) ?? null;
 }
+
+// --- Ascension ranks: titles instead of bare numbers ---
+// Early ranks sound like grinding, late ranks like consistency.
+
+export interface Rank {
+  level: number;
+  title: string;
+}
+
+export const RANKS: Rank[] = [
+  { level: 1, title: 'Grinder' },
+  { level: 2, title: 'Striver' },
+  { level: 3, title: 'Climber' },
+  { level: 4, title: 'Trailblazer' },
+  { level: 5, title: 'Stalwart' },
+  { level: 6, title: 'Mainstay' },
+  { level: 7, title: 'Paragon' },
+  { level: 8, title: 'Ascendant' },
+];
+
+export function rankForLevel(level: number): Rank {
+  let rank = RANKS[0] as Rank;
+  for (const r of RANKS) {
+    if (level >= r.level) rank = r;
+  }
+  return rank;
+}

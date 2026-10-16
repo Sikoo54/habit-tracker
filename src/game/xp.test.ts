@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Reflection, Task } from '../types';
-import { creatureForLevel, levelForXp, levelProgress, nextStage, totalXp, xpThreshold } from './xp';
+import { creatureForLevel, levelForXp, levelProgress, nextStage, rankForLevel, totalXp, xpThreshold } from './xp';
 
 function task(done: boolean, priority: boolean): Task {
   return { id: `${done}${priority}`, title: 't', done, priority, date: '2026-01-01', createdAt: 'x' };
@@ -56,5 +56,14 @@ describe('creature', () => {
   it('next stage', () => {
     expect(nextStage(1)?.level).toBe(2);
     expect(nextStage(99)).toBeNull();
+  });
+});
+
+describe('ranks', () => {
+  it('grinding early, consistent late, caps at top', () => {
+    expect(rankForLevel(1).title).toBe('Grinder');
+    expect(rankForLevel(4).title).toBe('Trailblazer');
+    expect(rankForLevel(8).title).toBe('Ascendant');
+    expect(rankForLevel(99).title).toBe('Ascendant');
   });
 });

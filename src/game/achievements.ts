@@ -156,8 +156,8 @@ const DEFS: Def[] = [
     id: 'evolving',
     icon: '🐣',
     name: 'Ascension',
-    desc: 'Reach level 2.',
-    check: (d) => ({ unlocked: d.level >= 2, progress: `Lv ${d.level}/2` }),
+    desc: 'Earn the Striver rank.',
+    check: (d) => ({ unlocked: d.level >= 2, progress: `rank ${d.level}/2` }),
   },
 ];
 
