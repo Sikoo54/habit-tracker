@@ -89,7 +89,7 @@ function Shell({
           onDismissPenalty={decay.dismissNotice}
         />
       ) : page === 'focus' ? (
-        <FocusPage tasksApi={tasksApi} />
+        <FocusPage tasksApi={tasksApi} habitsApi={habitsApi} checkinsApi={checkinsApi} />
       ) : page === 'stats' ? (
         <StatsPage habitsApi={habitsApi} checkinsApi={checkinsApi} game={game} />
       ) : (

@@ -1,15 +1,41 @@
 import { useState, type ReactNode } from 'react';
 import { EmptyState } from '../components/EmptyState';
 import { Pomodoro } from '../components/Pomodoro';
+import type { useCheckins } from '../hooks/useCheckins';
+import type { useHabits } from '../hooks/useHabits';
 import type { useTasks } from '../hooks/useTasks';
+import { todayKey } from '../utils/dates';
 
-export function FocusPage({ tasksApi }: { tasksApi: ReturnType<typeof useTasks> }): ReactNode {
+interface FocusOption {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+export function FocusPage({
+  tasksApi,
+  habitsApi,
+  checkinsApi,
+}: {
+  tasksApi: ReturnType<typeof useTasks>;
+  habitsApi: ReturnType<typeof useHabits>;
+  checkinsApi: ReturnType<typeof useCheckins>;
+}): ReactNode {
   const { todayTasks } = tasksApi;
+  const { habits } = habitsApi;
+  const { checkinFor } = checkinsApi;
+  const today = todayKey();
   const open = todayTasks.filter((t) => !t.done);
+  const trainings: FocusOption[] = habits
+    .filter((h) => h.active && !checkinFor(h.id, today))
+    .map((h) => ({ id: h.id, title: h.name, icon: '🏋️' }));
+  const quests: FocusOption[] = open.map((t) => ({ id: t.id, title: t.title, icon: t.priority ? '🎯' : '📝' }));
+  const options = [...quests, ...trainings];
   const [focusId, setFocusId] = useState<string | null>(null);
   const [custom, setCustom] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
-  const focusTitle = custom ?? open.find((t) => t.id === focusId)?.title ?? open[0]?.title ?? '';
+  const focusTitle = custom ?? options.find((o) => o.id === focusId)?.title ?? options[0]?.title ?? '';
+  const selectedId = options.some((o) => o.id === focusId) ? (focusId ?? '') : (options[0]?.id ?? '');
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8">
@@ -21,27 +47,42 @@ export function FocusPage({ tasksApi }: { tasksApi: ReturnType<typeof useTasks> 
         </p>
       </div>
 
-      {open.length === 0 && !custom ? (
-        <EmptyState message="No open quests today." hint="Type a custom focus below, or add quests on the Today page. 🌱" />
+      {options.length === 0 && !custom ? (
+        <EmptyState
+          message="No open quests or habits left today."
+          hint="Type a custom focus below, or add quests on the Today page. 🌱"
+        />
       ) : null}
 
-      {open.length > 0 ? (
+      {options.length > 0 ? (
         <div>
           <label htmlFor="focus-task" className="section-title text-slate-400 dark:text-slate-500">
-            From today's quests
+            From today's quests or habits
           </label>
           <select
             id="focus-task"
-            value={open.find((t) => t.id === focusId)?.id ?? open[0]?.id ?? ''}
+            value={selectedId}
             onChange={(e) => setFocusId(e.target.value)}
             className="mt-2 min-h-[48px] w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
           >
-            {open.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.priority ? '🎯 ' : '📝 '}
-                {t.title}
-              </option>
-            ))}
+            {quests.length > 0 ? (
+              <optgroup label="Quests">
+                {quests.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.icon} {t.title}
+                  </option>
+                ))}
+              </optgroup>
+            ) : null}
+            {trainings.length > 0 ? (
+              <optgroup label="Daily training">
+                {trainings.map((h) => (
+                  <option key={h.id} value={h.id}>
+                    {h.icon} {h.title}
+                  </option>
+                ))}
+              </optgroup>
+            ) : null}
           </select>
         </div>
       ) : null}
