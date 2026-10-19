@@ -23,8 +23,12 @@ function BrandMark(): ReactNode {
   return (
     <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
       <rect width="64" height="64" rx="15" fill="#22332b" />
-      <circle cx="46" cy="16" r="7.5" fill="#d99a2b" />
-      <path d="M6 52 26 14l9 13 8-8 15 33Z" fill="#fffdf7" />
+      <g fill="none" stroke="#fffdf7" strokeWidth="3.5">
+        <ellipse cx="32" cy="34" rx="21" ry="16" transform="rotate(-12 32 34)" />
+        <ellipse cx="31.5" cy="32.5" rx="13.5" ry="10" transform="rotate(8 31.5 32.5)" />
+      </g>
+      <circle cx="31" cy="31" r="6" fill="none" stroke="#fffdf7" strokeWidth="3.5" />
+      <circle cx="31" cy="31" r="2.5" fill="#d99a2b" />
     </svg>
   );
 }
