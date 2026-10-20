@@ -19,7 +19,7 @@ import {
   type LevelProgress,
   type Rank,
 } from '../game/xp';
-import type { Checkin, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, Habit, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
 
 export interface GameStats {
@@ -42,16 +42,17 @@ export function useGameStats(
   checkins: Checkin[],
   tasks: Task[],
   reflections: Reflection[],
+  attendance: Attendance[],
   todayKey: string,
   decayTotal: number,
 ): GameStats {
   return useMemo(() => {
-    const grossXp = totalXp(checkins, tasks, reflections);
+    const grossXp = totalXp(checkins, tasks, reflections, attendance);
     const xp = Math.max(0, grossXp - decayTotal);
     const progress = levelProgress(xp);
     const rank = rankForLevel(progress.level);
     const creature = creatureForLevel(progress.level);
-    const dates = activeDates(checkins, tasks, reflections);
+    const dates = activeDates(checkins, tasks, reflections, attendance);
     const achievements = evaluateAchievements({
       habits,
       checkins,
@@ -74,7 +75,7 @@ export function useGameStats(
       achievements,
       unlockedCount: achievements.filter((a) => a.unlocked).length,
     };
-  }, [habits, checkins, tasks, reflections, todayKey, decayTotal]);
+  }, [habits, checkins, tasks, reflections, attendance, todayKey, decayTotal]);
 }
 
 const DECAY_KEY = 'habittracker.v2.decay';

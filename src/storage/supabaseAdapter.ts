@@ -1,4 +1,4 @@
-import type { Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
 // ============================================================================
@@ -48,6 +48,12 @@ export class SupabaseAdapter implements StorageAdapter {
     throw this.notReady();
   }
   async saveReflections(): Promise<void> {
+    throw this.notReady();
+  }
+  async getAttendance(): Promise<Attendance[]> {
+    throw this.notReady();
+  }
+  async saveAttendance(): Promise<void> {
     throw this.notReady();
   }
   async exportAll(): Promise<ExportPayload> {

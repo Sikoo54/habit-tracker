@@ -1,4 +1,4 @@
-import type { Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
 const SCHEMA_VERSION = 1;
@@ -9,6 +9,7 @@ const KEYS = {
   tasks: `${PREFIX}tasks`,
   checkins: `${PREFIX}checkins`,
   reflections: `${PREFIX}reflections`,
+  attendance: `${PREFIX}attendance`,
   seeded: `${PREFIX}seeded`,
 } as const;
 
@@ -76,6 +77,10 @@ function validReflection(v: unknown): v is Reflection {
   );
 }
 
+function validAttendance(v: unknown): v is Attendance {
+  return isRecord(v) && isString(v.date) && isBoolean(v.morning) && isBoolean(v.night);
+}
+
 function readArray<T>(key: string, guard: (v: unknown) => v is T): T[] {
   try {
     const raw = window.localStorage.getItem(key);
@@ -125,15 +130,30 @@ export class LocalStorageAdapter implements StorageAdapter {
   async saveReflections(reflections: Reflection[]): Promise<void> {
     writeArray(KEYS.reflections, reflections);
   }
+  async getAttendance(): Promise<Attendance[]> {
+    return readArray(KEYS.attendance, validAttendance);
+  }
+  async saveAttendance(attendance: Attendance[]): Promise<void> {
+    writeArray(KEYS.attendance, attendance);
+  }
 
   async exportAll(): Promise<ExportPayload> {
-    const [habits, tasks, checkins, reflections] = await Promise.all([
+    const [habits, tasks, checkins, reflections, attendance] = await Promise.all([
       this.getHabits(),
       this.getTasks(),
       this.getCheckins(),
       this.getReflections(),
+      this.getAttendance(),
     ]);
-    return { schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString(), habits, tasks, checkins, reflections };
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      habits,
+      tasks,
+      checkins,
+      reflections,
+      attendance,
+    };
   }
 
   async importAll(payload: ExportPayload): Promise<void> {
@@ -148,11 +168,13 @@ export class LocalStorageAdapter implements StorageAdapter {
     const tasks = (p.tasks as unknown[]).filter(validTask);
     const checkins = (p.checkins as unknown[]).filter(validCheckin);
     const reflections = (p.reflections as unknown[]).filter(validReflection);
+    const attendance = Array.isArray(p.attendance) ? (p.attendance as unknown[]).filter(validAttendance) : [];
     await Promise.all([
       this.saveHabits(habits),
       this.saveTasks(tasks),
       this.saveCheckins(checkins),
       this.saveReflections(reflections),
+      this.saveAttendance(attendance),
     ]);
   }
 
@@ -162,6 +184,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       window.localStorage.removeItem(KEYS.tasks);
       window.localStorage.removeItem(KEYS.checkins);
       window.localStorage.removeItem(KEYS.reflections);
+      window.localStorage.removeItem(KEYS.attendance);
       window.localStorage.removeItem(KEYS.seeded);
     } catch {
       // abaikan

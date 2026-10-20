@@ -1,19 +1,22 @@
-import type { Checkin, Reflection, Task } from '../types';
+import type { Attendance, Checkin, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
+import { attendedDates } from './attendance';
 
 // GLOBAL daily streak: a day counts if the user did ANYTHING —
-// a habit check-in, a finished task, or a reflection.
+// a habit check-in, a finished task, a reflection, or morning/night absen.
 // Unlike per-habit tolerant streaks, one fully idle day freezes this one.
 
 export function activeDates(
   checkins: Checkin[],
   tasks: Task[],
   reflections: Reflection[],
+  attendance: Attendance[] = [],
 ): Set<string> {
   const s = new Set<string>();
   for (const c of checkins) s.add(c.date);
   for (const t of tasks) if (t.done) s.add(t.date);
   for (const r of reflections) s.add(r.date);
+  for (const d of attendedDates(attendance)) s.add(d);
   return s;
 }
 

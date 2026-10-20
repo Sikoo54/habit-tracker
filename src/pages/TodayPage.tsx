@@ -7,8 +7,8 @@ import { HabitForm } from '../components/HabitForm';
 import { TaskList } from '../components/TaskList';
 import type { AppliedPenalty } from '../game/decay';
 import { penaltyFor } from '../game/decay';
-import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
+import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import { MAX_PRIORITIES, type useTasks } from '../hooks/useTasks';
 import { formatTanggalID, todayKey } from '../utils/dates';
@@ -29,7 +29,14 @@ interface Props {
   onDismissPenalty: () => void;
 }
 
-export function TodayPage({ habitsApi, tasksApi, checkinsApi, game, penaltyNotice, onDismissPenalty }: Props): ReactNode {
+export function TodayPage({
+  habitsApi,
+  tasksApi,
+  checkinsApi,
+  game,
+  penaltyNotice,
+  onDismissPenalty,
+}: Props): ReactNode {
   const today = todayKey();
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
   const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;

@@ -1,4 +1,5 @@
-import type { Checkin, Reflection, Task } from '../types';
+import type { Attendance, Checkin, Reflection, Task } from '../types';
+import { attendanceXp } from './attendance';
 
 // XP is DERIVED from existing data — no new storage, no migration.
 // Full version > small version, priorities > side quests, reflection = bonus.
@@ -20,7 +21,12 @@ export function xpForTask(priority: boolean): number {
   return priority ? XP.taskPriority : XP.taskOther;
 }
 
-export function totalXp(checkins: Checkin[], tasks: Task[], reflections: Reflection[]): number {
+export function totalXp(
+  checkins: Checkin[],
+  tasks: Task[],
+  reflections: Reflection[],
+  attendance: Attendance[] = [],
+): number {
   let xp = 0;
   for (const c of checkins) xp += xpForCheckin(c.variant);
   for (const t of tasks) if (t.done) xp += xpForTask(t.priority);
@@ -28,7 +34,7 @@ export function totalXp(checkins: Checkin[], tasks: Task[], reflections: Reflect
     xp += XP.reflection;
     if (r.mood !== null && r.energy !== null) xp += XP.reflectionBonus;
   }
-  return xp;
+  return xp + attendanceXp(attendance);
 }
 
 /** Cumulative XP needed to REACH a level. L1=0, L2=100, L3=300, L4=600, L5=1000... */

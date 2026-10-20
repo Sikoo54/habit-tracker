@@ -1,8 +1,11 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { AttendanceGate } from './components/AttendanceGate';
 import { HudStats, LevelUpModal } from './components/Hud';
 import { Layout } from './components/Layout';
+import { gateFor } from './game/attendance';
 import { activeDates, lastActiveDate } from './game/dailyStreak';
 import { totalXp } from './game/xp';
+import { useAttendance } from './hooks/useAttendance';
 import { useCheckins } from './hooks/useCheckins';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useDecayLedger, useGameStats, useLevelUp } from './hooks/useGame';
@@ -40,23 +43,35 @@ function Shell({
   dark: boolean;
   onToggleDark: () => void;
 }): ReactNode {
-  const today = todayKey();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const today = todayKey(now);
   const habitsApi = useHabits();
   const tasksApi = useTasks(today);
   const checkinsApi = useCheckins();
   const reflectionsApi = useReflections();
+  const attendanceApi = useAttendance();
 
   const ready =
-    !habitsApi.loading && !tasksApi.loading && !checkinsApi.loading && !reflectionsApi.loading;
+    !habitsApi.loading &&
+    !tasksApi.loading &&
+    !checkinsApi.loading &&
+    !reflectionsApi.loading &&
+    !attendanceApi.loading;
 
   const dates = useMemo(
-    () => activeDates(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections),
-    [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections],
+    () =>
+      activeDates(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance),
+    [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance],
   );
   const lastActive = useMemo(() => lastActiveDate(dates), [dates]);
   const grossXp = useMemo(
-    () => totalXp(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections),
-    [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections],
+    () => totalXp(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance),
+    [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance],
   );
 
   const decay = useDecayLedger(grossXp, dates, lastActive, today, ready);
@@ -65,10 +80,23 @@ function Shell({
     checkinsApi.checkins,
     tasksApi.tasks,
     reflectionsApi.reflections,
+    attendanceApi.attendance,
     today,
     decay.ledger.total,
   );
   const levelUp = useLevelUp(game.progress.level);
+
+  const gate = ready ? gateFor(attendanceApi.attendance, today, now.getHours()) : null;
+  if (gate) {
+    return (
+      <AttendanceGate
+        slot={gate}
+        date={today}
+        streak={game.streak}
+        onConfirm={() => attendanceApi.mark(today, gate)}
+      />
+    );
+  }
 
   return (
     <Layout

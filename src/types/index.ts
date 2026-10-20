@@ -48,6 +48,13 @@ export interface Reflection {
   updatedAt: string;
 }
 
+/** One row per day: morning/night absen (open app at wake & before bed). */
+export interface Attendance {
+  date: string; // YYYY-MM-DD, unique per day
+  morning: boolean;
+  night: boolean;
+}
+
 export type PageKey = 'today' | 'stats' | 'reflection' | 'focus';
 
 export interface ExportPayload {
@@ -57,4 +64,5 @@ export interface ExportPayload {
   tasks: Task[];
   checkins: Checkin[];
   reflections: Reflection[];
+  attendance: Attendance[];
 }
