@@ -177,6 +177,17 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
               <DataTools onResetDone={() => window.location.reload()} />
             </div>
             <div className="flex-1" />
+            <p className="px-2 pt-4 text-xs text-ink-500 dark:text-slate-400">
+              Built by{' '}
+              <a
+                href="https://sachaahsan.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-sage-700 underline decoration-sage-500/40 underline-offset-2 hover:text-sage-600 dark:text-emerald-400"
+              >
+                Sacha Ahsan
+              </a>
+            </p>
             <button
               type="button"
               onClick={onToggleDark}

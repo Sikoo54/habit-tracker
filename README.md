@@ -82,5 +82,9 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 
 - [ ] Supabase sync + login (see `src/storage/supabaseAdapter.ts` TODOs)
 - [ ] Reminders / notifications
-- [ ] PWA offline support
+- [x] PWA offline support
 - [ ] Habit notes & longer history charts
+
+## Author
+
+Built by **Sacha Ahsan** — https://sachaahsan.vercel.app/
