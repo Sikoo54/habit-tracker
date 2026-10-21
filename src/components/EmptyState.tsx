@@ -13,7 +13,7 @@ export function EmptyState({ message, hint, icon = '🌿' }: Props): ReactNode {
         {icon}
       </p>
       <p className="mt-2 font-medium text-slate-700 dark:text-slate-200">{message}</p>
-      {hint ? <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{hint}</p> : null}
+      {hint ? <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">{hint}</p> : null}
     </div>
   );
 }

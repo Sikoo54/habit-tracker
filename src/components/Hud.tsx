@@ -51,7 +51,7 @@ export function LevelUpModal({
           {creature.emoji}
         </p>
         <h2 className="mt-3 font-display text-3xl font-semibold">{rank.title}</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
           {creature.name} — {creature.tagline}
         </p>
         <button

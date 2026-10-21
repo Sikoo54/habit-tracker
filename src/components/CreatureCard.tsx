@@ -39,10 +39,10 @@ export function CreatureCard({ creature, progress, next, rank, nextRank }: Props
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-display text-2xl font-semibold leading-none sm:text-3xl">{rank.title}</p>
-          <p className="mt-1 truncate text-[13px] font-medium text-slate-500 dark:text-slate-400">
+          <p className="mt-1 truncate text-[13px] font-medium text-ink-500 dark:text-slate-400">
             Rank {progress.level} · {creature.name}
           </p>
-          <p className="truncate text-[13px] text-slate-500 dark:text-slate-400">
+          <p className="truncate text-[13px] text-ink-500 dark:text-slate-400">
             {next && nextRank ? `Next: ${next.emoji} ${nextRank.title} at rank ${nextRank.level}` : 'Final form 👑'}
           </p>
         </div>

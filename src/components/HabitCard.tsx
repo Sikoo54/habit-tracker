@@ -51,7 +51,7 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
           className={`check-pop mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 max-md:h-8 max-md:w-8 ${
             checked
               ? 'border-sage-600 bg-sage-500 text-white dark:border-emerald-400 dark:bg-emerald-500'
-              : 'border-slate-300 dark:border-slate-600'
+              : 'border-cream-300 dark:border-slate-600'
           }`}
         >
           {checked ? '✓' : ''}
@@ -72,7 +72,7 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
           {habit.trigger ? (
             <p className="truncate text-[13px] text-slate-400 dark:text-slate-500">⏰ {habit.trigger}</p>
           ) : null}
-          <p className="mt-0.5 text-[13px] text-slate-500 dark:text-slate-400" aria-live="polite">
+          <p className="mt-0.5 text-[13px] text-ink-500 dark:text-slate-400" aria-live="polite">
             {streakMessage(streak)}
             {checked && variant ? (
               <span className="ml-2 rounded-full bg-sage-100 px-2 py-0.5 text-xs font-medium text-sage-700 dark:bg-emerald-900 dark:text-emerald-200">
@@ -110,27 +110,27 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
           {editing ? (
             <form onSubmit={submitEdit} aria-label={`Edit ${habit.name}`} className="mt-3 space-y-2 rounded-xl bg-cream-100 p-3 dark:bg-slate-900/60">
               <div>
-                <label htmlFor={`en-${habit.id}`} className="text-xs font-semibold text-slate-500">
+                <label htmlFor={`en-${habit.id}`} className="text-xs font-semibold text-ink-500">
                   Name
                 </label>
                 <input id={`en-${habit.id}`} value={name} onChange={(e) => setName(e.target.value)} maxLength={60} className={inputCls} />
               </div>
               <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
                 <div>
-                  <label htmlFor={`ef-${habit.id}`} className="text-xs font-semibold text-slate-500">
+                  <label htmlFor={`ef-${habit.id}`} className="text-xs font-semibold text-ink-500">
                     Full version
                   </label>
                   <input id={`ef-${habit.id}`} value={full} onChange={(e) => setFull(e.target.value)} maxLength={80} className={inputCls} />
                 </div>
                 <div>
-                  <label htmlFor={`es-${habit.id}`} className="text-xs font-semibold text-slate-500">
+                  <label htmlFor={`es-${habit.id}`} className="text-xs font-semibold text-ink-500">
                     Small version 🌱
                   </label>
                   <input id={`es-${habit.id}`} value={small} onChange={(e) => setSmall(e.target.value)} maxLength={80} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label htmlFor={`et-${habit.id}`} className="text-xs font-semibold text-slate-500">
+                <label htmlFor={`et-${habit.id}`} className="text-xs font-semibold text-ink-500">
                   Trigger
                 </label>
                 <input id={`et-${habit.id}`} value={trigger} onChange={(e) => setTrigger(e.target.value)} maxLength={80} className={inputCls} />
@@ -150,7 +150,7 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
                     setEditing(false);
                     setError(null);
                   }}
-                  className="min-h-[44px] rounded-xl border border-slate-300 px-4 text-sm dark:border-slate-600"
+                  className="min-h-[44px] rounded-xl border border-cream-300 px-4 text-sm dark:border-slate-600"
                 >
                   Cancel
                 </button>
@@ -164,7 +164,7 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={`Options for ${habit.name}`}
             aria-expanded={menuOpen}
-            className="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-lg text-slate-300 hover:bg-cream-200 hover:text-slate-600 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+            className="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-lg text-slate-300 hover:bg-cream-200 hover:text-ink-600 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           >
             ⋯
           </button>

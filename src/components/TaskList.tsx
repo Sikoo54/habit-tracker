@@ -43,7 +43,7 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
           </span>
         ) : null}
       </div>
-      <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
+      <p className="mt-0.5 text-sm text-ink-500 dark:text-slate-400">{subtitle}</p>
 
       <form onSubmit={submit} className="mt-3 flex gap-2">
         <label htmlFor={`tambah-${icon}`} className="sr-only">
@@ -85,7 +85,7 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
                 className={`check-pop flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 max-md:h-8 max-md:w-8 ${
                   t.done
                     ? 'border-sage-600 bg-sage-500 text-white dark:border-emerald-400 dark:bg-emerald-500'
-                    : 'border-slate-300 dark:border-slate-600'
+                    : 'border-cream-300 dark:border-slate-600'
                 }`}
               >
                 {t.done ? '✓' : ''}

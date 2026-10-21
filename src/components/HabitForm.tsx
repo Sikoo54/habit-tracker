@@ -39,25 +39,25 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
       <form onSubmit={submit} aria-label="Add new habit" className="px-4 pb-4">
         <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
           <div className="col-span-2">
-            <label htmlFor="hn" className="text-sm font-medium text-slate-600 dark:text-slate-300">
+            <label htmlFor="hn" className="text-sm font-medium text-ink-600 dark:text-slate-300">
               Habit name
             </label>
             <input id="hn" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Reading" maxLength={60} className={inputCls} />
           </div>
           <div>
-            <label htmlFor="hf" className="text-sm font-medium text-slate-600 dark:text-slate-300">
+            <label htmlFor="hf" className="text-sm font-medium text-ink-600 dark:text-slate-300">
               Full version
             </label>
             <input id="hf" value={full} onChange={(e) => setFull(e.target.value)} placeholder="e.g. Read 20 pages" maxLength={80} className={inputCls} />
           </div>
           <div>
-            <label htmlFor="hs" className="text-sm font-medium text-slate-600 dark:text-slate-300">
+            <label htmlFor="hs" className="text-sm font-medium text-ink-600 dark:text-slate-300">
               Small version 🌱
             </label>
             <input id="hs" value={small} onChange={(e) => setSmall(e.target.value)} placeholder="e.g. Read 1 page" maxLength={80} className={inputCls} />
           </div>
           <div className="col-span-2">
-            <label htmlFor="ht" className="text-sm font-medium text-slate-600 dark:text-slate-300">
+            <label htmlFor="ht" className="text-sm font-medium text-ink-600 dark:text-slate-300">
               Trigger (habit stacking)
             </label>
             <input id="ht" value={trigger} onChange={(e) => setTrigger(e.target.value)} placeholder="e.g. After morning toothbrush" maxLength={80} className={inputCls} />

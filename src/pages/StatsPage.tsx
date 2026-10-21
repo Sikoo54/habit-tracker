@@ -53,7 +53,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           >
             {deltaTxt}
           </span>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
             {cmp.thisWeek.totalDone} of {cmp.thisWeek.totalSlots} check-ins this week · +{game.xp} XP all time.
           </p>
         </div>
@@ -96,7 +96,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
       <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
         {cmp.thisWeek.days.map((day, i) => (
           <li key={day.date} className="flex items-center gap-3 py-2">
-            <span className="w-8 text-sm font-medium text-slate-500 sm:w-10">{HARI_SINGKAT[i]}</span>
+            <span className="w-8 text-sm font-medium text-ink-500 sm:w-10">{HARI_SINGKAT[i]}</span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
               <div className="h-full rounded-full bg-sage-500 dark:bg-emerald-400" style={{ width: `${Math.round(day.rate * 100)}%` }} />
             </div>

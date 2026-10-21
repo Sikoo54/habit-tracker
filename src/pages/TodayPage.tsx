@@ -95,7 +95,7 @@ export function TodayPage({
           <h1 className="mt-1 font-display text-5xl font-semibold leading-[1.05] tracking-tight max-md:text-4xl">
             {greeting(new Date().getHours())}. {headline}
           </h1>
-          <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-slate-500 dark:text-slate-400">
+          <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-ink-500 dark:text-slate-400">
             {totalItems === 0
               ? 'A fresh quest board. Add one tiny quest below.'
               : allDone

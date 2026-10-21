@@ -29,7 +29,7 @@ export function AchievementsGrid({
             </span>
             <div className="min-w-0">
               <p className="text-sm font-bold leading-tight">{a.name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-md:truncate">{a.desc}</p>
+              <p className="text-xs text-ink-500 dark:text-slate-400 max-md:truncate">{a.desc}</p>
               <p className="text-xs font-semibold text-sage-700 tabular-nums dark:text-emerald-300">{a.progress}</p>
             </div>
           </li>

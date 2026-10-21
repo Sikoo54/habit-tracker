@@ -42,7 +42,7 @@ export function FocusPage({
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Focus session</p>
         <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight max-sm:text-3xl">Focus arena</h1>
-        <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-[15px] text-ink-500 dark:text-slate-400">
           One quest, 25 minutes. Then rest 5. Small steps finish big things.
         </p>
       </div>
@@ -98,7 +98,7 @@ export function FocusPage({
               type="button"
               onClick={() => setCustom(null)}
               aria-label="Clear custom focus"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-500 hover:text-red-600 dark:text-slate-400"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-ink-500 hover:text-red-600 dark:text-slate-400"
             >
               ✕
             </button>

@@ -80,7 +80,7 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
         />
       </div>
       {msg ? (
-        <p role="status" className="mt-1 px-1 text-sm text-slate-500 dark:text-slate-400">
+        <p role="status" className="mt-1 px-1 text-sm text-ink-500 dark:text-slate-400">
           {msg}
         </p>
       ) : null}
@@ -93,7 +93,7 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
             <button type="button" onClick={doReset} className="min-h-[44px] flex-1 rounded-xl bg-red-600 px-3 text-sm font-semibold text-white">
               Yes, delete
             </button>
-            <button type="button" onClick={() => setConfirmReset(false)} className="min-h-[44px] flex-1 rounded-xl border border-slate-300 px-3 text-sm dark:border-slate-600">
+            <button type="button" onClick={() => setConfirmReset(false)} className="min-h-[44px] flex-1 rounded-xl border border-cream-300 px-3 text-sm dark:border-slate-600">
               Cancel
             </button>
           </div>

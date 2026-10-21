@@ -96,7 +96,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                     className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all ${
                       active
                         ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
-                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
+                        : 'text-ink-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
                     }`}
                   >
                     <Icon d={it.icon} />
@@ -134,7 +134,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                   className={`flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-full px-1.5 text-[13px] font-bold transition-all ${
                     active
                       ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
-                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
+                      : 'text-ink-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
                   }`}
                 >
                   <Icon d={it.icon} />
@@ -180,7 +180,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             <button
               type="button"
               onClick={onToggleDark}
-              className="mt-4 min-h-[44px] w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600"
+              className="mt-4 min-h-[44px] w-full rounded-xl border border-cream-300 px-3 py-2 dark:border-slate-600"
             >
               {dark ? '☀️ Light mode' : '🌙 Dark mode'}
             </button>
