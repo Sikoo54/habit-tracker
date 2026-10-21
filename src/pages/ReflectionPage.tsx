@@ -38,7 +38,7 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
 
       <form onSubmit={submit} aria-label="Today's reflection" className="mt-8">
         <label htmlFor="rw" className="text-lg font-bold">
-          What loot did today drop? ✨
+          What went well today?
         </label>
         <textarea
           id="rw"
@@ -50,7 +50,7 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
           className={fieldCls}
         />
         <label htmlFor="ri" className="mt-6 block text-lg font-bold">
-          What quest needs a new strategy tomorrow?
+          What do you want to fix tomorrow?
         </label>
         <textarea
           id="ri"
@@ -96,10 +96,10 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
                 {open ? (
                   <div className="pb-4 text-[15px] leading-relaxed">
                     <p>
-                      <strong>Loot:</strong> {r.wentWell || '—'}
+                      <strong>Went well:</strong> {r.wentWell || '—'}
                     </p>
                     <p className="mt-1">
-                      <strong>Next strategy:</strong> {r.toImprove || '—'}
+                      <strong>To fix:</strong> {r.toImprove || '—'}
                     </p>
                     <p className="mt-1 text-sm text-slate-400">
                       Mood: {r.mood ?? '—'} · Energy: {r.energy ?? '—'}
