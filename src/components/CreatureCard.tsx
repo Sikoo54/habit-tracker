@@ -37,8 +37,8 @@ export function CreatureCard({ creature, progress, next, rank, nextRank }: Props
             {creature.emoji}
           </span>
         </div>
-        <div className="min-w-0">
-          <p className="font-display text-3xl font-semibold leading-none">{rank.title}</p>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-2xl font-semibold leading-none sm:text-3xl">{rank.title}</p>
           <p className="mt-1 truncate text-[13px] font-medium text-slate-500 dark:text-slate-400">
             Rank {progress.level} · {creature.name}
           </p>
@@ -51,7 +51,7 @@ export function CreatureCard({ creature, progress, next, rank, nextRank }: Props
           <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">total XP</p>
         </div>
       </div>
-      <ol className="mt-4 flex items-center justify-between border-t border-cream-200 pt-3 dark:border-slate-800" aria-label="Ascension path">
+      <ol className="mt-4 flex items-center justify-between gap-0.5 border-t border-cream-200 pt-3 dark:border-slate-800" aria-label="Ascension path">
         {CREATURE_STAGES.map((s) => {
           const reached = progress.level >= s.level;
           const isCurrent = creature.level === s.level;

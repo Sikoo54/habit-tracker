@@ -64,7 +64,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
     <div className="min-h-screen bg-cream-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100">
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-cream-200 bg-cream-100/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
-        <div className="grid min-h-[60px] w-full grid-cols-[auto_1fr_auto] items-center gap-2 px-4 max-md:gap-1 max-md:px-2">
+        <div className="grid min-h-[60px] w-full grid-cols-[auto_1fr_auto] items-center gap-2 px-4 max-md:px-3 max-md:py-2">
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -83,7 +83,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             </p>
           </div>
 
-          <nav aria-label="Main navigation" className="flex min-w-0 justify-center">
+          <nav aria-label="Main navigation" className="flex min-w-0 justify-center max-md:hidden">
             <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               {ITEMS.map((it) => {
                 const active = page === it.key;
@@ -93,21 +93,21 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                     type="button"
                     onClick={() => onNavigate(it.key)}
                     aria-current={active ? 'page' : undefined}
-                    className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all max-md:px-2.5 ${
+                    className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all ${
                       active
                         ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
                         : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
                     }`}
                   >
                     <Icon d={it.icon} />
-                    <span className="max-md:text-[13px]">{it.label}</span>
+                    <span>{it.label}</span>
                   </button>
                 );
               })}
             </div>
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-end gap-1 md:justify-self-end">
             {hud}
             <button
               type="button"
@@ -119,6 +119,31 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             </button>
           </div>
         </div>
+
+        {/* Mobile nav: own row, pills share the width */}
+        <nav aria-label="Main navigation" className="px-3 pb-2 md:hidden">
+          <div className="flex w-full items-center gap-0.5 rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            {ITEMS.map((it) => {
+              const active = page === it.key;
+              return (
+                <button
+                  key={it.key}
+                  type="button"
+                  onClick={() => onNavigate(it.key)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-full px-1.5 text-[13px] font-bold transition-all ${
+                    active
+                      ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
+                  }`}
+                >
+                  <Icon d={it.icon} />
+                  <span>{it.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
       </header>
 
       {/* Settings drawer + backdrop */}

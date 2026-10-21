@@ -43,12 +43,12 @@ export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
   };
 
   return (
-    <section aria-label="Pomodoro timer" className="rounded-3xl bg-sage-100/60 p-8 text-center dark:bg-slate-800/60">
+    <section aria-label="Pomodoro timer" className="rounded-3xl bg-sage-100/60 p-8 text-center max-sm:p-5 dark:bg-slate-800/60">
       <h2 className="section-title text-slate-500 dark:text-slate-400">Pomodoro 25 / 5</h2>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         Focusing on <span className="font-semibold text-slate-700 dark:text-slate-200">{focusTitle || '— pick a task above'}</span>
       </p>
-      <p className="mt-4 text-7xl font-extrabold tabular-nums tracking-tight" aria-live="polite">
+      <p className="mt-4 text-7xl font-extrabold tabular-nums tracking-tight max-sm:text-6xl" aria-live="polite">
         {fmt(seconds)}
       </p>
       <p className="mt-1 text-sm text-slate-400">

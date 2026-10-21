@@ -27,8 +27,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
     return (
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>
-        <EmptyState message="No active habits to measure yet." hint="Add a habit on the Today page first. 🌱" />
+        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>        <EmptyState message="No active habits to measure yet." hint="Add a habit on the Today page first. 🌱" />
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
@@ -43,11 +42,13 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
   return (
     <div>
       <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
-      <div className="mt-1 flex flex-wrap items-end gap-x-6 gap-y-2">
-        <h1 className="font-display text-6xl font-semibold tabular-nums tracking-tight">{formatPercent(cmp.thisWeek.rate)}</h1>
+      <div className="mt-1 flex flex-wrap items-end gap-x-6 gap-y-2 max-sm:flex-col max-sm:items-start max-sm:gap-x-0">
+        <h1 className="font-display text-6xl font-semibold tabular-nums tracking-tight max-sm:text-5xl">
+          {formatPercent(cmp.thisWeek.rate)}
+        </h1>
         <div className="pb-1.5">
           <span
-            className={`rounded-full px-3 py-1 text-sm font-semibold ${deltaGood ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200'}`}
+            className={`inline-block rounded-full px-3 py-1 text-sm font-semibold max-sm:inline ${deltaGood ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200'}`}
             role="status"
           >
             {deltaTxt}
@@ -59,8 +60,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
       </div>
 
       <h2 className="section-title mt-10 text-slate-400 dark:text-slate-500">Last 7 days</h2>
-      <ol className="mt-3 grid grid-cols-7 gap-2 max-md:gap-1" aria-label="7-day mini calendar">
-        {Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)).map((date) => {
+      <ol className="mt-3 grid grid-cols-7 gap-2 max-sm:gap-1" aria-label="7-day mini calendar">        {Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)).map((date) => {
           const d = parseDateKey(date);
           const idx = (d.getDay() + 6) % 7;
           const done = new Set(checkins.filter((c) => c.date === date).map((c) => c.habitId)).size;
@@ -71,7 +71,7 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
             <li key={date} title={`${date}: ${capped}/${activeCount}`} className="text-center">
               <span className="text-xs font-medium text-slate-400">{HARI_SINGKAT[idx]}</span>
               <span
-                className={`mx-auto mt-1 flex h-12 w-12 items-center justify-center rounded-full text-lg max-md:h-10 max-md:w-10 ${
+                className={`mx-auto mt-1 flex h-11 w-11 items-center justify-center rounded-full text-lg max-sm:h-9 max-sm:w-9 max-sm:text-base ${
                   full
                     ? 'bg-sage-500 text-white dark:bg-emerald-500'
                     : some
@@ -96,11 +96,11 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
       <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
         {cmp.thisWeek.days.map((day, i) => (
           <li key={day.date} className="flex items-center gap-3 py-2">
-            <span className="w-10 text-sm font-medium text-slate-500">{HARI_SINGKAT[i]}</span>
+            <span className="w-8 text-sm font-medium text-slate-500 sm:w-10">{HARI_SINGKAT[i]}</span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
               <div className="h-full rounded-full bg-sage-500 dark:bg-emerald-400" style={{ width: `${Math.round(day.rate * 100)}%` }} />
             </div>
-            <span className="w-20 text-right text-[13px] text-slate-400 tabular-nums">
+            <span className="w-14 text-right text-[13px] text-slate-400 tabular-nums sm:w-20">
               {day.done}/{day.total}
             </span>
           </li>
