@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AttendanceGate } from './components/AttendanceGate';
 import { HudStats, LevelUpModal } from './components/Hud';
 import { Layout } from './components/Layout';
+import { SplashScreen } from './components/SplashScreen';
 import { gateFor } from './game/attendance';
 import { activeDates, lastActiveDate } from './game/dailyStreak';
 import { totalXp } from './game/xp';
@@ -27,6 +28,7 @@ export function App(): ReactNode {
 
   return (
     <StorageContext.Provider value={localStorageAdapter}>
+      <SplashScreen />
       <Shell page={page} onNavigate={setPage} dark={dark} onToggleDark={toggle} />
     </StorageContext.Provider>
   );
