@@ -1,6 +1,7 @@
 import { useMemo, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
+import { Heatmap } from '../components/Heatmap';
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { useHabits } from '../hooks/useHabits';
@@ -90,10 +91,13 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
         })}
       </ol>
 
+      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <Heatmap habits={habits} checkins={checkins} today={today} />
+      </div>
+
       <h2 className="section-title mt-10 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">
         This week · from {cmp.thisWeek.monday}
-      </h2>
-      <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
+      </h2>      <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
         {cmp.thisWeek.days.map((day, i) => (
           <li key={day.date} className="flex items-center gap-3 py-2">
             <span className="w-8 text-sm font-medium text-ink-500 sm:w-10">{HARI_SINGKAT[i]}</span>

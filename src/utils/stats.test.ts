@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
-import { compareWeeks, weeklyStats } from './stats';
+import { compareWeeks, annualHeatmap, heatLevel, weeklyStats } from './stats';
 
 function habit(id: string): Habit {
   return {
@@ -53,5 +53,43 @@ describe('weekly stats', () => {
     const c = compareWeeks(habits, checkins, '2026-09-09');
     expect(c.thisWeek.rate).toBeGreaterThan(c.lastWeek.rate);
     expect(c.delta).toBeCloseTo(c.thisWeek.rate - c.lastWeek.rate);
+  });
+});
+
+describe('annual heatmap', () => {
+  it('heatLevel maps counts to 0..4', () => {
+    expect(heatLevel(0, 4)).toBe(0);
+    expect(heatLevel(1, 4)).toBe(1);
+    expect(heatLevel(2, 4)).toBe(2);
+    expect(heatLevel(3, 4)).toBe(3);
+    expect(heatLevel(4, 4)).toBe(4);
+    expect(heatLevel(2, 1)).toBe(2);
+  });
+
+  it('produces 53 full weeks of 7 cells', () => {
+    const h = annualHeatmap([habit('a')], [], '2026-09-09');
+    expect(h.weeks).toHaveLength(53);
+    for (const w of h.weeks) expect(w.cells).toHaveLength(7);
+  });
+
+  it('marks future days and counts active days', () => {
+    const habits = [habit('a'), habit('b')];
+    const checkins = [checkin('a', '2026-09-08'), checkin('b', '2026-09-08'), checkin('a', '2026-01-05')];
+    const h = annualHeatmap(habits, checkins, '2026-09-09');
+    expect(h.totalActiveDays).toBe(2);
+    expect(h.maxCount).toBe(2);
+    const all = h.weeks.flatMap((w) => w.cells);
+    const sep8 = all.find((c) => c.date === '2026-09-08');
+    expect(sep8?.count).toBe(2);
+    expect(sep8?.level).toBe(4);
+    expect(all.some((c) => c.future)).toBe(true);
+    expect(all.some((c) => c.date === '2026-09-09' && c.future)).toBe(false);
+  });
+
+  it('excludes inactive habits', () => {
+    const habits: Habit[] = [{ ...habit('a'), active: false }, habit('b')];
+    const h = annualHeatmap(habits, [checkin('a', '2026-09-08'), checkin('b', '2026-09-08')], '2026-09-09');
+    expect(h.totalActiveDays).toBe(1);
+    expect(h.maxCount).toBe(1);
   });
 });
