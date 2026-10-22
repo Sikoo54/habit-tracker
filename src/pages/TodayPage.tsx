@@ -110,7 +110,7 @@ export function TodayPage({
       </div>
 
       <div className="mt-8 grid grid-cols-5 items-start gap-x-10 gap-y-10 border-t border-cream-200 pt-8 max-md:grid-cols-1 dark:border-slate-800">
-        <div className="col-span-2 space-y-8 max-md:col-span-1">
+        <div className="col-span-2 space-y-8 max-md:order-2 max-md:col-span-1">
           <TaskList
             title={`Main Quests (${priorities.length}/${MAX_PRIORITIES})`}
             subtitle="The 3 that matter · +25 XP each."
@@ -133,7 +133,7 @@ export function TodayPage({
           </div>
         </div>
 
-        <div className="col-span-3 space-y-8 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 md:border-l md:border-cream-200 md:pl-10 dark:max-md:border-slate-800 dark:md:border-slate-800">
+        <div className="col-span-3 space-y-8 max-md:order-1 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 md:border-l md:border-cream-200 md:pl-10 dark:max-md:border-slate-800 dark:md:border-slate-800">
           <section aria-label="Today's habits">
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="text-base font-bold">🌿 Daily Training</h2>
