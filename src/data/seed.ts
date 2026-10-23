@@ -13,6 +13,7 @@ export function seedHabits(): Habit[] {
       smallVersion: 'Drink 1 glass',
       trigger: 'After morning toothbrush',
       active: true,
+      weeklyGoal: 7,
       createdAt: now(),
     },
     {
@@ -22,6 +23,7 @@ export function seedHabits(): Habit[] {
       smallVersion: 'Stretch 2 minutes',
       trigger: 'After lunch',
       active: true,
+      weeklyGoal: 4,
       createdAt: now(),
     },
     {
@@ -31,6 +33,7 @@ export function seedHabits(): Habit[] {
       smallVersion: 'Read 1 page',
       trigger: 'Before bed',
       active: true,
+      weeklyGoal: 5,
       createdAt: now(),
     },
   ];

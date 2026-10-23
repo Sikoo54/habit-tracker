@@ -11,7 +11,7 @@ import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import { MAX_PRIORITIES, type useTasks } from '../hooks/useTasks';
-import { formatTanggalID, todayKey } from '../utils/dates';
+import { formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
 
 function greeting(hour: number): string {
   if (hour < 11) return 'Good morning';
@@ -38,6 +38,7 @@ export function TodayPage({
   onDismissPenalty,
 }: Props): ReactNode {
   const today = todayKey();
+  const weekMonday = startOfWeekMonday(today);
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
   const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;
   const { checkins, toggleCheckin, checkinFor } = checkinsApi;
@@ -155,6 +156,8 @@ export function TodayPage({
                       key={h.id}
                       habit={h}
                       completedDates={dates}
+                      checkins={checkins}
+                      weekMonday={weekMonday}
                       todayKey={today}
                       checked={Boolean(c)}
                       variant={c?.variant ?? null}

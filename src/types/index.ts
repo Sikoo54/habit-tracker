@@ -9,6 +9,8 @@ export interface Habit {
   smallVersion: string;
   trigger: string;
   active: boolean;
+  /** Target check-ins per week. 0 = no weekly goal. */
+  weeklyGoal: number;
   createdAt: string; // ISO timestamp
 }
 
@@ -17,6 +19,7 @@ export interface HabitInput {
   fullVersion: string;
   smallVersion: string;
   trigger: string;
+  weeklyGoal: number;
 }
 
 export interface Task {

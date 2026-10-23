@@ -3,7 +3,7 @@ import type { Checkin, Habit } from '../types';
 import { evaluateAchievements, type GameData } from './achievements';
 
 function habit(id: string): Habit {
-  return { id, name: id, fullVersion: 'f', smallVersion: 's', trigger: '', active: true, createdAt: 'x' };
+  return { id, name: id, fullVersion: 'f', smallVersion: 's', trigger: '', active: true, weeklyGoal: 0, createdAt: 'x' };
 }
 
 function base(over: Partial<GameData> = {}): GameData {

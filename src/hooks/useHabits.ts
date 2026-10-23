@@ -66,6 +66,7 @@ export function useHabits() {
         smallVersion: input.smallVersion.trim() || '2-minute version',
         trigger: input.trigger.trim(),
         active: true,
+        weeklyGoal: Math.max(0, Math.min(7, Math.round(input.weeklyGoal) || 0)),
         createdAt: new Date().toISOString(),
       };
       setHabits((prev) => [...prev, h]);
@@ -86,6 +87,7 @@ export function useHabits() {
                 fullVersion: input.fullVersion.trim() || input.name.trim(),
                 smallVersion: input.smallVersion.trim() || '2-minute version',
                 trigger: input.trigger.trim(),
+                weeklyGoal: Math.max(0, Math.min(7, Math.round(input.weeklyGoal) || 0)),
               }
             : h,
         ),

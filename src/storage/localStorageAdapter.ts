@@ -36,8 +36,14 @@ function validHabit(v: unknown): v is Habit {
     isString(v.smallVersion) &&
     isString(v.trigger) &&
     isBoolean(v.active) &&
+    (v.weeklyGoal === undefined || typeof v.weeklyGoal === 'number') &&
     isString(v.createdAt)
   );
+}
+
+/** Fill fields added after v1 so old saved habits keep working. */
+function normalizeHabit(h: Habit): Habit {
+  return { ...h, weeklyGoal: typeof h.weeklyGoal === 'number' ? h.weeklyGoal : 0 };
 }
 
 function validTask(v: unknown): v is Task {
@@ -107,7 +113,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   readonly schemaVersion = SCHEMA_VERSION;
 
   async getHabits(): Promise<Habit[]> {
-    return readArray(KEYS.habits, validHabit);
+    return readArray(KEYS.habits, validHabit).map(normalizeHabit);
   }
   async saveHabits(habits: Habit[]): Promise<void> {
     writeArray(KEYS.habits, habits);

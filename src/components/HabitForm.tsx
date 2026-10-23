@@ -11,11 +11,12 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
   const [full, setFull] = useState('');
   const [small, setSmall] = useState('');
   const [trigger, setTrigger] = useState('');
+  const [weeklyGoal, setWeeklyGoal] = useState(7);
   const [error, setError] = useState<string | null>(null);
 
   const submit = (e: FormEvent): void => {
     e.preventDefault();
-    const res = onAdd({ name, fullVersion: full, smallVersion: small, trigger });
+    const res = onAdd({ name, fullVersion: full, smallVersion: small, trigger, weeklyGoal });
     if (!res.ok) {
       setError(res.reason ?? 'Could not add habit.');
       return;
@@ -24,6 +25,7 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
     setFull('');
     setSmall('');
     setTrigger('');
+    setWeeklyGoal(7);
     setError(null);
   };
 
@@ -61,6 +63,21 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
               Trigger (habit stacking)
             </label>
             <input id="ht" value={trigger} onChange={(e) => setTrigger(e.target.value)} placeholder="e.g. After morning toothbrush" maxLength={80} className={inputCls} />
+          </div>
+          <div className="col-span-2">
+            <label htmlFor="hg" className="text-sm font-medium text-ink-600 dark:text-slate-300">
+              Weekly goal — times per week
+            </label>
+            <input
+              id="hg"
+              type="number"
+              min={0}
+              max={7}
+              value={weeklyGoal}
+              onChange={(e) => setWeeklyGoal(Number(e.target.value))}
+              className={inputCls}
+            />
+            <p className="mt-1 text-xs text-ink-500 dark:text-slate-400">0 = no weekly goal. 7 = every day.</p>
           </div>
         </div>
         {error ? (

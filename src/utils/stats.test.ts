@@ -10,6 +10,7 @@ function habit(id: string): Habit {
     smallVersion: 'small',
     trigger: '',
     active: true,
+    weeklyGoal: 0,
     createdAt: '2026-01-01T00:00:00.000Z',
   };
 }

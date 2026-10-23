@@ -1,11 +1,14 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
-import type { CheckinVariant, Habit, HabitInput } from '../types';
+import { goalProgress } from '../game/weeklyGoals';
+import type { Checkin, CheckinVariant, Habit, HabitInput } from '../types';
 import { calculateStreak, isStreakAtRisk, streakMessage } from '../utils/streak';
 
 interface Props {
   habit: Habit;
   completedDates: string[];
+  checkins: Checkin[];
+  weekMonday: string;
   todayKey: string;
   checked: boolean;
   variant: CheckinVariant | null;
@@ -17,7 +20,7 @@ interface Props {
 const inputCls =
   'min-h-[44px] w-full rounded-xl border border-cream-200 bg-cream-50 px-3 text-slate-800 placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100';
 
-export function HabitCard({ habit, completedDates, todayKey, checked, variant, onToggle, onUpdate, onRemove }: Props): ReactNode {
+export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKey, checked, variant, onToggle, onUpdate, onRemove }: Props): ReactNode {
   const [picking, setPicking] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -25,13 +28,15 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
   const [full, setFull] = useState(habit.fullVersion);
   const [small, setSmall] = useState(habit.smallVersion);
   const [trigger, setTrigger] = useState(habit.trigger);
+  const [weeklyGoal, setWeeklyGoal] = useState(habit.weeklyGoal);
   const [error, setError] = useState<string | null>(null);
   const streak = calculateStreak(completedDates, todayKey);
   const atRisk = isStreakAtRisk(completedDates, todayKey) && !checked;
+  const goal = goalProgress(habit, checkins, weekMonday);
 
   const submitEdit = (e: FormEvent): void => {
     e.preventDefault();
-    const res = onUpdate({ name, fullVersion: full, smallVersion: small, trigger });
+    const res = onUpdate({ name, fullVersion: full, smallVersion: small, trigger, weeklyGoal });
     if (!res.ok) {
       setError(res.reason ?? 'Could not save changes.');
       return;
@@ -82,8 +87,26 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
           </p>
           {atRisk ? (
             <p className="mt-0.5 text-[13px] text-amber-700 dark:text-amber-300">
-              Yesterday missed — the small version today keeps the streak safe. 💛
+              Yesterday missed — streak reset. Do the small version today to relight it. 💛
             </p>
+          ) : null}
+          {habit.weeklyGoal > 0 ? (
+            <div className="mt-2">
+              <div className="flex items-center justify-between gap-2 text-[12px]">
+                <span className="font-medium text-ink-500 dark:text-slate-400">
+                  {goal.met ? '✓ Weekly goal met' : 'Weekly goal'}
+                </span>
+                <span className="text-ink-500 tabular-nums dark:text-slate-400">
+                  {goal.done}/{goal.goal} this week
+                </span>
+              </div>
+              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
+                <div
+                  className={`h-full rounded-full ${goal.met ? 'bg-summit-500' : 'bg-sage-500 dark:bg-emerald-400'}`}
+                  style={{ width: `${Math.round(goal.rate * 100)}%` }}
+                />
+              </div>
+            </div>
           ) : null}
           {picking && !checked ? (
             <div className="mt-2 grid grid-cols-2 gap-2 max-md:grid-cols-1" role="group" aria-label="Pick a finished version">
@@ -135,6 +158,20 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
                 </label>
                 <input id={`et-${habit.id}`} value={trigger} onChange={(e) => setTrigger(e.target.value)} maxLength={80} className={inputCls} />
               </div>
+              <div>
+                <label htmlFor={`eg-${habit.id}`} className="text-xs font-semibold text-ink-500">
+                  Weekly goal — times per week
+                </label>
+                <input
+                  id={`eg-${habit.id}`}
+                  type="number"
+                  min={0}
+                  max={7}
+                  value={weeklyGoal}
+                  onChange={(e) => setWeeklyGoal(Number(e.target.value))}
+                  className={inputCls}
+                />
+              </div>
               {error ? (
                 <p role="alert" className="text-[13px] text-amber-700 dark:text-amber-300">
                   {error}
@@ -177,6 +214,7 @@ export function HabitCard({ habit, completedDates, todayKey, checked, variant, o
                   setFull(habit.fullVersion);
                   setSmall(habit.smallVersion);
                   setTrigger(habit.trigger);
+                  setWeeklyGoal(habit.weeklyGoal);
                   setError(null);
                   setEditing(true);
                   setMenuOpen(false);

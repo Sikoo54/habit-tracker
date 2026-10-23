@@ -2,6 +2,7 @@ import { useMemo, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
 import { Heatmap } from '../components/Heatmap';
+import { daysLeftInWeek, weeklyGoalSummary, weeklyGoals } from '../game/weeklyGoals';
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { useHabits } from '../hooks/useHabits';
@@ -22,6 +23,9 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
   const today = todayKey();
 
   const cmp = useMemo(() => compareWeeks(habits, checkins, today), [habits, checkins, today]);
+  const goals = useMemo(() => weeklyGoals(habits, checkins, today), [habits, checkins, today]);
+  const goalSum = useMemo(() => weeklyGoalSummary(habits, checkins, today), [habits, checkins, today]);
+  const daysLeft = daysLeftInWeek(today);
   const activeCount = habits.filter((h) => h.active).length;
 
   if (activeCount === 0) {
@@ -90,6 +94,38 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           );
         })}
       </ol>
+
+      {goals.length > 0 ? (
+        <>
+          <div className="mt-10 flex items-baseline justify-between gap-3 border-t border-cream-200 pt-8 dark:border-slate-800">
+            <h2 className="section-title text-slate-400 dark:text-slate-500">Weekly goals</h2>
+            <span className="text-xs font-medium text-ink-500 tabular-nums dark:text-slate-400">
+              {goalSum.met}/{goalSum.total} met · {daysLeft} {daysLeft === 1 ? 'day' : 'days'} left
+            </span>
+          </div>
+          <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
+            {goals.map((g) => (
+              <li key={g.habitId} className="py-2.5">
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    {g.met ? <span aria-hidden="true">✓</span> : null}
+                    {g.name}
+                  </span>
+                  <span className="text-ink-500 tabular-nums dark:text-slate-400">
+                    {g.done}/{g.goal}
+                  </span>
+                </div>
+                <div className="mt-1 h-2 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
+                  <div
+                    className={`h-full rounded-full ${g.met ? 'bg-summit-500' : 'bg-sage-500 dark:bg-emerald-400'}`}
+                    style={{ width: `${Math.round(g.rate * 100)}%` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
 
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
         <Heatmap habits={habits} checkins={checkins} today={today} />

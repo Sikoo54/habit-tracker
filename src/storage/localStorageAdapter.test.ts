@@ -16,10 +16,32 @@ describe('LocalStorageAdapter', () => {
         smallVersion: '1 hlmn',
         trigger: 'malam',
         active: true,
+        weeklyGoal: 0,
         createdAt: '2026-01-01T00:00:00.000Z',
       },
     ]);
     expect(await a.getHabits()).toHaveLength(1);
+  });
+
+  it('old habit without weeklyGoal defaults to 0', async () => {
+    window.localStorage.setItem(
+      'habittracker.v2.habits',
+      JSON.stringify([
+        {
+          id: 'old',
+          name: 'Old',
+          fullVersion: 'full',
+          smallVersion: 'small',
+          trigger: '',
+          active: true,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ]),
+    );
+    const a = new LocalStorageAdapter();
+    const habits = await a.getHabits();
+    expect(habits).toHaveLength(1);
+    expect(habits[0]?.weeklyGoal).toBe(0);
   });
 
   it('corrupt data -> empty, no throw', async () => {
