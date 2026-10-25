@@ -1,3 +1,9 @@
+/**
+ * Reflection Page View ("Campfire Tales")
+ * Provides daily evening journaling for recording wins, areas to improve,
+ * and mood & energy ratings, plus past reflection logs.
+ */
+
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { EmptyState } from '../components/EmptyState';
 import { ScorePicker } from '../components/ScorePicker';
@@ -7,6 +13,7 @@ import { formatTanggalID, todayKey } from '../utils/dates';
 const fieldCls =
   'mt-2 min-h-[44px] w-full resize-y rounded-2xl border border-cream-200 bg-cream-50 px-4 py-3 leading-relaxed focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900';
 
+/** Daily reflection journaling component */
 export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<typeof useReflections> }): ReactNode {
   const today = todayKey();
   const { reflections, saveReflection } = reflectionsApi;

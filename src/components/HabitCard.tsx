@@ -1,3 +1,9 @@
+/**
+ * Habit Card Component
+ * Interactive habit row rendering full/small completion buttons, habit streaks,
+ * risk badges, weekly goal completion bars, and inline edit dialogs.
+ */
+
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
@@ -20,6 +26,7 @@ interface Props {
 const inputCls =
   'min-h-[44px] w-full rounded-xl border border-cream-200 bg-cream-50 px-3 text-slate-800 placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100';
 
+/** Individual habit list card item */
 export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKey, checked, variant, onToggle, onUpdate, onRemove }: Props): ReactNode {
   const [picking, setPicking] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

@@ -1,3 +1,9 @@
+/**
+ * Global Stylesheet & Design Tokens
+ * Sets up Tailwind CSS v4, custom color themes (sage, cream, pine, summit, ink),
+ * dark mode variant, typography, and utility classes.
+ */
+
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));

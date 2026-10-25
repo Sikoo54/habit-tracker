@@ -1,9 +1,16 @@
+/**
+ * Storage Layer Interfaces
+ * Defines the contract for persistence adapters (localStorage, Supabase, etc.)
+ * allowing seamless swapping of backend implementations.
+ */
+
 import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 
 // Storage abstraction. Components/hooks only talk to this interface,
 // never localStorage / Supabase directly.
 // All methods async so it can be swapped for a remote backend later.
 
+/** Unified storage adapter interface */
 export interface StorageAdapter {
   getHabits(): Promise<Habit[]>;
   saveHabits(habits: Habit[]): Promise<void>;

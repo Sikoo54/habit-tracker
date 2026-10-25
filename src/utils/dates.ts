@@ -1,22 +1,33 @@
+/**
+ * Date & Calendar Utilities
+ * Provides side-effect-free date string formatting, arithmetic (adding days),
+ * week boundaries, localized date descriptions, and collision-resistant ID generators.
+ */
+
 // Pure date helpers (no side effects). Key format: local YYYY-MM-DD.
 
+/** Pads single-digit numbers with leading zero */
 export function pad2(n: number): string {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
+/** Formats a Date object into YYYY-MM-DD local date key */
 export function toDateKey(d: Date): string {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
 
+/** Returns today's date key in YYYY-MM-DD format */
 export function todayKey(now: Date = new Date()): string {
   return toDateKey(now);
 }
 
+/** Parses a YYYY-MM-DD key into a local Date object */
 export function parseDateKey(key: string): Date {
   const [y, m, d] = key.split('-').map(Number);
   return new Date(y ?? 1970, (m ?? 1) - 1, d ?? 1);
 }
 
+/** Adds or subtracts N days from a YYYY-MM-DD date key */
 export function addDays(key: string, days: number): string {
   const d = parseDateKey(key);
   d.setDate(d.getDate() + days);
@@ -31,6 +42,7 @@ export function startOfWeekMonday(key: string): string {
   return toDateKey(d);
 }
 
+/** Returns array of all 7 date keys for a week starting on mondayKey */
 export function weekKeys(mondayKey: string): string[] {
   return Array.from({ length: 7 }, (_, i) => addDays(mondayKey, i));
 }
@@ -51,11 +63,13 @@ const BULAN = [
   'December',
 ];
 
+/** Formats date key into human readable date string */
 export function formatTanggalID(key: string): string {
   const d = parseDateKey(key);
   return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+/** Generates a unique collision-resistant ID with a given prefix */
 export function createId(prefix: string): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }

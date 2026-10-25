@@ -1,6 +1,13 @@
+/**
+ * Heads-Up Display (HUD) & Level-Up Modal
+ * Renders top-bar player status badges (streak, creature avatar, rank, XP bar)
+ * and the milestone level-up celebration modal.
+ */
+
 import type { ReactNode } from 'react';
 import type { CreatureStage, LevelProgress, Rank } from '../game/xp';
 
+/** Compact status indicator pills displayed in the top navbar */
 export function HudStats({ progress, creature, streak, rank }: { progress: LevelProgress; creature: CreatureStage; streak: number; rank: Rank }): ReactNode {
   return (
     <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · rank ${rank.title}`}>
@@ -31,6 +38,7 @@ export function HudStats({ progress, creature, streak, rank }: { progress: Level
   );
 }
 
+/** Celebration modal shown when player advances to a higher level */
 export function LevelUpModal({
   level,
   rank,

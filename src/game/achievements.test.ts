@@ -1,3 +1,9 @@
+/**
+ * Achievements Test Suite
+ * Validates unlock conditions and progress formatting for all game achievements
+ * including first step, small wins, streak milestones, and reflections.
+ */
+
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
 import { evaluateAchievements, type GameData } from './achievements';

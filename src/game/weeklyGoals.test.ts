@@ -1,3 +1,9 @@
+/**
+ * Weekly Goals Test Suite
+ * Tests Monday-Sunday week check-in counting, goal progress rates,
+ * met goal flags, and days left in week calculations.
+ */
+
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
 import {

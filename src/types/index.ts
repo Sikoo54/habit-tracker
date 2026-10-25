@@ -1,7 +1,15 @@
+/**
+ * Core Domain Types
+ * Defines data models for habits, tasks, checkins, reflections, attendance,
+ * navigation pages, and backup export/import payloads.
+ */
+
 // Core domain types. No `any`, every field explicit.
 
+/** Type of checkin: full target vs small minimum version */
 export type CheckinVariant = 'full' | 'small';
 
+/** Habit entity representation */
 export interface Habit {
   id: string;
   name: string;
@@ -14,6 +22,7 @@ export interface Habit {
   createdAt: string; // ISO timestamp
 }
 
+/** Input payload for creating or updating a habit */
 export interface HabitInput {
   name: string;
   fullVersion: string;
@@ -22,6 +31,7 @@ export interface HabitInput {
   weeklyGoal: number;
 }
 
+/** Daily task entity */
 export interface Task {
   id: string;
   title: string;
@@ -32,6 +42,7 @@ export interface Task {
   createdAt: string;
 }
 
+/** Record of a habit completion on a specific day */
 export interface Checkin {
   id: string;
   habitId: string;
@@ -40,6 +51,7 @@ export interface Checkin {
   createdAt: string;
 }
 
+/** Daily reflection entry capturing wins, improvements, and wellness */
 export interface Reflection {
   id: string;
   date: string; // YYYY-MM-DD, unique per day
@@ -58,8 +70,10 @@ export interface Attendance {
   night: boolean;
 }
 
+/** Available navigation pages */
 export type PageKey = 'today' | 'stats' | 'reflection' | 'focus';
 
+/** Complete backup schema for export/import */
 export interface ExportPayload {
   schemaVersion: 1;
   exportedAt: string;

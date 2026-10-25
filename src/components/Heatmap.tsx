@@ -1,3 +1,9 @@
+/**
+ * Heatmap Component
+ * 52-week activity contribution grid visualizing habit completion intensity
+ * with color shades and month headers.
+ */
+
 import type { ReactNode } from 'react';
 import type { Checkin, Habit } from '../types';
 import { annualHeatmap, type HeatCell } from '../utils/stats';
@@ -24,6 +30,7 @@ interface Props {
   today: string;
 }
 
+/** Annual activity heatmap calendar grid */
 export function Heatmap({ habits, checkins, today }: Props): ReactNode {
   const map = annualHeatmap(habits, checkins, today);
   const span = map.weeks.length;

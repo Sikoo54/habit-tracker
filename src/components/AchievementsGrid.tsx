@@ -1,6 +1,12 @@
+/**
+ * Achievements Grid Component
+ * Renders badges with unlock status, icons, descriptive criteria, and current progress.
+ */
+
 import type { ReactNode } from 'react';
 import type { Achievement } from '../game/achievements';
 
+/** Grid display of all achievements and unlock statistics */
 export function AchievementsGrid({
   achievements,
   unlockedCount,

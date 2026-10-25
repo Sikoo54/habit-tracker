@@ -1,3 +1,8 @@
+/**
+ * Empty State Component
+ * Reusable placeholder display for empty lists, stats, or unconfigured sections.
+ */
+
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -6,6 +11,7 @@ interface Props {
   icon?: string;
 }
 
+/** Placeholder rendered when a collection has no items */
 export function EmptyState({ message, hint, icon = '🌿' }: Props): ReactNode {
   return (
     <div className="px-2 py-8 text-center">

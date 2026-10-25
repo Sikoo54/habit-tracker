@@ -1,3 +1,9 @@
+/**
+ * Vite Configuration
+ * Configures the build tool, plugins (React, Tailwind CSS v4, PWA with offline caching),
+ * and asset caching rules for the application.
+ */
+
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -6,8 +12,11 @@ import { VitePWA } from 'vite-plugin-pwa';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    // React plugin for JSX compilation and Fast Refresh
     react(),
+    // Tailwind CSS v4 integration plugin
     tailwindcss(),
+    // Progressive Web App (PWA) plugin: enables offline support and service worker caching
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'icons/apple-touch-icon.png'],

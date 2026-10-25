@@ -1,3 +1,9 @@
+/**
+ * Game Progression & Mechanics Hooks
+ * Coordinates overall player progression stats, evaluates frost decay penalty ledger,
+ * and triggers level-up celebration dialogs.
+ */
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { evaluateAchievements, type Achievement } from '../game/achievements';
 import { activeDates, dailyStreak } from '../game/dailyStreak';
@@ -22,6 +28,7 @@ import {
 import type { Attendance, Checkin, Habit, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
 
+/** Combined game stats payload for HUD and profile display */
 export interface GameStats {
   xp: number; // net after frost decay
   grossXp: number;
@@ -37,6 +44,7 @@ export interface GameStats {
   unlockedCount: number;
 }
 
+/** Hook computing real-time game statistics and achievement unlocks */
 export function useGameStats(
   habits: Habit[],
   checkins: Checkin[],

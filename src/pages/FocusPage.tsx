@@ -1,3 +1,9 @@
+/**
+ * Focus Page View
+ * Pomodoro timer arena allowing users to pick a single quest or habit training
+ * and focus in 25-minute deep work intervals.
+ */
+
 import { useState, type ReactNode } from 'react';
 import { EmptyState } from '../components/EmptyState';
 import { Pomodoro } from '../components/Pomodoro';
@@ -12,6 +18,7 @@ interface FocusOption {
   icon: string;
 }
 
+/** Focus session view with Pomodoro timer and task selector */
 export function FocusPage({
   tasksApi,
   habitsApi,

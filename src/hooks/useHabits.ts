@@ -1,3 +1,9 @@
+/**
+ * Habits Management Hook
+ * Handles loading, automatic starter seeding, validation, creating, editing,
+ * and deleting user habits with storage persistence.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { seedHabits } from '../data/seed';
 import type { Habit, HabitInput } from '../types';
@@ -7,6 +13,7 @@ import { useStorage } from '../storage/StorageContext';
 
 export const MAX_ACTIVE_HABITS = 5;
 
+/** Hook managing habits list and CRUD actions */
 export function useHabits() {
   const storage = useStorage();
   const [habits, setHabits] = useState<Habit[]>([]);

@@ -1,3 +1,9 @@
+/**
+ * ESLint Configuration
+ * Lints JavaScript and TypeScript source files using strict typing rules
+ * and enforces React hooks best practices.
+ */
+
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';

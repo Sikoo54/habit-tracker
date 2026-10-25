@@ -1,3 +1,9 @@
+/**
+ * Daily Streak Test Suite
+ * Tests continuous daily streak counting, multi-source activity date aggregation,
+ * and latest active date detection.
+ */
+
 import { describe, expect, it } from 'vitest';
 import { activeDates, dailyStreak, lastActiveDate } from './dailyStreak';
 import type { Checkin, Reflection, Task } from '../types';

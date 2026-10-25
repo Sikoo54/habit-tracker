@@ -1,3 +1,9 @@
+/**
+ * Attendance System Test Suite
+ * Tests attendance slot toggles, morning/night hour gating logic,
+ * XP calculations, and active dates extraction.
+ */
+
 import { describe, expect, it } from 'vitest';
 import type { Attendance } from '../types';
 import { attendedDates, attendanceFor, attendanceXp, gateFor, toggleAttendance } from './attendance';

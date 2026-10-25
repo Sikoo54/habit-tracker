@@ -1,3 +1,9 @@
+/**
+ * LocalStorage Adapter Test Suite
+ * Validates schema versioning, corrupt data resilience, normalization,
+ * and export/import roundtrip integrity.
+ */
+
 import { beforeEach, describe, expect, it } from 'vitest';
 import { LocalStorageAdapter } from './localStorageAdapter';
 

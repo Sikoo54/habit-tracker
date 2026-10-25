@@ -1,3 +1,9 @@
+/**
+ * Tasks Management Hook
+ * Manages daily task lists, separating Top 3 Priorities from Other Tasks,
+ * enforcing priority limits, and syncing changes with storage.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { seedTasks } from '../data/seed';
 import { useStorage } from '../storage/StorageContext';
@@ -7,6 +13,7 @@ import { createId } from '../utils/dates';
 
 export const MAX_PRIORITIES = 3;
 
+/** Hook providing date-scoped task lists and task mutation operations */
 export function useTasks(dateKey: string) {
   const storage = useStorage();
   const [tasks, setTasks] = useState<Task[]>([]);

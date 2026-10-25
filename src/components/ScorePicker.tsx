@@ -1,3 +1,9 @@
+/**
+ * Score Picker Component
+ * 1-to-5 radio button selector for rating mood and energy levels
+ * during daily reflection.
+ */
+
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -6,6 +12,7 @@ interface Props {
   onChange: (v: number | null) => void;
 }
 
+/** 1-5 numerical score selection control */
 export function ScorePicker({ label, value, onChange }: Props): ReactNode {
   return (
     <div>

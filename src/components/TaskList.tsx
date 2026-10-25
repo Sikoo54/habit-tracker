@@ -1,3 +1,9 @@
+/**
+ * Task List Component
+ * Task management section rendering checkboxes, add-task inputs,
+ * completion counters, and deletion actions.
+ */
+
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForTask } from '../game/xp';
 import type { Task } from '../types';
@@ -13,6 +19,7 @@ interface Props {
   icon: string;
 }
 
+/** Render section for a grouped list of tasks (Priority vs Other) */
 export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon }: Props): ReactNode {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);

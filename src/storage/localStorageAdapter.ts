@@ -1,3 +1,9 @@
+/**
+ * LocalStorage Storage Adapter
+ * Implements the StorageAdapter interface using the browser's localStorage API,
+ * complete with runtime schema validation, normalization, import/export, and clear capabilities.
+ */
+
 import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
@@ -87,6 +93,7 @@ function validAttendance(v: unknown): v is Attendance {
   return isRecord(v) && isString(v.date) && isBoolean(v.morning) && isBoolean(v.night);
 }
 
+/** Safely reads and validates an array from localStorage */
 function readArray<T>(key: string, guard: (v: unknown) => v is T): T[] {
   try {
     const raw = window.localStorage.getItem(key);
@@ -100,6 +107,7 @@ function readArray<T>(key: string, guard: (v: unknown) => v is T): T[] {
   }
 }
 
+/** Safely serializes and writes an array to localStorage */
 function writeArray(key: string, value: unknown[]): void {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
@@ -197,6 +205,7 @@ export class LocalStorageAdapter implements StorageAdapter {
     }
   }
 
+  /** Checks if seed data has already been populated */
   isSeeded(): boolean {
     try {
       return window.localStorage.getItem(KEYS.seeded) === '1';
@@ -205,6 +214,7 @@ export class LocalStorageAdapter implements StorageAdapter {
     }
   }
 
+  /** Marks initial seeding as completed */
   markSeeded(): void {
     try {
       window.localStorage.setItem(KEYS.seeded, '1');
@@ -214,4 +224,5 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 }
 
+/** Singleton instance of LocalStorageAdapter */
 export const localStorageAdapter = new LocalStorageAdapter();

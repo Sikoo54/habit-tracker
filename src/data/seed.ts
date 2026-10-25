@@ -1,9 +1,15 @@
+/**
+ * Initial Starter Seed Data
+ * Provides default starter habits and priority tasks when a user opens the app
+ * for the first time.
+ */
+
 import type { Habit, Task } from '../types';
 import { todayKey } from '../utils/dates';
 
 const now = (): string => new Date().toISOString();
 
-// Seed data: 3 habits + 2 priority tasks.
+/** Generates starter habits (water, light exercise, reading) with 2-minute rule versions */
 export function seedHabits(): Habit[] {
   return [
     {
@@ -39,6 +45,7 @@ export function seedHabits(): Habit[] {
   ];
 }
 
+/** Generates default high-priority tasks for day one */
 export function seedTasks(): Task[] {
   const date = todayKey();
   return [

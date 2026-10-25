@@ -1,3 +1,9 @@
+/**
+ * App Layout & Shell Component
+ * Provides responsive site frame, navigation bar with tabs (Today, Focus, Stats, Reflect),
+ * player HUD bar, settings drawer, theme toggle, and keyboard shortcuts.
+ */
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { PageKey } from '../types';
 import { DataTools } from './DataTools';
@@ -40,8 +46,7 @@ const ITEMS: { key: PageKey; label: string; icon: string }[] = [
   { key: 'reflection', label: 'Reflect', icon: 'M20 13A8 8 0 0 1 11 4a6.5 6.5 0 0 0 9 9Z' },
 ];
 
-// AscendHabit shell: slim top bar, game-HUD nav pills (no emoji),
-// settings drawer, full-screen content.
+/** Main layout shell wrapping all page routes with top nav and settings drawer */
 export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: Props): ReactNode {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);

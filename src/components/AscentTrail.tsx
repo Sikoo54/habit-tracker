@@ -1,3 +1,9 @@
+/**
+ * Ascent Trail Component
+ * SVG mountain path visualization displaying today's progress as an uphill climb
+ * with animated progress marker and summit indicator.
+ */
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 const D = 'M8 104 C 90 104, 108 86, 150 78 S 252 44, 312 18';

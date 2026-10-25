@@ -1,3 +1,9 @@
+/**
+ * Today Page View
+ * Main dashboard showcasing daily greeting, ascent climb visualization,
+ * companion card, active habits, top 3 priorities, and penalty alerts.
+ */
+
 import type { ReactNode } from 'react';
 import { AscentTrail } from '../components/AscentTrail';
 import { CreatureCard } from '../components/CreatureCard';
@@ -29,6 +35,7 @@ interface Props {
   onDismissPenalty: () => void;
 }
 
+/** Primary day dashboard component */
 export function TodayPage({
   habitsApi,
   tasksApi,

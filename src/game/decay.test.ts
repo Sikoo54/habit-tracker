@@ -1,3 +1,9 @@
+/**
+ * Frost Decay Test Suite
+ * Tests XP penalty calculation algorithms, missed date range generation,
+ * and sequential multi-day decay deductions.
+ */
+
 import { describe, expect, it } from 'vitest';
 import { applyDecay, eachDayAfter, penaltyFor } from './decay';
 

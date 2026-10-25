@@ -1,3 +1,9 @@
+/**
+ * Global Daily Streak Engine
+ * Aggregates all activity sources (checkins, tasks, reflections, attendance)
+ * to calculate uninterrupted daily engagement streaks.
+ */
+
 import type { Attendance, Checkin, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
 import { attendedDates } from './attendance';
@@ -6,6 +12,7 @@ import { attendedDates } from './attendance';
 // a habit check-in, a finished task, a reflection, or morning/night absen.
 // Unlike per-habit tolerant streaks, one fully idle day freezes this one.
 
+/** Collects all unique calendar dates with logged user activity */
 export function activeDates(
   checkins: Checkin[],
   tasks: Task[],
@@ -32,6 +39,7 @@ export function dailyStreak(dates: Set<string>, ref: string): number {
   return n;
 }
 
+/** Finds the most recent date with activity recorded */
 export function lastActiveDate(dates: Set<string>): string | null {
   let best: string | null = null;
   for (const d of dates) {

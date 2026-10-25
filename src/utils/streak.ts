@@ -1,3 +1,9 @@
+/**
+ * Habit Streak Engine & Messaging
+ * Computes consecutive completion streaks for habits, generates motivational
+ * feedback messages, and detects at-risk streaks.
+ */
+
 import { addDays } from './dates';
 
 // Strict streak: one missed day resets the count to 0.
@@ -24,7 +30,7 @@ export function calculateStreak(completedKeys: string[], referenceKey: string): 
   return streak;
 }
 
-/** Friendly, blame-free encouragement. */
+/** Friendly, blame-free encouragement based on current streak count */
 export function streakMessage(streak: number): string {
   if (streak <= 0) return 'Starting small today is already great. 🌱';
   if (streak === 1) return 'First step done. Keep going gently. 🌱';

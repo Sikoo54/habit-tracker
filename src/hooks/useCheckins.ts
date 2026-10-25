@@ -1,8 +1,15 @@
+/**
+ * Habit Check-ins Hook
+ * Manages daily habit check-in logs, variants (full vs small),
+ * and persistent storage synchronization.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { Checkin, CheckinVariant } from '../types';
 import { createId } from '../utils/dates';
 
+/** Custom hook providing checkin status and toggle capabilities */
 export function useCheckins() {
   const storage = useStorage();
   const [checkins, setCheckins] = useState<Checkin[]>([]);

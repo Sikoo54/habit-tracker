@@ -1,3 +1,9 @@
+/**
+ * Pomodoro Timer Component
+ * 25-minute focus work interval followed by a 5-minute rest period,
+ * with start, pause, and reset controls.
+ */
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 const FOCUS = 25 * 60;
@@ -9,6 +15,7 @@ function fmt(s: number): string {
   return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
 }
 
+/** 25/5 Pomodoro timer widget */
 export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
   const [seconds, setSeconds] = useState(FOCUS);
   const [mode, setMode] = useState<'fokus' | 'istirahat'>('fokus');

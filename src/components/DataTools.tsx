@@ -1,7 +1,14 @@
+/**
+ * Data Tools Component
+ * Provides backup export (JSON download), import with validation,
+ * and data reset controls inside the settings drawer.
+ */
+
 import { useRef, useState, type ReactNode } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { ExportPayload } from '../types';
 
+/** Import/Export and reset data settings component */
 export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNode {
   const storage = useStorage();
   const [confirmReset, setConfirmReset] = useState(false);

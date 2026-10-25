@@ -1,3 +1,9 @@
+/**
+ * Supabase Storage Adapter (Placeholder)
+ * Outlines the interface implementation and migration path for connecting
+ * cloud-based persistence with Supabase Auth and PostgreSQL tables.
+ */
+
 import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 

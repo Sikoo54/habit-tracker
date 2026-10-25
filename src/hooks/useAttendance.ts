@@ -1,8 +1,15 @@
+/**
+ * Attendance State Hook
+ * Manages morning/night attendance state with asynchronous storage syncing
+ * and toggling actions.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { attendanceFor, toggleAttendance, type AttendanceSlot } from '../game/attendance';
 import { useStorage } from '../storage/StorageContext';
 import type { Attendance } from '../types';
 
+/** Custom hook providing attendance records and toggle actions */
 export function useAttendance() {
   const storage = useStorage();
   const [attendance, setAttendance] = useState<Attendance[]>([]);

@@ -1,3 +1,9 @@
+/**
+ * Attendance Gate Component
+ * Full-screen blocking modal displayed in morning (from 04:00) and night (from 20:00)
+ * prompting climbers to log their wake-up and bed-time attendance.
+ */
+
 import type { ReactNode } from 'react';
 import type { AttendanceSlot } from '../game/attendance';
 import { formatTanggalID } from '../utils/dates';

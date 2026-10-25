@@ -1,6 +1,13 @@
+/**
+ * Statistics & Activity Heatmap Engine
+ * Aggregates weekly completion performance, compares week-over-week trends,
+ * and generates 52-week activity heatmap grids (GitHub-style).
+ */
+
 import type { Checkin, Habit } from '../types';
 import { addDays, parseDateKey, startOfWeekMonday, weekKeys } from './dates';
 
+/** Daily completion statistics */
 export interface DayStat {
   date: string;
   done: number;
@@ -8,6 +15,7 @@ export interface DayStat {
   rate: number; // 0..1
 }
 
+/** Weekly aggregate statistics */
 export interface WeekStat {
   monday: string;
   days: DayStat[];
@@ -40,6 +48,7 @@ export function weeklyStats(
   return { monday: mondayKey, days: dayStats, totalDone, totalSlots, rate: totalSlots === 0 ? 0 : totalDone / totalSlots };
 }
 
+/** Week-over-week comparison payload */
 export interface WeekCompare {
   thisWeek: WeekStat;
   lastWeek: WeekStat;
@@ -59,10 +68,12 @@ export function compareWeeks(
   return { thisWeek, lastWeek, delta: thisWeek.rate - lastWeek.rate };
 }
 
+/** Formats a 0..1 rate into a rounded percentage string */
 export function formatPercent(rate: number): string {
   return `${Math.round(rate * 100)}%`;
 }
 
+/** Heatmap grid cell definition */
 export interface HeatCell {
   date: string;
   count: number;
@@ -70,10 +81,12 @@ export interface HeatCell {
   future: boolean;
 }
 
+/** Heatmap column representing one full week */
 export interface HeatWeek {
   cells: HeatCell[];
 }
 
+/** Full annual activity heatmap dataset */
 export interface AnnualHeatmap {
   weeks: HeatWeek[];
   monthLabels: { index: number; label: string }[];

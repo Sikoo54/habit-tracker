@@ -1,3 +1,9 @@
+/**
+ * Habit Form Component
+ * Expandable accordion form for creating new habits with full version,
+ * 2-minute version, cue trigger, and weekly goal frequency.
+ */
+
 import { useState, type FormEvent, type ReactNode } from 'react';
 import type { HabitInput } from '../types';
 
@@ -6,6 +12,7 @@ interface Props {
   disabled: boolean;
 }
 
+/** Form creating new habits following Atomic Habits cues and small versions */
 export function HabitForm({ onAdd, disabled }: Props): ReactNode {
   const [name, setName] = useState('');
   const [full, setFull] = useState('');

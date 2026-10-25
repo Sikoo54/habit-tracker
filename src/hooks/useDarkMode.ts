@@ -1,9 +1,16 @@
+/**
+ * Theme & Dark Mode Hook
+ * Manages light/dark theme toggling, system color scheme preference detection,
+ * and synchronizes the .dark class on the <html> element.
+ */
+
 import { useCallback, useEffect, useState } from 'react';
 
 // Dark mode via class `dark` di <html>. Disimpan di localStorage terpisah
 // (preferensi UI, bukan data domain — boleh akses langsung).
 const KEY = 'habittracker.v1.theme';
 
+/** Hook providing theme state and toggle handler */
 export function useDarkMode() {
   const [dark, setDark] = useState<boolean>(() => {
     try {

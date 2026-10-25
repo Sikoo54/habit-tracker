@@ -1,8 +1,15 @@
+/**
+ * Daily Reflections Hook
+ * Manages daily evening reflections (wins, improvements, mood, energy ratings)
+ * and persistence.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { Reflection } from '../types';
 import { createId } from '../utils/dates';
 
+/** Hook providing reflection data and upsert functionality */
 export function useReflections() {
   const storage = useStorage();
   const [reflections, setReflections] = useState<Reflection[]>([]);

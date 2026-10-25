@@ -1,3 +1,9 @@
+/**
+ * PWA Icon Generation Script
+ * Generates responsive standard, maskable, and Apple Touch PWA icons
+ * from the base SVG vector asset using Sharp image processing.
+ */
+
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

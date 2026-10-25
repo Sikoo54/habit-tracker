@@ -1,3 +1,9 @@
+/**
+ * XP & Progression Test Suite
+ * Validates checkin/task/reflection XP scoring, cumulative thresholds,
+ * level derivations, progress percentages, and creature/rank milestones.
+ */
+
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Reflection, Task } from '../types';
 import { creatureForLevel, levelForXp, levelProgress, nextStage, rankForLevel, totalXp, xpThreshold } from './xp';

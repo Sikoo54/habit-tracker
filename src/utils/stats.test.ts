@@ -1,3 +1,9 @@
+/**
+ * Stats Utilities Test Suite
+ * Tests weekly aggregated completion stats, week-over-week comparisons,
+ * percentage formatting, heat levels, and annual heatmap grid structure.
+ */
+
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
 import { compareWeeks, annualHeatmap, heatLevel, weeklyStats } from './stats';

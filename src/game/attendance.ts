@@ -1,15 +1,24 @@
+/**
+ * Attendance & Check-in Gate System
+ * Handles morning and night app attendance tracking, XP awards for daily check-in,
+ * and time-based gate windows that prompt the user upon waking and before sleep.
+ */
+
 import type { Attendance } from '../types';
 
 // Morning/night absen: the point is opening the app at wake and before bed.
 // XP is derived from the flags — no separate score to drift out of sync.
 
+/** XP rewards for morning and night check-ins */
 export const ATTENDANCE_XP = {
   morning: 5,
   night: 5,
 } as const;
 
+/** Check-in slot identifier */
 export type AttendanceSlot = 'morning' | 'night';
 
+/** Calculates cumulative XP earned from attendance check-ins */
 export function attendanceXp(attendance: Attendance[]): number {
   let xp = 0;
   for (const a of attendance) {
@@ -19,6 +28,7 @@ export function attendanceXp(attendance: Attendance[]): number {
   return xp;
 }
 
+/** Finds attendance record for a specific date */
 export function attendanceFor(attendance: Attendance[], date: string): Attendance | null {
   return attendance.find((a) => a.date === date) ?? null;
 }

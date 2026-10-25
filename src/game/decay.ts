@@ -1,14 +1,22 @@
+/**
+ * Frost Decay (XP Penalty) System
+ * Enforces habit momentum by deducting a percentage of net XP for idle days,
+ * tracking applied penalties in a ledger.
+ */
+
 import { addDays } from '../utils/dates';
 
 // Frost decay: every fully idle day (no check-in, no done task, no reflection)
 // burns XP. Enough frost can drop you a level. Harsh on purpose —
 // the mountain does not wait.
 
+/** Persistent ledger of applied frost decay penalties */
 export interface DecayLedger {
   total: number; // XP burned so far
   appliedThrough: string | null; // last fully-processed date (YYYY-MM-DD)
 }
 
+/** Record of a penalty applied to a specific missed day */
 export interface AppliedPenalty {
   date: string; // the idle day
   amount: number; // XP burned for it
@@ -19,6 +27,7 @@ export const MIN_PENALTY = 30;
 /** Forgive ancient history on first run: only the last N idle days count. */
 export const MAX_CATCHUP_DAYS = 3;
 
+/** Calculates XP penalty amount for an idle day based on current net XP */
 export function penaltyFor(netXp: number): number {
   return Math.max(MIN_PENALTY, Math.round(netXp * DECAY_RATE));
 }

@@ -1,3 +1,9 @@
+/**
+ * Weekly Habit Goals Engine
+ * Evaluates progress against user-configured weekly target check-in counts
+ * (e.g. 4 times per week) across Monday-to-Sunday calendar weeks.
+ */
+
 import type { Checkin, Habit } from '../types';
 import { startOfWeekMonday, weekKeys } from '../utils/dates';
 
@@ -10,6 +16,7 @@ export function weeklyCheckinCount(checkins: Checkin[], habitId: string, mondayK
   return dates.size;
 }
 
+/** Weekly goal completion stats for an individual habit */
 export interface GoalProgress {
   habitId: string;
   name: string;

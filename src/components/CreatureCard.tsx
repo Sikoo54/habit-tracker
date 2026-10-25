@@ -1,3 +1,9 @@
+/**
+ * Companion Creature Card Component
+ * Displays the climber's companion avatar, current rank title, circular level progress ring,
+ * and upcoming evolution milestones.
+ */
+
 import type { ReactNode } from 'react';
 import { CREATURE_STAGES, type CreatureStage, type LevelProgress, type Rank } from '../game/xp';
 

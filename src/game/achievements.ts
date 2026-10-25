@@ -1,7 +1,14 @@
+/**
+ * Achievements System
+ * Defines game milestones and dynamically evaluates unlocked badges
+ * based on checkins, streaks, reflections, tasks, and player rank.
+ */
+
 import type { Checkin, Habit, Reflection, Task } from '../types';
 import { compareWeeks } from '../utils/stats';
 import { calculateStreak } from '../utils/streak';
 
+/** Snapshot of player data passed into achievement evaluators */
 export interface GameData {
   habits: Habit[];
   checkins: Checkin[];
@@ -11,6 +18,7 @@ export interface GameData {
   level: number;
 }
 
+/** Evaluated achievement badge state */
 export interface Achievement {
   id: string;
   icon: string;
@@ -161,6 +169,7 @@ const DEFS: Def[] = [
   },
 ];
 
+/** Evaluates all achievement definitions against the latest game state */
 export function evaluateAchievements(data: GameData): Achievement[] {
   return DEFS.map((d) => {
     const r = d.check(data);

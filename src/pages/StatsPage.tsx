@@ -1,3 +1,9 @@
+/**
+ * Stats & Analytics Page
+ * Displays week-over-week performance rates, weekly goal progress meters,
+ * annual activity heatmap, and unlocked achievement badges.
+ */
+
 import { useMemo, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
@@ -17,6 +23,7 @@ interface Props {
   game: GameStats;
 }
 
+/** Statistics and historical performance analytics page */
 export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
   const { habits } = habitsApi;
   const { checkins } = checkinsApi;

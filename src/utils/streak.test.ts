@@ -1,3 +1,9 @@
+/**
+ * Streak Calculation Test Suite
+ * Tests strict consecutive daily streaks, reference day edge cases (e.g. counting
+ * back from yesterday if today is not yet checked), at-risk alerts, and motivational copy.
+ */
+
 import { describe, expect, it } from 'vitest';
 import { addDays, toDateKey } from './dates';
 import { calculateStreak, isStreakAtRisk } from './streak';

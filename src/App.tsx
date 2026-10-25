@@ -1,3 +1,9 @@
+/**
+ * App Root Component
+ * Sets up storage context provider, theme state, page routing,
+ * game systems (XP, streaks, frost decay), and attendance gating.
+ */
+
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AttendanceGate } from './components/AttendanceGate';
 import { HudStats, LevelUpModal } from './components/Hud';
@@ -21,6 +27,7 @@ import { localStorageAdapter } from './storage/localStorageAdapter';
 import type { PageKey } from './types';
 import { todayKey } from './utils/dates';
 
+/** Root application wrapper injecting storage and active theme */
 export function App(): ReactNode {
   const [page, setPage] = useState<PageKey>('today');
   const { dark, toggle } = useDarkMode();
@@ -32,6 +39,7 @@ export function App(): ReactNode {
   );
 }
 
+/** Internal app shell managing time ticking, domain hooks, game state, and navigation */
 function Shell({
   page,
   onNavigate,
@@ -43,6 +51,7 @@ function Shell({
   dark: boolean;
   onToggleDark: () => void;
 }): ReactNode {
+  // Minute-by-minute clock tick for accurate day/gate transitions
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const id = window.setInterval(() => setNow(new Date()), 60_000);
@@ -50,12 +59,14 @@ function Shell({
   }, []);
 
   const today = todayKey(now);
+  // Domain data hooks
   const habitsApi = useHabits();
   const tasksApi = useTasks(today);
   const checkinsApi = useCheckins();
   const reflectionsApi = useReflections();
   const attendanceApi = useAttendance();
 
+  // Storage readiness check across all domain collections
   const ready =
     !habitsApi.loading &&
     !tasksApi.loading &&
@@ -63,6 +74,7 @@ function Shell({
     !reflectionsApi.loading &&
     !attendanceApi.loading;
 
+  // Active dates calculation for global streak and decay tracking
   const dates = useMemo(
     () =>
       activeDates(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance),
@@ -74,6 +86,7 @@ function Shell({
     [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance],
   );
 
+  // Gamification mechanics: penalty decay calculation and level progress
   const decay = useDecayLedger(grossXp, dates, lastActive, today, ready);
   const game = useGameStats(
     habitsApi.habits,
@@ -86,6 +99,7 @@ function Shell({
   );
   const levelUp = useLevelUp(game.progress.level);
 
+  // Attendance gate: full screen morning/night prompt if active
   const gate = ready ? gateFor(attendanceApi.attendance, today, now.getHours()) : null;
   if (gate) {
     return (
@@ -106,6 +120,7 @@ function Shell({
       onToggleDark={onToggleDark}
       hud={<HudStats progress={game.progress} creature={game.creature} streak={game.streak} rank={game.rank} />}
     >
+      {/* Route rendering based on active page state */}
       {page === 'today' ? (
         <TodayPage
           key="today"
@@ -123,6 +138,7 @@ function Shell({
       ) : (
         <ReflectionPage reflectionsApi={reflectionsApi} />
       )}
+      {/* Celebration modal when leveling up */}
       {levelUp.show ? (
         <LevelUpModal level={game.progress.level} rank={game.rank} creature={game.creature} onClose={levelUp.dismiss} />
       ) : null}
