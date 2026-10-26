@@ -70,9 +70,10 @@ describe('ascent route', () => {
 describe('ranks', () => {
   it('grinding early, consistent late, caps at top', () => {
     expect(rankForLevel(1).title).toBe('Grinder');
-    expect(rankForLevel(4).title).toBe('Rooted');
-    expect(rankForLevel(6).title).toBe('Goggins');
-    expect(rankForLevel(8).title).toBe('Ascendant');
-    expect(rankForLevel(99).title).toBe('Ascendant');
+    expect(rankForLevel(4).title).toBe('Warden of Routine');
+    expect(rankForLevel(4).short).toBe('Warden');
+    expect(rankForLevel(6).title).toBe('Sentinel of Discipline');
+    expect(rankForLevel(8).title).toBe('Ascendant One');
+    expect(rankForLevel(99).title).toBe('Ascendant One');
   });
 });

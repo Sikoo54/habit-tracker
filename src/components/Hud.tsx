@@ -10,7 +10,7 @@ import type { AscentStage, LevelProgress, Rank } from '../game/xp';
 /** Compact status indicator pills displayed in the top navbar */
 export function HudStats({ progress, ascent, streak, rank }: { progress: LevelProgress; ascent: AscentStage; streak: number; rank: Rank }): ReactNode {
   return (
-    <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · rank ${rank.title}`}>
+    <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · ${rank.title} (rank ${progress.level})`}>
       <span
         className={`flex min-h-[32px] items-center gap-1 rounded-full px-2.5 text-xs font-extrabold tabular-nums max-md:px-2 ${
           streak > 0
@@ -22,7 +22,7 @@ export function HudStats({ progress, ascent, streak, rank }: { progress: LevelPr
       </span>
       <span className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600 max-md:px-2">
         <span aria-hidden="true">{ascent.emoji}</span>
-        <span className="max-sm:hidden">{rank.title}</span>
+        <span className="max-sm:hidden">{rank.short}</span>
       </span>
       <div
         className="h-2 w-16 overflow-hidden rounded-full bg-cream-200 max-sm:hidden dark:bg-slate-800"
@@ -58,7 +58,7 @@ export function LevelUpModal({
         <p className="mt-3 text-7xl motion-safe:animate-bounce" aria-hidden="true">
           {ascent.emoji}
         </p>
-        <h2 className="mt-3 font-display text-3xl font-semibold">{rank.title}</h2>
+        <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">{rank.title}</h2>
         <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
           {ascent.name} — {ascent.tagline}
         </p>

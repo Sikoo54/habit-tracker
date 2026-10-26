@@ -127,21 +127,23 @@ export function nextAscent(level: number): AscentStage | null {
 export interface Rank {
   level: number;
   title: string;
+  /** Compact form for the top-bar badge. */
+  short: string;
 }
 
 /** Player rank progression milestones */
-// Identity ladder: effort -> rhythm -> consistency -> experience -> streak
-// as a trait -> mastery -> legend -> ascension. Stage names (Base Camp, Ridge,
-// Summit...) describe the place; ranks describe the person.
+// Identity ladder: effort -> rhythm -> mastery of the grind -> stewardship ->
+// honour -> vigilance -> permanence -> transcendence. Stage names (Base Camp,
+// Ridge, Summit...) describe the place; ranks describe the person.
 export const RANKS: Rank[] = [
-  { level: 1, title: 'Grinder' },
-  { level: 2, title: 'Steady' },
-  { level: 3, title: 'Relentless' },
-  { level: 4, title: 'Rooted' },
-  { level: 5, title: 'Unbroken' },
-  { level: 6, title: 'Goggins' },
-  { level: 7, title: 'Legend' },
-  { level: 8, title: 'Ascendant' },
+  { level: 1, title: 'Grinder', short: 'Grinder' },
+  { level: 2, title: 'Steady', short: 'Steady' },
+  { level: 3, title: 'Grindmaster', short: 'Grindmaster' },
+  { level: 4, title: 'Warden of Routine', short: 'Warden' },
+  { level: 5, title: 'Knight of Consistency', short: 'Knight' },
+  { level: 6, title: 'Sentinel of Discipline', short: 'Sentinel' },
+  { level: 7, title: 'Eternal Ascender', short: 'Eternal' },
+  { level: 8, title: 'Ascendant One', short: 'Ascendant' },
 ];
 
 /** Resolves player rank title for a specific level */
