@@ -6,6 +6,7 @@
 
 import type { ReactNode } from 'react';
 import { ASCENT_STAGES, type AscentStage, type LevelProgress, type Rank } from '../game/xp';
+import { RankInfo } from './RankInfo';
 
 interface Props {
   ascent: AscentStage;
@@ -44,7 +45,10 @@ export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): R
           </span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-display text-xl font-semibold leading-tight sm:text-2xl">{rank.title}</p>
+          <div className="flex items-start gap-1.5">
+            <p className="font-display text-xl font-semibold leading-tight sm:text-2xl">{rank.title}</p>
+            <RankInfo level={progress.level} />
+          </div>
           <p className="mt-1 truncate text-[13px] font-medium text-ink-500 dark:text-slate-400">
             Rank {progress.level} · {ascent.name}
           </p>

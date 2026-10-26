@@ -118,7 +118,7 @@ function Shell({
       onNavigate={onNavigate}
       dark={dark}
       onToggleDark={onToggleDark}
-      hud={<HudStats progress={game.progress} ascent={game.ascent} streak={game.streak} rank={game.rank} onOpenRank={() => onNavigate('stats')} />}
+      hud={<HudStats progress={game.progress} ascent={game.ascent} streak={game.streak} rank={game.rank} />}
     >
       {/* Route rendering based on active page state */}
       {page === 'today' ? (
