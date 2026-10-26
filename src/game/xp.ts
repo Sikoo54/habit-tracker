@@ -101,7 +101,7 @@ export const ASCENT_STAGES: AscentStage[] = [
   { level: 3, emoji: '🌄', name: 'Ridge', tagline: 'First light on the ridge. Keep going.' },
   { level: 4, emoji: '🏞️', name: 'Alpine Lake', tagline: 'Still water, wider view, higher camp.' },
   { level: 5, emoji: '☁️', name: 'Cloud Line', tagline: 'You are walking above the weather.' },
-  { level: 6, emoji: '⛰️', name: 'Summit Push', tagline: 'The last stretch. Hold the pace.' },
+  { level: 6, emoji: '🧗', name: 'Summit Push', tagline: 'Hands on rock. The last stretch.' },
   { level: 7, emoji: '🏔️', name: 'Summit', tagline: 'The top. Look how far you came.' },
   { level: 8, emoji: '🌌', name: 'Starlit Summit', tagline: 'Past the peak, into the quiet sky.' },
 ];

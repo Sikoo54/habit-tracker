@@ -56,6 +56,7 @@ describe('ascent route', () => {
     expect(ascentForLevel(1).name).toBe('Base Camp');
     expect(ascentForLevel(2).emoji).toBe('🌲');
     expect(ascentForLevel(5).name).toBe('Cloud Line');
+    expect(ascentForLevel(6).emoji).toBe('🧗');
     expect(ascentForLevel(7).name).toBe('Summit');
     expect(ascentForLevel(99).emoji).toBe('🌌');
   });
