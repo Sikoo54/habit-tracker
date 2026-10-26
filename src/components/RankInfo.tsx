@@ -1,7 +1,7 @@
 /**
  * Rank Info
- * Tiny ⓘ button that reveals the full rank list on hover (desktop) or tap
- * (mobile), with the climber's current rank marked.
+ * Tiny ⓘ icon that reveals the full rank list while hovered (or focused via
+ * keyboard), with the climber's current rank marked.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -12,39 +12,34 @@ interface Props {
 }
 
 export function RankInfo({ level }: Props): ReactNode {
-  const [pinned, setPinned] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const open = pinned || hovered;
-
-  const close = (): void => {
-    setPinned(false);
-    setHovered(false);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <div
       className="relative inline-flex"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') close();
+        if (e.key === 'Escape') setOpen(false);
       }}
     >
-      <button
-        type="button"
+      <span
+        tabIndex={0}
+        role="button"
         aria-expanded={open}
         aria-controls="rank-list"
-        aria-label="Show all ranks"
-        title="Show all ranks"
-        onClick={() => setPinned((v) => !v)}
-        className="flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-cream-200 hover:text-ink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+        aria-label="All ranks"
+        title="All ranks"
+        className="flex h-6 w-6 cursor-help items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-cream-200 hover:text-ink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
       >
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
           <circle cx="12" cy="12" r="9" />
           <path d="M12 11v5" />
           <path d="M12 8h.01" />
         </svg>
-      </button>
+      </span>
 
       {open ? (
         <div
