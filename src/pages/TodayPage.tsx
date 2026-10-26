@@ -10,6 +10,7 @@ import { CreatureCard } from '../components/CreatureCard';
 import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
 import { HabitForm } from '../components/HabitForm';
+import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import type { AppliedPenalty } from '../game/decay';
 import { penaltyFor } from '../game/decay';
@@ -116,6 +117,8 @@ export function TodayPage({
           <CreatureCard creature={game.creature} progress={game.progress} next={game.next} rank={game.rank} nextRank={game.nextRank} />
         </div>
       </div>
+
+      <QuoteCard todayKey={today} />
 
       <div className="mt-8 grid grid-cols-5 items-start gap-x-10 gap-y-10 border-t border-cream-200 pt-8 max-md:grid-cols-1 dark:border-slate-800">
         <div className="col-span-2 space-y-8 max-md:order-2 max-md:col-span-1">
