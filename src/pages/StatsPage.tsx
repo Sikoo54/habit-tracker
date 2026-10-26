@@ -8,6 +8,7 @@ import { useMemo, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
 import { Heatmap } from '../components/Heatmap';
+import { RankLadder } from '../components/RankLadder';
 import { daysLeftInWeek, weeklyGoalSummary, weeklyGoals } from '../game/weeklyGoals';
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
@@ -40,6 +41,9 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
         <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>        <EmptyState message="No active habits to measure yet." hint="Add a habit on the Today page first. 🌱" />
+        <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
+          <RankLadder xp={game.xp} level={game.progress.level} rank={game.rank} />
+        </div>
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
@@ -153,6 +157,10 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           </li>
         ))}
       </ul>
+
+      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <RankLadder xp={game.xp} level={game.progress.level} rank={game.rank} />
+      </div>
 
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
         <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />

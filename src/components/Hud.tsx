@@ -8,7 +8,25 @@ import type { ReactNode } from 'react';
 import type { AscentStage, LevelProgress, Rank } from '../game/xp';
 
 /** Compact status indicator pills displayed in the top navbar */
-export function HudStats({ progress, ascent, streak, rank }: { progress: LevelProgress; ascent: AscentStage; streak: number; rank: Rank }): ReactNode {
+export function HudStats({
+  progress,
+  ascent,
+  streak,
+  rank,
+  onOpenRank,
+}: {
+  progress: LevelProgress;
+  ascent: AscentStage;
+  streak: number;
+  rank: Rank;
+  onOpenRank?: () => void;
+}): ReactNode {
+  const rankPill = (
+    <>
+      <span aria-hidden="true">{ascent.emoji}</span>
+      <span className="max-sm:hidden">{rank.short}</span>
+    </>
+  );
   return (
     <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · ${rank.title} (rank ${progress.level})`}>
       <span
@@ -20,10 +38,20 @@ export function HudStats({ progress, ascent, streak, rank }: { progress: LevelPr
       >
         <span aria-hidden="true">{streak > 0 ? '🔥' : '❄️'}</span> {streak}
       </span>
-      <span className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600 max-md:px-2">
-        <span aria-hidden="true">{ascent.emoji}</span>
-        <span className="max-sm:hidden">{rank.short}</span>
-      </span>
+      {onOpenRank ? (
+        <button
+          type="button"
+          onClick={onOpenRank}
+          aria-label={`Rank ${progress.level}, ${rank.title}. View rank ladder`}
+          className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white transition-colors hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 max-md:px-2"
+        >
+          {rankPill}
+        </button>
+      ) : (
+        <span className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600 max-md:px-2">
+          {rankPill}
+        </span>
+      )}
       <div
         className="h-2 w-16 overflow-hidden rounded-full bg-cream-200 max-sm:hidden dark:bg-slate-800"
         role="progressbar"

@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Reflection, Task } from '../types';
-import { ascentForLevel, levelForXp, levelProgress, nextAscent, rankForLevel, totalXp, xpThreshold } from './xp';
+import { ASCENT_STAGES, ascentForLevel, levelForXp, levelProgress, nextAscent, RANKS, rankForLevel, totalXp, xpThreshold } from './xp';
 
 function task(done: boolean, priority: boolean): Task {
   return { id: `${done}${priority}`, title: 't', done, priority, date: '2026-01-01', createdAt: 'x' };
@@ -75,5 +75,14 @@ describe('ranks', () => {
     expect(rankForLevel(6).title).toBe('Sentinel of Discipline');
     expect(rankForLevel(8).title).toBe('Ascendant One');
     expect(rankForLevel(99).title).toBe('Ascendant One');
+  });
+
+  it('ladder lines up rank, stage, and badge label', () => {
+    expect(RANKS).toHaveLength(ASCENT_STAGES.length);
+    for (const r of RANKS) {
+      expect(ASCENT_STAGES.some((s) => s.level === r.level)).toBe(true);
+      expect(r.short.length).toBeGreaterThan(0);
+      expect(r.short.length).toBeLessThanOrEqual(r.title.length);
+    }
   });
 });
