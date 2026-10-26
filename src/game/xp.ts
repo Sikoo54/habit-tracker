@@ -94,16 +94,16 @@ export interface AscentStage {
   tagline: string;
 }
 
-/** Route from base camp to the summit. */
+/** Route from base camp to the summit. Each stop should feel bigger than the last. */
 export const ASCENT_STAGES: AscentStage[] = [
-  { level: 1, emoji: '🏕️', name: 'Base Camp', tagline: 'Gear packed. The climb starts here.' },
-  { level: 2, emoji: '🥾', name: 'Trailhead', tagline: 'Boots on. The first steps count.' },
-  { level: 3, emoji: '🌲', name: 'Tree Line', tagline: 'Out of the forest, into thin air.' },
-  { level: 4, emoji: '🪨', name: 'Ridge', tagline: 'Exposed and windy — still moving up.' },
-  { level: 5, emoji: '❄️', name: 'Snow Line', tagline: 'Cold, quiet, steady feet.' },
+  { level: 1, emoji: '🏕️', name: 'Base Camp', tagline: 'Gear packed. Every climb starts here.' },
+  { level: 2, emoji: '🌲', name: 'Tree Line', tagline: 'Into the pines. The air starts thinning.' },
+  { level: 3, emoji: '🌄', name: 'Ridge', tagline: 'First light on the ridge. Keep going.' },
+  { level: 4, emoji: '🏞️', name: 'Alpine Lake', tagline: 'Still water, wider view, higher camp.' },
+  { level: 5, emoji: '☁️', name: 'Cloud Line', tagline: 'You are walking above the weather.' },
   { level: 6, emoji: '⛰️', name: 'Summit Push', tagline: 'The last stretch. Hold the pace.' },
-  { level: 7, emoji: '🏔️', name: 'Summit', tagline: 'You made the top. Look how far.' },
-  { level: 8, emoji: '🚩', name: 'Flag Planted', tagline: 'The peak was never the limit.' },
+  { level: 7, emoji: '🏔️', name: 'Summit', tagline: 'The top. Look how far you came.' },
+  { level: 8, emoji: '🌌', name: 'Starlit Summit', tagline: 'Past the peak, into the quiet sky.' },
 ];
 
 /** Where on the route a level stands. */

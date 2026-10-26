@@ -52,11 +52,12 @@ describe('xp', () => {
 });
 
 describe('ascent route', () => {
-  it('climbs from base camp to flag planted, caps at top', () => {
+  it('climbs from base camp to the night sky, caps at top', () => {
     expect(ascentForLevel(1).name).toBe('Base Camp');
-    expect(ascentForLevel(2).emoji).toBe('🥾');
+    expect(ascentForLevel(2).emoji).toBe('🌲');
+    expect(ascentForLevel(5).name).toBe('Cloud Line');
     expect(ascentForLevel(7).name).toBe('Summit');
-    expect(ascentForLevel(99).emoji).toBe('🚩');
+    expect(ascentForLevel(99).emoji).toBe('🌌');
   });
 
   it('next stage', () => {

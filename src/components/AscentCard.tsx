@@ -51,7 +51,7 @@ export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): R
           <p className="truncate text-[13px] text-ink-500 dark:text-slate-400">
             {next && nextRank
               ? `Next: ${next.emoji} ${next.name} · rank ${nextRank.level}`
-              : 'Flag planted · whole route done 🚩'}
+              : 'Whole route done · starlit summit 🌌'}
           </p>
         </div>
         <div className="ml-auto shrink-0 text-right">
