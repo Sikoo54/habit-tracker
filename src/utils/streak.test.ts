@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { addDays, toDateKey } from './dates';
-import { calculateStreak, isStreakAtRisk } from './streak';
+import { calculateStreak, isStreakAtRisk, showsStreak } from './streak';
 
 function range(endKey: string, count: number): string[] {
   return Array.from({ length: count }, (_, i) => addDays(endKey, -(count - 1 - i)));
@@ -63,5 +63,12 @@ describe('strict streak', () => {
   it('isStreakAtRisk: today done -> false', () => {
     const k = toDateKey(new Date());
     expect(isStreakAtRisk([k], k)).toBe(false);
+  });
+
+  it('showsStreak only from 2 days up', () => {
+    expect(showsStreak(0)).toBe(false);
+    expect(showsStreak(1)).toBe(false);
+    expect(showsStreak(2)).toBe(true);
+    expect(showsStreak(9)).toBe(true);
   });
 });

@@ -19,6 +19,7 @@ import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import { MAX_PRIORITIES, type useTasks } from '../hooks/useTasks';
 import { formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
+import { showsStreak } from '../utils/streak';
 
 function greeting(hour: number): string {
   if (hour < 11) return 'Good morning';
@@ -86,7 +87,7 @@ export function TodayPage({
             ✕
           </button>
         </div>
-      ) : game.streak > 0 && !game.todayActive ? (
+      ) : showsStreak(game.streak) && !game.todayActive ? (
         <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
           <span className="text-2xl" aria-hidden="true">
             ⚠️

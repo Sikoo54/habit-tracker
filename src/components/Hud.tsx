@@ -6,6 +6,7 @@
 
 import type { ReactNode } from 'react';
 import type { AscentStage, LevelProgress, Rank } from '../game/xp';
+import { showsStreak } from '../utils/streak';
 
 /** Compact status indicator pills displayed in the top navbar */
 export function HudStats({
@@ -27,15 +28,11 @@ export function HudStats({
   );
   return (
     <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · ${rank.title} (rank ${progress.level})`}>
-      <span
-        className={`flex min-h-[32px] items-center gap-1 rounded-full px-2.5 text-xs font-extrabold tabular-nums max-md:px-2 ${
-          streak > 0
-            ? 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300'
-            : 'bg-cream-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
-        }`}
-      >
-        <span aria-hidden="true">{streak > 0 ? '🔥' : '❄️'}</span> {streak}
-      </span>
+      {showsStreak(streak) ? (
+        <span className="flex min-h-[32px] items-center gap-1 rounded-full bg-orange-100 px-2.5 text-xs font-extrabold tabular-nums text-orange-700 max-md:px-2 dark:bg-orange-950 dark:text-orange-300">
+          <span aria-hidden="true">🔥</span> {streak}
+        </span>
+      ) : null}
       <span className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600 max-md:px-2">
         {rankPill}
       </span>

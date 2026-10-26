@@ -45,3 +45,11 @@ export function isStreakAtRisk(completedKeys: string[], referenceKey: string): b
   if (done.has(referenceKey)) return false;
   return !done.has(addDays(referenceKey, -1));
 }
+
+/** A one-day streak is not worth a badge yet — numbers start at 2. */
+export const STREAK_DISPLAY_MIN = 2;
+
+/** Whether a streak count is big enough to show in the UI. */
+export function showsStreak(streak: number): boolean {
+  return streak >= STREAK_DISPLAY_MIN;
+}

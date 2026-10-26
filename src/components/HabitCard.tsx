@@ -8,7 +8,7 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
 import type { Checkin, CheckinVariant, Habit, HabitInput } from '../types';
-import { calculateStreak, isStreakAtRisk, streakMessage } from '../utils/streak';
+import { calculateStreak, isStreakAtRisk, showsStreak, streakMessage } from '../utils/streak';
 
 interface Props {
   habit: Habit;
@@ -74,8 +74,12 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
               {habit.name}
             </p>
             <span className="flex shrink-0 items-center gap-1 text-sm tabular-nums" title={streakMessage(streak)}>
-              <span aria-hidden="true">🔥</span>
-              <span className="font-bold text-slate-700 dark:text-slate-200">{streak}</span>
+              {showsStreak(streak) ? (
+                <>
+                  <span aria-hidden="true">🔥</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-200">{streak}</span>
+                </>
+              ) : null}
               {checked && variant ? (
                 <span className="font-extrabold text-amber-600 dark:text-amber-300">+{xpForCheckin(variant)}</span>
               ) : null}
