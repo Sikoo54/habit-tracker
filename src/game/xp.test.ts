@@ -70,7 +70,7 @@ describe('ascent route', () => {
 describe('ranks', () => {
   it('grinding early, consistent late, caps at top', () => {
     expect(rankForLevel(1).title).toBe('Grinder');
-    expect(rankForLevel(4).title).toBe('Trailblazer');
+    expect(rankForLevel(4).title).toBe('Seasoned');
     expect(rankForLevel(8).title).toBe('Ascendant');
     expect(rankForLevel(99).title).toBe('Ascendant');
   });

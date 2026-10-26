@@ -130,14 +130,17 @@ export interface Rank {
 }
 
 /** Player rank progression milestones */
+// Identity ladder: effort -> rhythm -> consistency -> experience -> streak
+// as a trait -> mastery -> legend -> ascension. Stage names (Base Camp, Ridge,
+// Summit...) describe the place; ranks describe the person.
 export const RANKS: Rank[] = [
   { level: 1, title: 'Grinder' },
-  { level: 2, title: 'Striver' },
-  { level: 3, title: 'Climber' },
-  { level: 4, title: 'Trailblazer' },
-  { level: 5, title: 'Stalwart' },
-  { level: 6, title: 'Mainstay' },
-  { level: 7, title: 'Paragon' },
+  { level: 2, title: 'Steady' },
+  { level: 3, title: 'Relentless' },
+  { level: 4, title: 'Seasoned' },
+  { level: 5, title: 'Unbroken' },
+  { level: 6, title: 'Peerless' },
+  { level: 7, title: 'Legend' },
   { level: 8, title: 'Ascendant' },
 ];
 
