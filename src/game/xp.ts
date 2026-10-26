@@ -139,7 +139,7 @@ export const RANKS: Rank[] = [
   { level: 3, title: 'Relentless' },
   { level: 4, title: 'Seasoned' },
   { level: 5, title: 'Unbroken' },
-  { level: 6, title: 'Peerless' },
+  { level: 6, title: 'Goggins' },
   { level: 7, title: 'Legend' },
   { level: 8, title: 'Ascendant' },
 ];
