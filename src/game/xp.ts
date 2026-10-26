@@ -1,7 +1,7 @@
 /**
  * XP & Progression Engine
  * Calculates experience points (XP) earned from habits, tasks, reflections,
- * and attendance. Computes level thresholds, companion creature evolutions, and ranks.
+ * and attendance. Computes level thresholds, route position, and ranks.
  */
 
 import type { Attendance, Checkin, Reflection, Task } from '../types';
@@ -80,40 +80,44 @@ export function levelProgress(xp: number): LevelProgress {
   return { level, xp, current, needed, pct: needed === 0 ? 100 : Math.round((current / needed) * 100) };
 }
 
-// --- Ascension spirit: your companion climbs with your level ---
+// --- Ascent: your level is how high up the mountain you stand ---
+//
+// No mascot. Levelling up literally moves you up the route, so the word
+// "Ascend" in the app name means something. #1 is the tent at the bottom,
+// #8 is the flag at the top.
 
-/** Creature companion stage definition */
-export interface CreatureStage {
+/** One point on the climbing route. */
+export interface AscentStage {
   level: number;
   emoji: string;
   name: string;
   tagline: string;
 }
 
-/** Companion evolution stages */
-export const CREATURE_STAGES: CreatureStage[] = [
-  { level: 1, emoji: '🥚', name: 'Mysterious Egg', tagline: 'Every legend starts somewhere.' },
-  { level: 2, emoji: '🌱', name: 'Sproutling', tagline: 'It hatched! Keep it alive.' },
-  { level: 3, emoji: '🌿', name: 'Sapling', tagline: 'Growing steady, day by day.' },
-  { level: 4, emoji: '🌳', name: 'Grove Guardian', tagline: 'Roots deep. You show up.' },
-  { level: 5, emoji: '🌸', name: 'Bloom', tagline: 'Consistency looks good on you.' },
-  { level: 6, emoji: '🦉', name: 'Night Owl', tagline: 'Wise. Reflective. Ascending.' },
-  { level: 7, emoji: '🐉', name: 'Sky Dragon', tagline: 'Small steps, mythical heights.' },
-  { level: 8, emoji: '👑', name: 'Ascendant', tagline: 'Peak form. Maintain the flame.' },
+/** Route from base camp to the summit. */
+export const ASCENT_STAGES: AscentStage[] = [
+  { level: 1, emoji: '🏕️', name: 'Base Camp', tagline: 'Gear packed. The climb starts here.' },
+  { level: 2, emoji: '🥾', name: 'Trailhead', tagline: 'Boots on. The first steps count.' },
+  { level: 3, emoji: '🌲', name: 'Tree Line', tagline: 'Out of the forest, into thin air.' },
+  { level: 4, emoji: '🪨', name: 'Ridge', tagline: 'Exposed and windy — still moving up.' },
+  { level: 5, emoji: '❄️', name: 'Snow Line', tagline: 'Cold, quiet, steady feet.' },
+  { level: 6, emoji: '⛰️', name: 'Summit Push', tagline: 'The last stretch. Hold the pace.' },
+  { level: 7, emoji: '🏔️', name: 'Summit', tagline: 'You made the top. Look how far.' },
+  { level: 8, emoji: '🚩', name: 'Flag Planted', tagline: 'The peak was never the limit.' },
 ];
 
-/** Resolves creature companion for a specific level */
-export function creatureForLevel(level: number): CreatureStage {
-  let stage = CREATURE_STAGES[0] as CreatureStage;
-  for (const s of CREATURE_STAGES) {
+/** Where on the route a level stands. */
+export function ascentForLevel(level: number): AscentStage {
+  let stage = ASCENT_STAGES[0] as AscentStage;
+  for (const s of ASCENT_STAGES) {
     if (level >= s.level) stage = s;
   }
   return stage;
 }
 
-/** Retrieves the next companion evolution stage, if any */
-export function nextStage(level: number): CreatureStage | null {
-  return CREATURE_STAGES.find((s) => s.level > level) ?? null;
+/** Next point on the route, if any. */
+export function nextAscent(level: number): AscentStage | null {
+  return ASCENT_STAGES.find((s) => s.level > level) ?? null;
 }
 
 // --- Ascension ranks: titles instead of bare numbers ---

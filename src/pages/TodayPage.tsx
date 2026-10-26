@@ -6,7 +6,7 @@
 
 import type { ReactNode } from 'react';
 import { AscentTrail } from '../components/AscentTrail';
-import { CreatureCard } from '../components/CreatureCard';
+import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
 import { HabitForm } from '../components/HabitForm';
@@ -114,7 +114,7 @@ export function TodayPage({
           <AscentTrail done={doneItems} total={totalItems} />
         </div>
         <div className="col-span-2 max-md:col-span-1">
-          <CreatureCard creature={game.creature} progress={game.progress} next={game.next} rank={game.rank} nextRank={game.nextRank} />
+          <AscentCard ascent={game.ascent} progress={game.progress} next={game.nextAscent} rank={game.rank} nextRank={game.nextRank} />
         </div>
       </div>
 

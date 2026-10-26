@@ -1,12 +1,12 @@
 /**
  * XP & Progression Test Suite
  * Validates checkin/task/reflection XP scoring, cumulative thresholds,
- * level derivations, progress percentages, and creature/rank milestones.
+ * level derivations, progress percentages, and ascent/rank milestones.
  */
 
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Reflection, Task } from '../types';
-import { creatureForLevel, levelForXp, levelProgress, nextStage, rankForLevel, totalXp, xpThreshold } from './xp';
+import { ascentForLevel, levelForXp, levelProgress, nextAscent, rankForLevel, totalXp, xpThreshold } from './xp';
 
 function task(done: boolean, priority: boolean): Task {
   return { id: `${done}${priority}`, title: 't', done, priority, date: '2026-01-01', createdAt: 'x' };
@@ -51,17 +51,17 @@ describe('xp', () => {
   });
 });
 
-describe('creature', () => {
-  it('evolves with level, caps at final', () => {
-    expect(creatureForLevel(1).emoji).toBe('🥚');
-    expect(creatureForLevel(2).emoji).toBe('🌱');
-    expect(creatureForLevel(7).emoji).toBe('🐉');
-    expect(creatureForLevel(99).emoji).toBe('👑');
+describe('ascent route', () => {
+  it('climbs from base camp to flag planted, caps at top', () => {
+    expect(ascentForLevel(1).name).toBe('Base Camp');
+    expect(ascentForLevel(2).emoji).toBe('🥾');
+    expect(ascentForLevel(7).name).toBe('Summit');
+    expect(ascentForLevel(99).emoji).toBe('🚩');
   });
 
   it('next stage', () => {
-    expect(nextStage(1)?.level).toBe(2);
-    expect(nextStage(99)).toBeNull();
+    expect(nextAscent(1)?.level).toBe(2);
+    expect(nextAscent(99)).toBeNull();
   });
 });
 

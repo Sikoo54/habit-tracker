@@ -15,13 +15,13 @@ import {
   type DecayLedger,
 } from '../game/decay';
 import {
-  creatureForLevel,
+  ascentForLevel,
   levelProgress,
-  nextStage,
+  nextAscent,
   RANKS,
   rankForLevel,
   totalXp,
-  type CreatureStage,
+  type AscentStage,
   type LevelProgress,
   type Rank,
 } from '../game/xp';
@@ -38,8 +38,8 @@ export interface GameStats {
   progress: LevelProgress;
   rank: Rank;
   nextRank: Rank | null;
-  creature: CreatureStage;
-  next: CreatureStage | null;
+  ascent: AscentStage;
+  nextAscent: AscentStage | null;
   achievements: Achievement[];
   unlockedCount: number;
 }
@@ -59,7 +59,7 @@ export function useGameStats(
     const xp = Math.max(0, grossXp - decayTotal);
     const progress = levelProgress(xp);
     const rank = rankForLevel(progress.level);
-    const creature = creatureForLevel(progress.level);
+    const ascent = ascentForLevel(progress.level);
     const dates = activeDates(checkins, tasks, reflections, attendance);
     const achievements = evaluateAchievements({
       habits,
@@ -78,8 +78,8 @@ export function useGameStats(
       progress,
       rank,
       nextRank: RANKS.find((r) => r.level === progress.level + 1) ?? null,
-      creature,
-      next: nextStage(progress.level),
+      ascent,
+      nextAscent: nextAscent(progress.level),
       achievements,
       unlockedCount: achievements.filter((a) => a.unlocked).length,
     };

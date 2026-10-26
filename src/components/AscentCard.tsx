@@ -1,16 +1,16 @@
 /**
- * Companion Creature Card Component
- * Displays the climber's companion avatar, current rank title, circular level progress ring,
- * and upcoming evolution milestones.
+ * Ascent Card Component
+ * Shows where the climber stands on the route: rank title, circular level
+ * progress ring, and the full base-camp-to-summit path.
  */
 
 import type { ReactNode } from 'react';
-import { CREATURE_STAGES, type CreatureStage, type LevelProgress, type Rank } from '../game/xp';
+import { ASCENT_STAGES, type AscentStage, type LevelProgress, type Rank } from '../game/xp';
 
 interface Props {
-  creature: CreatureStage;
+  ascent: AscentStage;
   progress: LevelProgress;
-  next: CreatureStage | null;
+  next: AscentStage | null;
   rank: Rank;
   nextRank: Rank | null;
 }
@@ -18,8 +18,8 @@ interface Props {
 const R = 40;
 const CIRC = 2 * Math.PI * R;
 
-/** Expedition spirit: rank title, circular ascent meter, evolution chain. */
-export function CreatureCard({ creature, progress, next, rank, nextRank }: Props): ReactNode {
+/** Route position: rank title, circular ascent meter, path from base camp to summit. */
+export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): ReactNode {
   return (
     <div className="rounded-3xl border border-cream-200 bg-cream-50 p-5 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-center gap-4">
@@ -40,16 +40,18 @@ export function CreatureCard({ creature, progress, next, rank, nextRank }: Props
             />
           </svg>
           <span className="absolute inset-0 flex items-center justify-center text-4xl" aria-hidden="true">
-            {creature.emoji}
+            {ascent.emoji}
           </span>
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-display text-2xl font-semibold leading-none sm:text-3xl">{rank.title}</p>
           <p className="mt-1 truncate text-[13px] font-medium text-ink-500 dark:text-slate-400">
-            Rank {progress.level} · {creature.name}
+            Rank {progress.level} · {ascent.name}
           </p>
           <p className="truncate text-[13px] text-ink-500 dark:text-slate-400">
-            {next && nextRank ? `Next: ${next.emoji} ${nextRank.title} at rank ${nextRank.level}` : 'Final form 👑'}
+            {next && nextRank
+              ? `Next: ${next.emoji} ${next.name} · rank ${nextRank.level}`
+              : 'Flag planted · whole route done 🚩'}
           </p>
         </div>
         <div className="ml-auto shrink-0 text-right">
@@ -57,10 +59,10 @@ export function CreatureCard({ creature, progress, next, rank, nextRank }: Props
           <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">total XP</p>
         </div>
       </div>
-      <ol className="mt-4 flex items-center justify-between gap-0.5 border-t border-cream-200 pt-3 dark:border-slate-800" aria-label="Ascension path">
-        {CREATURE_STAGES.map((s) => {
+      <ol className="mt-4 flex items-center justify-between gap-0.5 border-t border-cream-200 pt-3 dark:border-slate-800" aria-label="Route to the summit">
+        {ASCENT_STAGES.map((s) => {
           const reached = progress.level >= s.level;
-          const isCurrent = creature.level === s.level;
+          const isCurrent = ascent.level === s.level;
           return (
             <li
               key={s.level}

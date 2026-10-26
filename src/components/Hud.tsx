@@ -1,14 +1,14 @@
 /**
  * Heads-Up Display (HUD) & Level-Up Modal
- * Renders top-bar player status badges (streak, creature avatar, rank, XP bar)
+ * Renders top-bar player status badges (streak, route position, rank, XP bar)
  * and the milestone level-up celebration modal.
  */
 
 import type { ReactNode } from 'react';
-import type { CreatureStage, LevelProgress, Rank } from '../game/xp';
+import type { AscentStage, LevelProgress, Rank } from '../game/xp';
 
 /** Compact status indicator pills displayed in the top navbar */
-export function HudStats({ progress, creature, streak, rank }: { progress: LevelProgress; creature: CreatureStage; streak: number; rank: Rank }): ReactNode {
+export function HudStats({ progress, ascent, streak, rank }: { progress: LevelProgress; ascent: AscentStage; streak: number; rank: Rank }): ReactNode {
   return (
     <div className="flex items-center gap-1.5 max-md:gap-1" title={`${progress.xp} XP total · ${streak}-day streak · rank ${rank.title}`}>
       <span
@@ -21,7 +21,7 @@ export function HudStats({ progress, creature, streak, rank }: { progress: Level
         <span aria-hidden="true">{streak > 0 ? '🔥' : '❄️'}</span> {streak}
       </span>
       <span className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-slate-800 px-2.5 text-xs font-extrabold text-white dark:bg-emerald-600 max-md:px-2">
-        <span aria-hidden="true">{creature.emoji}</span>
+        <span aria-hidden="true">{ascent.emoji}</span>
         <span className="max-sm:hidden">{rank.title}</span>
       </span>
       <div
@@ -42,12 +42,12 @@ export function HudStats({ progress, creature, streak, rank }: { progress: Level
 export function LevelUpModal({
   level,
   rank,
-  creature,
+  ascent,
   onClose,
 }: {
   level: number;
   rank: Rank;
-  creature: CreatureStage;
+  ascent: AscentStage;
   onClose: () => void;
 }): ReactNode {
   return (
@@ -56,11 +56,11 @@ export function LevelUpModal({
       <div className="relative w-full max-w-sm rounded-3xl bg-cream-50 p-8 text-center shadow-2xl dark:bg-slate-800">
         <p className="section-title text-amber-600 dark:text-amber-300">Rank up · {level}</p>
         <p className="mt-3 text-7xl motion-safe:animate-bounce" aria-hidden="true">
-          {creature.emoji}
+          {ascent.emoji}
         </p>
         <h2 className="mt-3 font-display text-3xl font-semibold">{rank.title}</h2>
         <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
-          {creature.name} — {creature.tagline}
+          {ascent.name} — {ascent.tagline}
         </p>
         <button
           type="button"

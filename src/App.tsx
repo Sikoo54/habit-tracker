@@ -118,7 +118,7 @@ function Shell({
       onNavigate={onNavigate}
       dark={dark}
       onToggleDark={onToggleDark}
-      hud={<HudStats progress={game.progress} creature={game.creature} streak={game.streak} rank={game.rank} />}
+      hud={<HudStats progress={game.progress} ascent={game.ascent} streak={game.streak} rank={game.rank} />}
     >
       {/* Route rendering based on active page state */}
       {page === 'today' ? (
@@ -140,7 +140,7 @@ function Shell({
       )}
       {/* Celebration modal when leveling up */}
       {levelUp.show ? (
-        <LevelUpModal level={game.progress.level} rank={game.rank} creature={game.creature} onClose={levelUp.dismiss} />
+        <LevelUpModal level={game.progress.level} rank={game.rank} ascent={game.ascent} onClose={levelUp.dismiss} />
       ) : null}
     </Layout>
   );
