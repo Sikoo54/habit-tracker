@@ -60,14 +60,14 @@ export function attendedDates(attendance: Attendance[]): Set<string> {
 }
 
 // Full-screen absen window. Morning gate becomes available at 04:00 and
-// stays pending all day; night takes over at 20:00. Once a slot is marked,
+// stays pending all day; night takes over at 22:00. Once a slot is marked,
 // that gate is done for the day.
 export const MORNING_START_HOUR = 4;
-export const NIGHT_START_HOUR = 20;
+export const NIGHT_START_HOUR = 22;
 
 /**
  * Which absen screen should block the app right now, if any.
- * Night (20:00+) wins; otherwise morning from 04:00. Night means the
+ * Night (22:00+) wins; otherwise morning from 04:00. Night means the
  * morning slot was missed, so it is not retroactively gated.
  */
 export function gateFor(attendance: Attendance[], date: string, hour: number): AttendanceSlot | null {

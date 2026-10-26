@@ -1,6 +1,6 @@
 /**
  * Attendance Gate Component
- * Full-screen blocking modal displayed in morning (from 04:00) and night (from 20:00)
+ * Full-screen blocking modal displayed in morning (from 04:00) and night (from 22:00)
  * prompting climbers to log their wake-up and bed-time attendance.
  */
 
@@ -17,7 +17,7 @@ interface Props {
 
 /**
  * Full-screen absen gate: opens before the app at wake (from 04:00)
- * and before bed (from 20:00). One tap logs it and unlocks the day.
+ * and before bed (from 22:00). One tap logs it and unlocks the day.
  */
 export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactNode {
   const morning = slot === 'morning';

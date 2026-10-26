@@ -66,9 +66,10 @@ describe('gateFor', () => {
     expect(gateFor([], '2026-10-20', 19)).toBe('morning');
   });
 
-  it('opens the night gate from 20:00', () => {
-    expect(gateFor([], '2026-10-20', 19)).toBe('morning');
-    expect(gateFor([], '2026-10-20', 20)).toBe('night');
+  it('opens the night gate from 22:00', () => {
+    expect(gateFor([], '2026-10-20', 20)).toBe('morning');
+    expect(gateFor([], '2026-10-20', 21)).toBe('morning');
+    expect(gateFor([], '2026-10-20', 22)).toBe('night');
     expect(gateFor([], '2026-10-20', 23)).toBe('night');
   });
 
@@ -82,9 +83,10 @@ describe('gateFor', () => {
     const morningOnly = [day('2026-10-20', true, false)];
     expect(gateFor(morningOnly, '2026-10-20', 6)).toBeNull();
     expect(gateFor(morningOnly, '2026-10-20', 18)).toBeNull();
-    expect(gateFor(morningOnly, '2026-10-20', 21)).toBe('night');
+    expect(gateFor(morningOnly, '2026-10-20', 21)).toBeNull();
+    expect(gateFor(morningOnly, '2026-10-20', 22)).toBe('night');
     const nightOnly = [day('2026-10-20', false, true)];
     expect(gateFor(nightOnly, '2026-10-20', 6)).toBe('morning');
-    expect(gateFor(nightOnly, '2026-10-20', 21)).toBeNull();
+    expect(gateFor(nightOnly, '2026-10-20', 22)).toBeNull();
   });
 });
