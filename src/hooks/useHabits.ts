@@ -11,7 +11,7 @@ import { createId } from '../utils/dates';
 import { localStorageAdapter } from '../storage/localStorageAdapter';
 import { useStorage } from '../storage/StorageContext';
 
-export const MAX_ACTIVE_HABITS = 5;
+export const MAX_ACTIVE_HABITS = 10;
 
 /** Hook managing habits list and CRUD actions */
 export function useHabits() {

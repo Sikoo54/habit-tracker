@@ -43,7 +43,7 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
     <details className="group rounded-2xl bg-sage-100/60 dark:bg-slate-800/60">
       <summary className="flex min-h-[44px] cursor-pointer list-none items-center gap-2 px-4 py-3 font-semibold text-sage-700 dark:text-emerald-300 [&::-webkit-details-marker]:hidden">
         <span aria-hidden="true" className="transition-transform group-open:rotate-45">＋</span> New habit
-        <span className="ml-auto text-xs font-normal text-slate-400">max 5 active</span>
+        <span className="ml-auto text-xs font-normal text-slate-400">max 10 active</span>
       </summary>
       <form onSubmit={submit} aria-label="Add new habit" className="px-4 pb-4">
         <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
@@ -97,7 +97,7 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
           disabled={disabled}
           className="mt-3 min-h-[44px] w-full rounded-xl bg-sage-600 px-4 font-semibold text-white hover:bg-sage-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-600 dark:hover:bg-emerald-500"
         >
-          {disabled ? 'Already 5 active habits' : 'Save habit'}
+          {disabled ? 'Already 10 active habits' : 'Save habit'}
         </button>
       </form>
     </details>
