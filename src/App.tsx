@@ -6,12 +6,14 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AttendanceGate } from './components/AttendanceGate';
+import { AchievementToast } from './components/AchievementToast';
 import { HudStats, LevelUpModal } from './components/Hud';
 import { Layout } from './components/Layout';
 import { gateFor } from './game/attendance';
 import { activeDates, lastActiveDate } from './game/dailyStreak';
 import { totalXp } from './game/xp';
 import { useAttendance } from './hooks/useAttendance';
+import { useAchievementToasts } from './hooks/useAchievementToasts';
 import { useCheckins } from './hooks/useCheckins';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useDecayLedger, useGameStats, useLevelUp } from './hooks/useGame';
@@ -98,6 +100,7 @@ function Shell({
     decay.ledger.total,
   );
   const levelUp = useLevelUp(game.progress.level);
+  const unlockToasts = useAchievementToasts(game.achievements, ready);
 
   // Attendance gate: full screen morning/night prompt if active
   const gate = ready ? gateFor(attendanceApi.attendance, today, now.getHours()) : null;
@@ -142,6 +145,7 @@ function Shell({
       {levelUp.show ? (
         <LevelUpModal level={game.progress.level} rank={game.rank} ascent={game.ascent} onClose={levelUp.dismiss} />
       ) : null}
+      <AchievementToast toast={unlockToasts.toast} queued={unlockToasts.queued} onDismiss={unlockToasts.dismiss} />
     </Layout>
   );
 }
