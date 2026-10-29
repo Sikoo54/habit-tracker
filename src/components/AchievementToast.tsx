@@ -19,7 +19,7 @@ export function AchievementToast({ toast, queued, onDismiss }: Props): ReactNode
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-sm sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-80"
+      className="fixed inset-x-3 bottom-20 z-40 mx-auto max-w-sm sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-80"
     >
       <div className="flex items-start gap-3 rounded-2xl border border-summit-500/40 bg-cream-50 p-3.5 shadow-2xl dark:border-amber-400/40 dark:bg-slate-800">
         <span

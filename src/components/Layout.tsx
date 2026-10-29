@@ -80,11 +80,11 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             >
               <span aria-hidden="true">☰</span>
             </button>
-            <p className="flex items-center gap-1.5 text-lg font-extrabold tracking-tight max-lg:hidden">
+            <p className="flex items-center gap-1.5 text-lg font-extrabold tracking-tight">
               <span className="text-sage-600 dark:text-emerald-400">
                 <BrandMark />
               </span>
-              AscendHabit
+              <span className="max-sm:hidden">AscendHabit</span>
             </p>
           </div>
 
@@ -124,32 +124,35 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
             </button>
           </div>
         </div>
-
-        {/* Mobile nav: own row, pills share the width */}
-        <nav aria-label="Main navigation" className="px-3 pb-2 md:hidden">
-          <div className="flex w-full items-center gap-0.5 rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            {ITEMS.map((it) => {
-              const active = page === it.key;
-              return (
-                <button
-                  key={it.key}
-                  type="button"
-                  onClick={() => onNavigate(it.key)}
-                  aria-current={active ? 'page' : undefined}
-                  className={`flex min-h-[44px] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-full px-1.5 text-[13px] font-bold transition-all ${
-                    active
-                      ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
-                      : 'text-ink-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
-                  }`}
-                >
-                  <Icon d={it.icon} />
-                  <span>{it.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </nav>
       </header>
+
+      {/* Mobile bottom navigation */}
+      <nav
+        aria-label="Main navigation"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-cream-200 bg-cream-100/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-slate-800 dark:bg-slate-950/95"
+      >
+        <div className="flex items-stretch gap-0.5 px-2 py-1.5">
+          {ITEMS.map((it) => {
+            const active = page === it.key;
+            return (
+              <button
+                key={it.key}
+                type="button"
+                onClick={() => onNavigate(it.key)}
+                aria-current={active ? 'page' : undefined}
+                className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-bold transition-colors ${
+                  active
+                    ? 'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300'
+                    : 'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900'
+                }`}
+              >
+                <Icon d={it.icon} />
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
       {/* Settings drawer + backdrop */}
       {open ? (
@@ -205,7 +208,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
       ) : null}
 
       {/* Full-screen content */}
-      <main className="w-full px-6 py-6 max-md:px-3">{children}</main>
+      <main className="w-full px-6 py-6 pb-24 max-md:px-3 md:pb-6">{children}</main>
     </div>
   );
 }
