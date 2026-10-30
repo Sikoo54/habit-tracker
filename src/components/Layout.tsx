@@ -84,9 +84,33 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
               <span className="text-sage-600 dark:text-emerald-400">
                 <BrandMark />
               </span>
-              <span className="max-sm:hidden">AscendHabit</span>
+              <span className="hidden lg:inline">AscendHabit</span>
             </p>
           </div>
+
+          <nav aria-label="Main navigation" className="flex min-w-0 justify-center max-md:hidden">
+            <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              {ITEMS.map((it) => {
+                const active = page === it.key;
+                return (
+                  <button
+                    key={it.key}
+                    type="button"
+                    onClick={() => onNavigate(it.key)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all ${
+                      active
+                        ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
+                        : 'text-ink-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
+                    }`}
+                  >
+                    <Icon d={it.icon} />
+                    <span>{it.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
 
           <div className="flex items-center justify-end gap-1 md:justify-self-end">
             {hud}
@@ -102,12 +126,12 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
         </div>
       </header>
 
-      {/* Bottom navigation (floating pill on desktop) */}
+      {/* Mobile bottom navigation */}
       <nav
         aria-label="Main navigation"
-        className="fixed inset-x-0 bottom-0 z-30 bg-cream-100/95 pb-[env(safe-area-inset-bottom)] backdrop-blur max-md:border-t max-md:border-cream-200 md:bottom-5 md:left-1/2 md:right-auto md:-translate-x-1/2 md:rounded-full md:border md:border-cream-200 md:pb-0 md:shadow-xl dark:bg-slate-950/95 dark:max-md:border-slate-800 dark:md:border-slate-800"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-cream-200 bg-cream-100/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-slate-800 dark:bg-slate-950/95"
       >
-        <div className="flex items-stretch gap-0.5 px-2 py-1.5 md:px-1.5">
+        <div className="flex items-stretch gap-0.5 px-2 py-1.5">
           {ITEMS.map((it) => {
             const active = page === it.key;
             return (
@@ -116,7 +140,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                 type="button"
                 onClick={() => onNavigate(it.key)}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-bold transition-colors md:min-h-[44px] md:flex-none md:flex-row md:gap-1.5 md:px-3.5 md:text-sm ${
+                className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-bold transition-colors ${
                   active
                     ? 'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300'
                     : 'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900'
@@ -184,7 +208,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
       ) : null}
 
       {/* Full-screen content */}
-      <main className="w-full px-6 py-6 pb-24 max-md:px-3">{children}</main>
+      <main className="w-full px-6 py-6 pb-24 max-md:px-3 md:pb-6">{children}</main>
     </div>
   );
 }
