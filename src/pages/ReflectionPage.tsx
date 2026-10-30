@@ -1,7 +1,7 @@
 /**
  * Reflection Page View ("Campfire Tales")
- * Provides daily evening journaling for recording wins, areas to improve,
- * and mood & energy ratings, plus past reflection logs.
+ * Provides daily evening journaling for recording how the day actually went,
+ * plus areas to improve and mood & energy ratings, with past reflection logs.
  */
 
 import { useState, type FormEvent, type ReactNode } from 'react';
@@ -45,15 +45,18 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
 
       <form onSubmit={submit} aria-label="Today's reflection" className="mt-8">
         <label htmlFor="rw" className="text-lg font-bold">
-          What went well today?
+          What happened today?
         </label>
+        <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
+          The whole day, not just the wins — the mess and the ordinary count too.
+        </p>
         <textarea
           id="rw"
           value={wentWell}
           onChange={(e) => setWentWell(e.target.value)}
           rows={3}
           maxLength={500}
-          placeholder="e.g. Managed a morning walk, even just 5 minutes…"
+          placeholder="e.g. Snoozed twice, still did the walk, skipped reading, felt flat after lunch…"
           className={fieldCls}
         />
         <label htmlFor="ri" className="mt-6 block text-lg font-bold">
@@ -103,7 +106,7 @@ export function ReflectionPage({ reflectionsApi }: { reflectionsApi: ReturnType<
                 {open ? (
                   <div className="pb-4 text-[15px] leading-relaxed">
                     <p>
-                      <strong>Went well:</strong> {r.wentWell || '—'}
+                      <strong>Happened:</strong> {r.wentWell || '—'}
                     </p>
                     <p className="mt-1">
                       <strong>To fix:</strong> {r.toImprove || '—'}
