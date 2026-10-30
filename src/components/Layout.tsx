@@ -46,6 +46,14 @@ const ITEMS: { key: PageKey; label: string; icon: string }[] = [
   { key: 'reflection', label: 'Reflect', icon: 'M20 13A8 8 0 0 1 11 4a6.5 6.5 0 0 0 9 9Z' },
 ];
 
+// One nav language for both breakpoints: same colours, radii and hover states.
+const NAV_ITEM =
+  'flex items-center justify-center gap-0.5 rounded-xl font-bold transition-colors';
+const NAV_ACTIVE =
+  'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300';
+const NAV_IDLE =
+  'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900';
+
 /** Main layout shell wrapping all page routes with top nav and settings drawer */
 export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: Props): ReactNode {
   const [open, setOpen] = useState(false);
@@ -89,7 +97,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
           </div>
 
           <nav aria-label="Main navigation" className="flex min-w-0 justify-center max-md:hidden">
-            <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-cream-200 bg-cream-50 p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex max-w-full items-center gap-0.5">
               {ITEMS.map((it) => {
                 const active = page === it.key;
                 return (
@@ -98,11 +106,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                     type="button"
                     onClick={() => onNavigate(it.key)}
                     aria-current={active ? 'page' : undefined}
-                    className={`flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-bold transition-all ${
-                      active
-                        ? 'bg-slate-800 text-amber-300 shadow-md dark:bg-amber-400 dark:text-slate-900'
-                        : 'text-ink-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
-                    }`}
+                    className={`${NAV_ITEM} min-h-[44px] shrink-0 whitespace-nowrap px-3.5 text-sm ${active ? NAV_ACTIVE : NAV_IDLE}`}
                   >
                     <Icon d={it.icon} />
                     <span>{it.label}</span>
@@ -140,11 +144,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
                 type="button"
                 onClick={() => onNavigate(it.key)}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-bold transition-colors ${
-                  active
-                    ? 'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300'
-                    : 'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900'
-                }`}
+                className={`${NAV_ITEM} min-h-[52px] flex-1 flex-col gap-0.5 text-[11px] ${active ? NAV_ACTIVE : NAV_IDLE}`}
               >
                 <Icon d={it.icon} />
                 <span>{it.label}</span>
