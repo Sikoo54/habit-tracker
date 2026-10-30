@@ -47,11 +47,21 @@ export function totalXp(
   return xp + attendanceXp(attendance);
 }
 
-/** Cumulative XP needed to REACH a level. L1=0, L2=100, L3=300, L4=600, L5=1000... */
+/**
+ * XP required to climb one level (delta between consecutive thresholds).
+ * The first step stays generous (100) so day one still feels rewarding, then
+ * every step grows by 300 — a single strong day can no longer buy a level.
+ */
+export function xpStep(level: number): number {
+  if (level <= 2) return 100;
+  return 100 + 300 * (level - 2);
+}
+
+/** Cumulative XP needed to REACH a level. L1=0, L2=100, L3=500, L4=1200, L5=2200, L6=3500, L7=5100, L8=7000. */
 export function xpThreshold(level: number): number {
   if (level <= 1) return 0;
   const n = level - 1;
-  return 50 * n * (n + 1);
+  return 150 * n * n - 50 * n;
 }
 
 /** Determines level reached for a given XP amount */

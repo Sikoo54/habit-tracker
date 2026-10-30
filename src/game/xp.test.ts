@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Reflection, Task } from '../types';
-import { ASCENT_STAGES, ascentForLevel, levelForXp, levelProgress, nextAscent, RANKS, rankForLevel, totalXp, xpThreshold } from './xp';
+import { ASCENT_STAGES, ascentForLevel, levelForXp, levelProgress, nextAscent, RANKS, rankForLevel, totalXp, xpStep, xpThreshold } from './xp';
 
 function task(done: boolean, priority: boolean): Task {
   return { id: `${done}${priority}`, title: 't', done, priority, date: '2026-01-01', createdAt: 'x' };
@@ -34,20 +34,31 @@ describe('xp', () => {
   it('thresholds + levels', () => {
     expect(xpThreshold(1)).toBe(0);
     expect(xpThreshold(2)).toBe(100);
-    expect(xpThreshold(3)).toBe(300);
+    expect(xpThreshold(3)).toBe(500);
+    expect(xpThreshold(4)).toBe(1200);
+    expect(xpThreshold(8)).toBe(7000);
     expect(levelForXp(0)).toBe(1);
     expect(levelForXp(99)).toBe(1);
     expect(levelForXp(100)).toBe(2);
-    expect(levelForXp(299)).toBe(2);
-    expect(levelForXp(300)).toBe(3);
+    expect(levelForXp(499)).toBe(2);
+    expect(levelForXp(500)).toBe(3);
+  });
+
+  it('each step after the first costs meaningfully more', () => {
+    expect(xpStep(2)).toBe(100);
+    expect(xpStep(3)).toBe(400);
+    expect(xpStep(4)).toBe(700);
+    for (let lv = 2; lv <= 8; lv += 1) {
+      expect(xpStep(lv + 1)).toBeGreaterThan(xpStep(lv));
+    }
   });
 
   it('progress pct', () => {
-    const p = levelProgress(150); // L2: 100..300
+    const p = levelProgress(350); // L2: 100..500
     expect(p.level).toBe(2);
-    expect(p.current).toBe(50);
-    expect(p.needed).toBe(200);
-    expect(p.pct).toBe(25);
+    expect(p.current).toBe(250);
+    expect(p.needed).toBe(400);
+    expect(p.pct).toBe(63);
   });
 });
 
