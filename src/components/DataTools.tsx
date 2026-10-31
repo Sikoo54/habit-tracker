@@ -7,6 +7,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { ExportPayload } from '../types';
+import { backupLabel, backupStatus, markBackedUp, readLastBackup } from '../utils/backup';
 
 /** Import/Export and reset data settings component */
 export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNode {
@@ -14,7 +15,9 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
   const [confirmReset, setConfirmReset] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [needsReload, setNeedsReload] = useState(false);
+  const [lastBackup, setLastBackup] = useState<string | null>(readLastBackup);
   const fileRef = useRef<HTMLInputElement>(null);
+  const backup = backupStatus(lastBackup);
 
   const doExport = async (): Promise<void> => {
     try {
@@ -26,6 +29,8 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
       a.download = `habit-tracker-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
+      markBackedUp();
+      setLastBackup(new Date().toISOString());
       setMsg('Data exported. 📦');
     } catch {
       setMsg('Could not export data.');
@@ -62,6 +67,20 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
   return (
     <div aria-label="Manage data">
       <p className="section-title px-1 text-slate-400 dark:text-slate-500">Manage data</p>
+      <p
+        role="status"
+        className={`mt-1 flex items-start gap-1.5 px-1 text-[12px] ${
+          backup.due ? 'text-amber-800 dark:text-amber-200' : 'text-ink-500 dark:text-slate-400'
+        }`}
+      >
+        <span aria-hidden="true">{backup.due ? '⚠️' : '✅'}</span>
+        <span>
+          {backupLabel(backup)}
+          {backup.due ? (
+            <span className="font-semibold"> — export now, a cleared browser wipes local data.</span>
+          ) : null}
+        </span>
+      </p>
       <div className="mt-1">
         <button type="button" onClick={doExport} className={btn}>
           📦 Export JSON

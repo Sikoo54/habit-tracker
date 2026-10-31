@@ -4,12 +4,13 @@
  * enforcing priority limits, and syncing changes with storage.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { seedTasks } from '../data/seed';
 import { useStorage } from '../storage/StorageContext';
 import { localStorageAdapter } from '../storage/localStorageAdapter';
 import type { Task } from '../types';
 import { createId } from '../utils/dates';
+import { carryOver, dropLeftovers, leftoversOf } from '../utils/tasks';
 
 export const MAX_PRIORITIES = 3;
 
@@ -54,9 +55,13 @@ export function useTasks(dateKey: string) {
     void storage.saveTasks(tasks).catch(() => undefined);
   }, [tasks, storage]);
 
-  const todayTasks = tasks.filter((t) => t.date === dateKey);
+  const todayTasks = tasks.filter((t) => t.date === dateKey && !t.dropped);
   const priorities = todayTasks.filter((t) => t.priority);
   const others = todayTasks.filter((t) => !t.priority);
+
+  // Unfinished quests from earlier days. Without this they would stay in
+  // storage forever, invisible — user has to either carry them or let go.
+  const leftovers = useMemo(() => leftoversOf(tasks, dateKey), [tasks, dateKey]);
 
   const addTask = useCallback(
     (title: string, priority: boolean): { ok: boolean; reason?: string } => {
@@ -87,5 +92,28 @@ export function useTasks(dateKey: string) {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  return { tasks, todayTasks, priorities, others, loading, addTask, toggleTask, removeTask, setTasks };
+  /** Carry every leftover quest onto today, demoting extras when the 3 slots are full. */
+  const bringLeftovers = useCallback(() => {
+    setTasks((prev) => carryOver(prev, dateKey, MAX_PRIORITIES));
+  }, [dateKey]);
+
+  /** Let leftovers go without destroying them — flagged and hidden for good. */
+  const dropAllLeftovers = useCallback(() => {
+    setTasks((prev) => dropLeftovers(prev, dateKey));
+  }, [dateKey]);
+
+  return {
+    tasks,
+    todayTasks,
+    priorities,
+    others,
+    leftovers,
+    loading,
+    addTask,
+    toggleTask,
+    removeTask,
+    bringLeftovers,
+    dropLeftovers: dropAllLeftovers,
+    setTasks,
+  };
 }

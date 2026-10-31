@@ -10,6 +10,7 @@ import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
 import { HabitForm } from '../components/HabitForm';
+import { LeftoverBanner } from '../components/LeftoverBanner';
 import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import type { AppliedPenalty } from '../game/decay';
@@ -50,6 +51,7 @@ export function TodayPage({
   const weekMonday = startOfWeekMonday(today);
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
   const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;
+  const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
   const { checkins, toggleCheckin, checkinFor } = checkinsApi;
 
   const activeHabits = habits.filter((h) => h.active);
@@ -120,6 +122,13 @@ export function TodayPage({
       </div>
 
       <QuoteCard todayKey={today} />
+
+      <LeftoverBanner
+        leftovers={leftovers}
+        today={today}
+        onBring={bringLeftovers}
+        onDrop={dropLeftovers}
+      />
 
       <div className="mt-8 grid grid-cols-5 items-start gap-x-10 gap-y-10 border-t border-cream-200 pt-8 max-md:grid-cols-1 dark:border-slate-800">
         <div className="col-span-2 space-y-8 max-md:order-2 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 dark:max-md:border-slate-800">

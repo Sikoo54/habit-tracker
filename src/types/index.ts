@@ -40,6 +40,8 @@ export interface Task {
   priority: boolean;
   date: string; // YYYY-MM-DD, the day the task belongs to
   createdAt: string;
+  /** Leftover task the user chose to let go. Kept as history, never shown again. */
+  dropped?: boolean;
 }
 
 /** Record of a habit completion on a specific day */
