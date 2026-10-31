@@ -73,5 +73,6 @@ export class SupabaseAdapter implements StorageAdapter {
   }
 }
 
+/** Always false; exported only so the import is kept alive until the adapter is wired up. */
 export const _TODO_ACTIVATE_SUPABASE = false;
 void _TODO_ACTIVATE_SUPABASE;

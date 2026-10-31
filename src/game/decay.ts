@@ -22,7 +22,9 @@ export interface AppliedPenalty {
   amount: number; // XP burned for it
 }
 
+/** Fraction of net XP burned per fully idle day. */
 export const DECAY_RATE = 0.15;
+/** Floor so short streaks still feel a missed day. */
 export const MIN_PENALTY = 30;
 /** Forgive ancient history on first run: only the last N idle days count. */
 export const MAX_CATCHUP_DAYS = 3;

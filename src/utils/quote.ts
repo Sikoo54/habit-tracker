@@ -1,3 +1,9 @@
+/**
+ * Quote Rotation Helpers
+ * Pure logic behind the daily strip: pick a stable line per calendar day and
+ * step to the next one without touching storage.
+ */
+
 import { QUOTES, type Quote } from '../data/quotes';
 import { parseDateKey } from '../utils/dates';
 

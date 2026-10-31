@@ -12,6 +12,7 @@ import type { Task } from '../types';
 import { createId } from '../utils/dates';
 import { carryOver, dropLeftovers, leftoversOf } from '../utils/tasks';
 
+/** Daily Main Quest slots. Extras go to the side-quest list instead. */
 export const MAX_PRIORITIES = 3;
 
 /** Hook providing date-scoped task lists and task mutation operations */

@@ -11,6 +11,7 @@ import { createId } from '../utils/dates';
 import { localStorageAdapter } from '../storage/localStorageAdapter';
 import { useStorage } from '../storage/StorageContext';
 
+/** Hard cap on simultaneously active habits, so the daily board stays finishable. */
 export const MAX_ACTIVE_HABITS = 10;
 
 /** Hook managing habits list and CRUD actions */

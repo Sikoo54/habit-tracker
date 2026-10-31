@@ -1,11 +1,16 @@
-// Curated trail notes: real, widely-attributed lines plus original
-// AscendHabit aphorisms (author: null -> shown as "Trail note").
+/**
+ * Quote Data
+ * Curated trail notes: real, widely-attributed lines plus original AscendHabit
+ * aphorisms (author: null -> shown as "Trail note").
+ */
 
+/** One quotable line and who said it. `null` author means an in-app aphorism. */
 export interface Quote {
   text: string;
   author: string | null;
 }
 
+/** The full rotation shown by the daily quote strip. */
 export const QUOTES: Quote[] = [
   { text: 'A journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
   {

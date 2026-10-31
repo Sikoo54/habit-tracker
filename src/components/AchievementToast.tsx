@@ -12,6 +12,7 @@ interface Props {
   onDismiss: () => void;
 }
 
+/** Bottom-right card announcing a freshly unlocked badge; dismissable. */
 export function AchievementToast({ toast, queued, onDismiss }: Props): ReactNode {
   if (!toast) return null;
 

@@ -110,6 +110,7 @@ function persistLedger(l: DecayLedger): void {
   }
 }
 
+/** Current decay ledger plus the penalties applied on this load, for the banner. */
 export interface DecayState {
   ledger: DecayLedger;
   /** Freshly applied penalties (this load only). Null after dismiss. */

@@ -1,3 +1,9 @@
+/**
+ * Daily Quote Strip
+ * Shows one deterministic line per day with a refresh button that skips to the
+ * next one. Sits above the quest board as a quiet trail note.
+ */
+
 import { useState, type ReactNode } from 'react';
 import { QUOTES } from '../data/quotes';
 import { nextQuote, quoteIndexForDate } from '../utils/quote';

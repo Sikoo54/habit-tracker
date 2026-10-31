@@ -11,6 +11,7 @@ interface Props {
   level: number;
 }
 
+/** Hover/focus popover listing every rank, with the current level marked. */
 export function RankInfo({ level }: Props): ReactNode {
   const [open, setOpen] = useState(false);
 

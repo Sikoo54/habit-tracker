@@ -11,6 +11,7 @@ export const BACKUP_STALE_DAYS = 30;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/** How fresh the last export is, and whether the settings drawer should nag. */
 export interface BackupStatus {
   /** Raw ISO timestamp of the last export, or null when never exported. */
   lastBackup: string | null;

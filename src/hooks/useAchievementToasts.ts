@@ -12,6 +12,7 @@ import {
   writeSeenAchievementIds,
 } from '../game/achievementSeen';
 
+/** What the toast renders: badge identity plus display text. */
 export interface UnlockToast {
   id: string;
   icon: string;
@@ -23,6 +24,7 @@ export interface UnlockToast {
 
 const TOAST_MS = 6000;
 
+/** Public shape of the toast queue consumed by `AchievementToast`. */
 export interface AchievementToasts {
   toast: UnlockToast | null;
   /** How many more are waiting behind the current one. */

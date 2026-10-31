@@ -62,7 +62,9 @@ export function attendedDates(attendance: Attendance[]): Set<string> {
 // Full-screen absen window. Morning gate becomes available at 04:00 and
 // stays pending all day; night takes over at 22:00. Once a slot is marked,
 // that gate is done for the day.
+/** Hour the morning check-in window opens. */
 export const MORNING_START_HOUR = 4;
+/** Hour the night check-in takes over and the app is gated. */
 export const NIGHT_START_HOUR = 22;
 
 /**
