@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
-import { checkinsByHabit, habitsOn, isLateCheckin } from './checkins';
+import { checkinsByHabit, habitsOn, isLateCheckin, markBackfillDone, readBackfillDone } from './checkins';
 import { toDateKey } from './dates';
 
 function checkin(date: string, createdAt: string): Checkin {
@@ -62,5 +62,21 @@ describe('habits available for a date', () => {
 
   it('matches the created day key exactly', () => {
     expect(toDateKey(new Date(habits[1]?.createdAt ?? ''))).toBe('2026-11-01');
+  });
+});
+
+describe('backfill done ledger', () => {
+  it('starts empty and remembers the reviewed day', () => {
+    window.localStorage.clear();
+    expect(readBackfillDone()).toBeNull();
+    markBackfillDone('2026-10-31');
+    expect(readBackfillDone()).toBe('2026-10-31');
+  });
+
+  it('overwrites with the newest reviewed day', () => {
+    window.localStorage.clear();
+    markBackfillDone('2026-10-31');
+    markBackfillDone('2026-11-01');
+    expect(readBackfillDone()).toBe('2026-11-01');
   });
 });

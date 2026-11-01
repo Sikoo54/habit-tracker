@@ -1,11 +1,14 @@
 /**
  * Check-in Timing Helpers
- * Separates a check-in tapped on the day it happened from one logged later, and
- * selects which habits already existed on a given day (for backfill).
+ * Separates a check-in tapped on the day it happened from one logged later,
+ * selects which habits already existed on a given day (for backfill), and
+ * remembers when the user has finished reviewing yesterday.
  */
 
 import type { Checkin, Habit } from '../types';
 import { toDateKey } from './dates';
+
+const BACKFILL_DONE_KEY = 'habittracker.v2.backfillDone';
 
 /**
  * True when the check-in was written on a different local day than the day it
@@ -32,4 +35,22 @@ export function habitsOn(habits: Habit[], date: string): Habit[] {
     if (Number.isNaN(created.getTime())) return true;
     return toDateKey(created) <= date;
   });
+}
+
+/** Date whose backfill panel the user already reviewed and closed, if any. */
+export function readBackfillDone(): string | null {
+  try {
+    return window.localStorage.getItem(BACKFILL_DONE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** Hides the backfill panel for one reviewed day. Failures are non-fatal. */
+export function markBackfillDone(date: string): void {
+  try {
+    window.localStorage.setItem(BACKFILL_DONE_KEY, date);
+  } catch {
+    // Private mode / quota: the panel just stays visible.
+  }
 }

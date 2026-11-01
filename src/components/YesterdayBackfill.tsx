@@ -3,12 +3,18 @@
  * A quiet disclosure under Daily Training that lets the climber log a habit
  * they forgot to tap before midnight, or explicitly mark it as not done.
  * Entries written the next day stay marked "late" so the record never pretends
- * otherwise.
+ * otherwise. Pressing Done closes the panel until the next day.
  */
 
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 import type { Checkin, CheckinVariant, Habit } from '../types';
-import { checkinsByHabit, isLateCheckin } from '../utils/checkins';
+import {
+  checkinsByHabit,
+  isLateCheckin,
+  markBackfillDone,
+  readBackfillDone,
+} from '../utils/checkins';
 import { formatTanggalID } from '../utils/dates';
 
 interface Props {
@@ -22,10 +28,11 @@ interface Props {
 
 /** Disclosure listing yesterday's habits with full/small/clear controls. */
 export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): ReactNode {
+  const [doneFor, setDoneFor] = useState<string | null>(readBackfillDone);
   const byHabit = checkinsByHabit(checkins, date);
   const logged = habits.filter((h) => byHabit.has(h.id)).length;
 
-  if (habits.length === 0) return null;
+  if (habits.length === 0 || doneFor === date) return null;
   const complete = logged === habits.length;
 
   const chip =
@@ -110,6 +117,17 @@ export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): Rea
             );
           })}
         </ul>
+
+        <button
+          type="button"
+          onClick={() => {
+            markBackfillDone(date);
+            setDoneFor(date);
+          }}
+          className="mt-3 min-h-[44px] w-full rounded-xl bg-slate-800 px-4 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+        >
+          Done
+        </button>
       </div>
     </details>
   );
