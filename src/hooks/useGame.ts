@@ -66,6 +66,7 @@ export function useGameStats(
       checkins,
       tasks,
       reflections,
+      attendance,
       todayKey,
       level: progress.level,
     });

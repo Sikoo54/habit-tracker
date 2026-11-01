@@ -4,9 +4,9 @@
  * based on checkins, streaks, reflections, tasks, and player rank.
  */
 
-import type { Checkin, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, Habit, Reflection, Task } from '../types';
 import { compareWeeks } from '../utils/stats';
-import { calculateStreak } from '../utils/streak';
+import { activeDates, dailyStreak } from './dailyStreak';
 
 /** Snapshot of player data passed into achievement evaluators */
 export interface GameData {
@@ -14,6 +14,7 @@ export interface GameData {
   checkins: Checkin[];
   tasks: Task[];
   reflections: Reflection[];
+  attendance: Attendance[];
   todayKey: string;
   level: number;
 }
@@ -40,13 +41,13 @@ function countCheckins(checkins: Checkin[], variant?: 'full' | 'small'): number 
   return checkins.filter((c) => !variant || c.variant === variant).length;
 }
 
-function maxStreak(habits: Habit[], checkins: Checkin[], ref: string): number {
-  let best = 0;
-  for (const h of habits) {
-    const dates = checkins.filter((c) => c.habitId === h.id).map((c) => c.date);
-    best = Math.max(best, calculateStreak(dates, ref));
-  }
-  return best;
+/**
+ * The same streak the HUD shows: any activity that day counts (habit, quest,
+ * reflection, absen). Achievement progress must match that number, otherwise
+ * the badge argues with the badge in the header.
+ */
+function streakFor(d: GameData): number {
+  return dailyStreak(activeDates(d.checkins, d.tasks, d.reflections, d.attendance), d.todayKey);
 }
 
 const DEFS: Def[] = [
@@ -118,7 +119,7 @@ const DEFS: Def[] = [
     name: 'On Fire',
     desc: 'Reach a 3-day streak.',
     check: (d) => {
-      const n = maxStreak(d.habits, d.checkins, d.todayKey);
+      const n = streakFor(d);
       return { unlocked: n >= 3, progress: `${Math.min(n, 3)}/3` };
     },
   },
@@ -128,7 +129,7 @@ const DEFS: Def[] = [
     name: 'Unstoppable',
     desc: 'Reach a 7-day streak.',
     check: (d) => {
-      const n = maxStreak(d.habits, d.checkins, d.todayKey);
+      const n = streakFor(d);
       return { unlocked: n >= 7, progress: `${Math.min(n, 7)}/7` };
     },
   },
