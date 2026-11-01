@@ -13,13 +13,15 @@ import { HabitForm } from '../components/HabitForm';
 import { LeftoverBanner } from '../components/LeftoverBanner';
 import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
+import { YesterdayBackfill } from '../components/YesterdayBackfill';
 import type { AppliedPenalty } from '../game/decay';
 import { penaltyFor } from '../game/decay';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import { MAX_PRIORITIES, type useTasks } from '../hooks/useTasks';
-import { formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
+import { habitsOn } from '../utils/checkins';
+import { addDays, formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
 import { showsStreak } from '../utils/streak';
 
 function greeting(hour: number): string {
@@ -52,7 +54,9 @@ export function TodayPage({
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
   const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;
   const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
-  const { checkins, toggleCheckin, checkinFor } = checkinsApi;
+  const { checkins, toggleCheckin, setCheckin, checkinFor } = checkinsApi;
+  const yesterday = addDays(today, -1);
+  const backfillHabits = habitsOn(habits, yesterday);
 
   const activeHabits = habits.filter((h) => h.active);
   const doneHabits = activeHabits.filter((h) => checkinFor(h.id, today));
@@ -189,6 +193,12 @@ export function TodayPage({
                 })}
               </ul>
             )}
+            <YesterdayBackfill
+              habits={backfillHabits}
+              checkins={checkins}
+              date={yesterday}
+              onSet={(habitId, variant) => setCheckin(habitId, yesterday, variant)}
+            />
           </section>
           <HabitForm onAdd={addHabit} disabled={activeHabits.length >= MAX_ACTIVE_HABITS} />
         </div>

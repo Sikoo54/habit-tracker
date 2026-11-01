@@ -55,5 +55,19 @@ export function useCheckins() {
     [checkins],
   );
 
-  return { checkins, loading, toggleCheckin, checkinFor, setCheckins };
+  /**
+   * Explicit set used by backfill: null clears, a variant adds or replaces.
+   * `createdAt` stays from the original write so the late marker survives.
+   */
+  const setCheckin = useCallback((habitId: string, date: string, variant: CheckinVariant | null) => {
+    setCheckins((prev) => {
+      const existing = prev.find((c) => c.habitId === habitId && c.date === date);
+      if (variant === null) return existing ? prev.filter((c) => c.id !== existing.id) : prev;
+      if (existing) return prev.map((c) => (c.id === existing.id ? { ...c, variant } : c));
+      const c: Checkin = { id: createId('checkin'), habitId, date, variant, createdAt: new Date().toISOString() };
+      return [...prev, c];
+    });
+  }, []);
+
+  return { checkins, loading, toggleCheckin, setCheckin, checkinFor, setCheckins };
 }
