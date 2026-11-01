@@ -57,7 +57,7 @@ export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactN
 
         <p className="mt-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-cream-100">
           <span aria-hidden="true">{showsStreak(streak) ? '🔥' : '✦'}</span>
-          {showsStreak(streak) ? `${streak}-day streak riding on this` : 'Start your streak today'}
+          {showsStreak(streak) ? `${streak}-day training streak` : 'Daily training builds the streak'}
         </p>
 
         <button
@@ -69,7 +69,9 @@ export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactN
           {morning ? "I'm awake — begin" : "I'm off to bed"}
         </button>
 
-        <p className="mt-4 text-xs font-medium text-cream-200/60">+5 XP · keeps today's streak alive</p>
+        <p className="mt-4 text-xs font-medium text-cream-200/60">
+          +5 XP · logging attendance does not feed the streak
+        </p>
       </div>
     </main>
   );

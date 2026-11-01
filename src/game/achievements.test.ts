@@ -18,7 +18,6 @@ function base(over: Partial<GameData> = {}): GameData {
     checkins: [],
     tasks: [],
     reflections: [],
-    attendance: [],
     todayKey: '2026-09-10',
     level: 1,
     ...over,
@@ -46,7 +45,7 @@ describe('achievements', () => {
     expect(a.find((x) => x.id === 'full-power')?.unlocked).toBe(false);
   });
 
-  it('streak achievements count consecutive active days', () => {
+  it('streak achievements count consecutive full-training days', () => {
     const habits = [habit('h')];
     const checkins: Checkin[] = ['2026-09-08', '2026-09-09', '2026-09-10'].map((date, i) => ({
       id: `c${i}`,
@@ -60,30 +59,29 @@ describe('achievements', () => {
     expect(a.find((x) => x.id === 'streak-7')?.unlocked).toBe(false);
   });
 
-  it('streak achievements match the streak shown in the HUD', () => {
-    // Different activity each day: one habit check-in, then a quest, then absen.
-    // No single habit has a 3-day streak, but the climber does — so it counts.
+  it('one habit left open breaks the streak a day later', () => {
+    const habits = [habit('h1'), habit('h2')];
+    const checkins: Checkin[] = [
+      { id: 'a', habitId: 'h1', date: '2026-09-09', variant: 'full', createdAt: 'x' },
+      { id: 'b', habitId: 'h2', date: '2026-09-09', variant: 'full', createdAt: 'x' },
+      { id: 'c', habitId: 'h1', date: '2026-09-10', variant: 'small', createdAt: 'x' },
+      // h2 not done on the 10th
+    ];
+    const a = evaluateAchievements(base({ habits, checkins, todayKey: '2026-09-11' }));
+    expect(a.find((x) => x.id === 'streak-3')).toMatchObject({ unlocked: false, progress: '0/3' });
+  });
+
+  it('quests and reflections no longer feed the streak', () => {
     const a = evaluateAchievements(
       base({
         habits: [habit('h')],
-        checkins: [{ id: 'c', habitId: 'h', date: '2026-09-08', variant: 'full', createdAt: 'x' }],
-        tasks: [{ id: 't', title: 't', done: true, priority: false, date: '2026-09-09', createdAt: 'x' }],
-        attendance: [{ date: '2026-09-10', morning: true, night: false }],
-      }),
-    );
-    expect(a.find((x) => x.id === 'streak-3')).toMatchObject({ unlocked: true, progress: '3/3' });
-  });
-
-  it('a missed day during the streak resets the count', () => {
-    const a = evaluateAchievements(
-      base({
-        attendance: [
-          { date: '2026-09-08', morning: true, night: false },
-          { date: '2026-09-10', morning: true, night: false },
+        tasks: [{ id: 't', title: 't', done: true, priority: false, date: '2026-09-10', createdAt: 'x' }],
+        reflections: [
+          { id: 'r', date: '2026-09-10', wentWell: '', toImprove: '', mood: null, energy: null, createdAt: 'x', updatedAt: 'x' },
         ],
       }),
     );
-    expect(a.find((x) => x.id === 'streak-3')).toMatchObject({ unlocked: false, progress: '1/3' });
+    expect(a.find((x) => x.id === 'streak-3')).toMatchObject({ unlocked: false, progress: '0/3' });
   });
 
   it('perfect day needs everything done', () => {

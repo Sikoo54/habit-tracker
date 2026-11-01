@@ -4,9 +4,9 @@
  * based on checkins, streaks, reflections, tasks, and player rank.
  */
 
-import type { Attendance, Checkin, Habit, Reflection, Task } from '../types';
+import type { Checkin, Habit, Reflection, Task } from '../types';
 import { compareWeeks } from '../utils/stats';
-import { activeDates, dailyStreak } from './dailyStreak';
+import { trainingStreak } from './trainingStreak';
 
 /** Snapshot of player data passed into achievement evaluators */
 export interface GameData {
@@ -14,7 +14,6 @@ export interface GameData {
   checkins: Checkin[];
   tasks: Task[];
   reflections: Reflection[];
-  attendance: Attendance[];
   todayKey: string;
   level: number;
 }
@@ -42,12 +41,11 @@ function countCheckins(checkins: Checkin[], variant?: 'full' | 'small'): number 
 }
 
 /**
- * The same streak the HUD shows: any activity that day counts (habit, quest,
- * reflection, absen). Achievement progress must match that number, otherwise
- * the badge argues with the badge in the header.
+ * The same streak the HUD shows: consecutive days where every habit due that
+ * day was completed. Achievement progress must match that number exactly.
  */
 function streakFor(d: GameData): number {
-  return dailyStreak(activeDates(d.checkins, d.tasks, d.reflections, d.attendance), d.todayKey);
+  return trainingStreak(d.habits, d.checkins, d.todayKey);
 }
 
 const DEFS: Def[] = [
@@ -117,7 +115,7 @@ const DEFS: Def[] = [
     id: 'streak-3',
     icon: '🔥',
     name: 'On Fire',
-    desc: 'Reach a 3-day streak.',
+    desc: 'Finish all daily training 3 days in a row.',
     check: (d) => {
       const n = streakFor(d);
       return { unlocked: n >= 3, progress: `${Math.min(n, 3)}/3` };
@@ -127,7 +125,7 @@ const DEFS: Def[] = [
     id: 'streak-7',
     icon: '☄️',
     name: 'Unstoppable',
-    desc: 'Reach a 7-day streak.',
+    desc: 'Finish all daily training 7 days in a row.',
     check: (d) => {
       const n = streakFor(d);
       return { unlocked: n >= 7, progress: `${Math.min(n, 7)}/7` };

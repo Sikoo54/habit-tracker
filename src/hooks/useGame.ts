@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { evaluateAchievements, type Achievement } from '../game/achievements';
-import { activeDates, dailyStreak } from '../game/dailyStreak';
+import { dailyStreak } from '../game/dailyStreak';
 import {
   applyDecay,
   eachDayAfter,
@@ -25,6 +25,7 @@ import {
   type LevelProgress,
   type Rank,
 } from '../game/xp';
+import { trainingDays } from '../game/trainingStreak';
 import type { Attendance, Checkin, Habit, Reflection, Task } from '../types';
 import { addDays } from '../utils/dates';
 
@@ -33,8 +34,10 @@ export interface GameStats {
   xp: number; // net after frost decay
   grossXp: number;
   decayTotal: number;
+  /** Consecutive days where every habit due that day was completed. */
   streak: number;
-  todayActive: boolean;
+  /** True when today's whole training list is already done. */
+  todayTrainingDone: boolean;
   progress: LevelProgress;
   rank: Rank;
   nextRank: Rank | null;
@@ -60,13 +63,12 @@ export function useGameStats(
     const progress = levelProgress(xp);
     const rank = rankForLevel(progress.level);
     const ascent = ascentForLevel(progress.level);
-    const dates = activeDates(checkins, tasks, reflections, attendance);
+    const perfect = trainingDays(habits, checkins);
     const achievements = evaluateAchievements({
       habits,
       checkins,
       tasks,
       reflections,
-      attendance,
       todayKey,
       level: progress.level,
     });
@@ -74,8 +76,8 @@ export function useGameStats(
       xp,
       grossXp,
       decayTotal,
-      streak: dailyStreak(dates, todayKey),
-      todayActive: dates.has(todayKey),
+      streak: dailyStreak(perfect, todayKey),
+      todayTrainingDone: perfect.has(todayKey),
       progress,
       rank,
       nextRank: RANKS.find((r) => r.level === progress.level + 1) ?? null,

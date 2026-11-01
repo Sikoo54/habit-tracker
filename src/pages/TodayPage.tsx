@@ -93,14 +93,14 @@ export function TodayPage({
             ✕
           </button>
         </div>
-      ) : showsStreak(game.streak) && !game.todayActive ? (
+      ) : showsStreak(game.streak) && !game.todayTrainingDone ? (
         <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
           <span className="text-2xl" aria-hidden="true">
             ⚠️
           </span>
           <p className="text-sm text-amber-900 dark:text-amber-100">
-            <strong>{game.streak}-day streak at risk.</strong> Finish anything today, or frost burns ~
-            {penaltyFor(game.xp)} XP overnight.
+            <strong>{game.streak}-day streak at risk.</strong> Finish every daily training today, or
+            the chain breaks and frost burns ~{penaltyFor(game.xp)} XP overnight.
           </p>
         </div>
       ) : null}
