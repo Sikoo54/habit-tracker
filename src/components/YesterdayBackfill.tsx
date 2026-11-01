@@ -1,8 +1,9 @@
 /**
  * Yesterday Backfill
  * A quiet disclosure under Daily Training that lets the climber log a habit
- * they forgot to tap before midnight. Entries written the next day stay marked
- * "late" so the record never pretends otherwise.
+ * they forgot to tap before midnight, or explicitly mark it as not done.
+ * Entries written the next day stay marked "late" so the record never pretends
+ * otherwise.
  */
 
 import type { ReactNode } from 'react';
@@ -24,8 +25,8 @@ export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): Rea
   const byHabit = checkinsByHabit(checkins, date);
   const logged = habits.filter((h) => byHabit.has(h.id)).length;
 
-  // Nothing to fix: hide until a day is actually missed.
-  if (habits.length === 0 || logged === habits.length) return null;
+  if (habits.length === 0) return null;
+  const complete = logged === habits.length;
 
   const chip =
     'min-h-[36px] rounded-lg px-2.5 text-[13px] font-semibold transition-colors';
@@ -35,15 +36,22 @@ export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): Rea
       <summary className="flex min-h-[44px] cursor-pointer list-none items-center gap-2 px-4 text-sm font-semibold text-ink-600 hover:text-ink-700 dark:text-slate-300 dark:hover:text-slate-100 [&::-webkit-details-marker]:hidden">
         <span aria-hidden="true">🕯️</span>
         Fix yesterday
-        <span className="ml-auto text-xs font-medium text-amber-700 tabular-nums dark:text-amber-300">
-          {logged}/{habits.length} logged
+        <span
+          className={`ml-auto text-xs font-medium tabular-nums ${
+            complete
+              ? 'text-sage-700 dark:text-emerald-300'
+              : 'text-amber-700 dark:text-amber-300'
+          }`}
+        >
+          {complete ? 'all logged ✓' : `${logged}/${habits.length} logged`}
         </span>
       </summary>
 
       <div className="px-4 pb-4 pt-1">
         <p className="text-[13px] text-ink-500 dark:text-slate-400">
           Forgot to tap before midnight? Log it now for {formatTanggalID(date)}. It still counts
-          for XP and streak, and stays marked as late.
+          for XP and streak, and stays marked as late. If it truly did not happen, set it to
+          <strong> Not done</strong>.
         </p>
 
         <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-700/60">
@@ -84,16 +92,19 @@ export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): Rea
                   >
                     Small
                   </button>
-                  {c ? (
-                    <button
-                      type="button"
-                      onClick={() => onSet(h.id, null)}
-                      aria-label={`Clear yesterday's ${h.name} check-in`}
-                      className="flex min-h-[36px] min-w-[36px] items-center justify-center rounded-lg text-slate-400 hover:bg-cream-200/70 hover:text-ink-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
-                    >
-                      <span aria-hidden="true">✕</span>
-                    </button>
-                  ) : null}
+                  <button
+                    type="button"
+                    aria-pressed={!c}
+                    onClick={() => onSet(h.id, null)}
+                    aria-label={`${h.name} was not done yesterday`}
+                    className={`${chip} ${
+                      !c
+                        ? 'bg-cream-300/80 text-ink-700 dark:bg-slate-700 dark:text-slate-100'
+                        : 'border border-cream-300 text-ink-500 hover:bg-cream-200/70 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    Not done
+                  </button>
                 </div>
               </li>
             );
