@@ -1,7 +1,7 @@
 /**
  * Today Page View
  * Main dashboard showcasing daily greeting, ascent climb visualization,
- * companion card, active habits, top 3 priorities, and penalty alerts.
+ * the Main Quest habit list, side quests, and penalty alerts.
  */
 
 import type { ReactNode } from 'react';
@@ -19,7 +19,7 @@ import { penaltyFor } from '../game/decay';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
-import { MAX_PRIORITIES, type useTasks } from '../hooks/useTasks';
+import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
 import { addDays, formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
 import { showsStreak } from '../utils/streak';
@@ -52,7 +52,7 @@ export function TodayPage({
   const today = todayKey();
   const weekMonday = startOfWeekMonday(today);
   const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
-  const { priorities, others, addTask, toggleTask, removeTask } = tasksApi;
+  const { quests, addTask, toggleTask, removeTask } = tasksApi;
   const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
   const { checkins, toggleCheckin, setCheckin, checkinFor } = checkinsApi;
   const yesterday = addDays(today, -1);
@@ -60,12 +60,11 @@ export function TodayPage({
 
   const activeHabits = habits.filter((h) => h.active);
   const doneHabits = activeHabits.filter((h) => checkinFor(h.id, today));
-  const doneTasks = [...priorities, ...others].filter((t) => t.done).length;
-  const totalItems = activeHabits.length + priorities.length + others.length;
-  const doneItems = doneHabits.length + doneTasks;
-  const allDone = totalItems > 0 && doneItems === totalItems;
-  const headline =
-    totalItems === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
+  // The Main Quest is the day: only habits move the trail and the headline.
+  const mainTotal = activeHabits.length;
+  const mainDone = doneHabits.length;
+  const allDone = mainTotal > 0 && mainDone === mainTotal;
+  const headline = mainTotal === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
   const frostTotal = (penaltyNotice ?? []).reduce((s, p) => s + p.amount, 0);
 
   return (
@@ -99,7 +98,7 @@ export function TodayPage({
             ⚠️
           </span>
           <p className="text-sm text-amber-900 dark:text-amber-100">
-            <strong>{game.streak}-day streak at risk.</strong> Finish every daily training today, or
+            <strong>{game.streak}-day streak at risk.</strong> Finish every main quest today, or
             the chain breaks and frost burns ~{penaltyFor(game.xp)} XP overnight.
           </p>
         </div>
@@ -112,13 +111,13 @@ export function TodayPage({
             {greeting(new Date().getHours())}. {headline}
           </h1>
           <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-ink-500 dark:text-slate-400">
-            {totalItems === 0
-              ? 'A fresh quest board. Add one tiny quest below.'
+            {mainTotal === 0
+              ? 'A fresh route. Add your first main quest below.'
               : allDone
-                ? 'Everything cleared. Rest easy — you earned it.'
-                : `${doneItems} of ${totalItems} behind you · +${game.xp} XP banked. Small versions count too.`}
+                ? `All main quests cleared${quests.length > 0 ? ' · side quests are optional.' : '.'} Rest easy — you earned it.`
+                : `${mainDone} of ${mainTotal} main quests behind you · +${game.xp} XP banked. Small versions count too.`}
           </p>
-          <AscentTrail done={doneItems} total={totalItems} />
+          <AscentTrail done={mainDone} total={mainTotal} />
         </div>
         <div className="col-span-2 max-md:col-span-1">
           <AscentCard ascent={game.ascent} progress={game.progress} next={game.nextAscent} rank={game.rank} nextRank={game.nextRank} />
@@ -134,74 +133,91 @@ export function TodayPage({
         onDrop={dropLeftovers}
       />
 
-      <div className="mt-8 grid grid-cols-5 items-start gap-x-10 gap-y-10 border-t border-cream-200 pt-8 max-md:grid-cols-1 dark:border-slate-800">
-        <div className="col-span-2 space-y-8 max-md:order-2 max-md:col-span-1 max-md:border-t max-md:border-cream-200 max-md:pt-8 dark:max-md:border-slate-800">
-          <TaskList
-            title={`Main Quests (${priorities.length}/${MAX_PRIORITIES})`}
-            subtitle="The 3 that matter · +25 XP each."
-            tasks={priorities}
-            onToggle={toggleTask}
-            onRemove={removeTask}
-            onAdd={(title) => addTask(title, true)}
-            icon="🗡️"
-          />
-          <div className="border-t border-cream-200 pt-8 dark:border-slate-800">
-            <TaskList
-              title="Side Quests"
-              subtitle="Extra adventures · +15 XP each."
-              tasks={others}
-              onToggle={toggleTask}
-              onRemove={removeTask}
-              onAdd={(title) => addTask(title, false)}
-              icon="📜"
-            />
-          </div>
-        </div>
-
-        <div className="col-span-3 space-y-8 max-md:order-1 max-md:col-span-1 md:border-l md:border-cream-200 md:pl-10 dark:md:border-slate-800">
-          <section aria-label="Today's habits">
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="text-base font-bold">🌿 Daily Training</h2>
-              {activeHabits.length > 0 ? (
+      <div className="mt-8 space-y-6 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <section
+          aria-label="Main quest"
+          className="rounded-3xl border border-cream-200 bg-cream-50/80 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/40"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+            <div className="min-w-0">
+              <p className="section-title text-sage-600 dark:text-emerald-300">Primary</p>
+              <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+                <span aria-hidden="true">🗡️ </span>Main Quest
+              </h2>
+              <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
+                Your habit routine · only these feed the streak.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              {showsStreak(game.streak) ? (
+                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800 tabular-nums dark:bg-amber-950 dark:text-amber-200">
+                  🔥 {game.streak}
+                </span>
+              ) : null}
+              {mainTotal > 0 ? (
                 <span className="text-xs font-medium text-slate-400 tabular-nums dark:text-slate-500">
-                  {doneHabits.length}/{activeHabits.length} · full +20 / small +10 XP
+                  {mainDone}/{mainTotal} · full +20 / small +10 XP
                 </span>
               ) : null}
             </div>
-            {activeHabits.length === 0 ? (
-              <EmptyState message="No training routines yet." hint="Add your first one below. Start with the 2-minute version. 🌱" />
-            ) : (
-              <ul className="divide-y divide-cream-200 dark:divide-slate-800">
-                {activeHabits.map((h) => {
-                  const c = checkinFor(h.id, today);
-                  const dates = checkins.filter((x) => x.habitId === h.id).map((x) => x.date);
-                  return (
-                    <HabitCard
-                      key={h.id}
-                      habit={h}
-                      completedDates={dates}
-                      checkins={checkins}
-                      weekMonday={weekMonday}
-                      todayKey={today}
-                      checked={Boolean(c)}
-                      variant={c?.variant ?? null}
-                      onToggle={(v) => toggleCheckin(h.id, today, v)}
-                      onUpdate={(input) => updateHabit(h.id, input)}
-                      onRemove={() => removeHabit(h.id)}
-                    />
-                  );
-                })}
-              </ul>
-            )}
-            <YesterdayBackfill
-              habits={backfillHabits}
-              checkins={checkins}
-              date={yesterday}
-              onSet={(habitId, variant) => setCheckin(habitId, yesterday, variant)}
+          </div>
+
+          {mainTotal === 0 ? (
+            <EmptyState
+              message="No main quests yet."
+              hint="Add your first daily habit below — start with the 2-minute version. 🌱"
             />
-          </section>
-          <HabitForm onAdd={addHabit} disabled={activeHabits.length >= MAX_ACTIVE_HABITS} />
-        </div>
+          ) : (
+            <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
+              {activeHabits.map((h) => {
+                const c = checkinFor(h.id, today);
+                const dates = checkins.filter((x) => x.habitId === h.id).map((x) => x.date);
+                return (
+                  <HabitCard
+                    key={h.id}
+                    habit={h}
+                    completedDates={dates}
+                    checkins={checkins}
+                    weekMonday={weekMonday}
+                    todayKey={today}
+                    checked={Boolean(c)}
+                    variant={c?.variant ?? null}
+                    onToggle={(v) => toggleCheckin(h.id, today, v)}
+                    onUpdate={(input) => updateHabit(h.id, input)}
+                    onRemove={() => removeHabit(h.id)}
+                  />
+                );
+              })}
+            </ul>
+          )}
+
+          <YesterdayBackfill
+            habits={backfillHabits}
+            checkins={checkins}
+            date={yesterday}
+            onSet={(habitId, variant) => setCheckin(habitId, yesterday, variant)}
+          />
+
+          <div className="mt-5">
+            <HabitForm onAdd={addHabit} disabled={activeHabits.length >= MAX_ACTIVE_HABITS} />
+          </div>
+        </section>
+
+        <section
+          aria-label="Side quests"
+          className="rounded-3xl border border-cream-200/70 bg-cream-50/40 p-5 max-md:p-4 dark:border-slate-800 dark:bg-slate-900/30"
+        >
+          <TaskList
+            quiet
+            title="Side Quests"
+            subtitle="Optional extras · +15 XP each."
+            tasks={quests}
+            onToggle={toggleTask}
+            onRemove={removeTask}
+            onAdd={addTask}
+            icon="📜"
+          />
+        </section>
       </div>
     </div>
   );

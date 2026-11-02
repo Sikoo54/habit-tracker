@@ -1,7 +1,7 @@
 /**
  * Tasks Management Hook
- * Manages daily task lists, separating Top 3 Priorities from Other Tasks,
- * enforcing priority limits, and syncing changes with storage.
+ * Manages the daily side-quest list and syncing changes with storage. Habits are
+ * the Main Quest; quests are optional extras.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,10 +12,7 @@ import type { Task } from '../types';
 import { createId } from '../utils/dates';
 import { carryOver, dropLeftovers, leftoversOf } from '../utils/tasks';
 
-/** Daily Main Quest slots. Extras go to the side-quest list instead. */
-export const MAX_PRIORITIES = 3;
-
-/** Hook providing date-scoped task lists and task mutation operations */
+/** Hook providing date-scoped side quests and task mutation operations */
 export function useTasks(dateKey: string) {
   const storage = useStorage();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -39,7 +36,10 @@ export function useTasks(dateKey: string) {
           loaded.current = true;
           return;
         }
-        setTasks(all);
+        // Priorities no longer exist: undo unfinished ones so the old +25 slots
+        // merge into side quests. Finished ones keep their flag so XP history
+        // stays exactly as it was earned.
+        setTasks(all.map((t) => (!t.done && t.priority ? { ...t, priority: false } : t)));
         setLoading(false);
         loaded.current = true;
       })
@@ -57,32 +57,27 @@ export function useTasks(dateKey: string) {
   }, [tasks, storage]);
 
   const todayTasks = tasks.filter((t) => t.date === dateKey && !t.dropped);
-  const priorities = todayTasks.filter((t) => t.priority);
-  const others = todayTasks.filter((t) => !t.priority);
 
   // Unfinished quests from earlier days. Without this they would stay in
   // storage forever, invisible — user has to either carry them or let go.
   const leftovers = useMemo(() => leftoversOf(tasks, dateKey), [tasks, dateKey]);
 
   const addTask = useCallback(
-    (title: string, priority: boolean): { ok: boolean; reason?: string } => {
+    (title: string): { ok: boolean; reason?: string } => {
       const t = title.trim();
       if (!t) return { ok: false, reason: 'Task title is required.' };
-      if (priority && priorities.length >= MAX_PRIORITIES) {
-        return { ok: false, reason: `Priorities are full (${MAX_PRIORITIES}). Task goes to the Other List.` };
-      }
       const task: Task = {
         id: createId('task'),
         title: t,
         done: false,
-        priority,
+        priority: false,
         date: dateKey,
         createdAt: new Date().toISOString(),
       };
       setTasks((prev) => [...prev, task]);
       return { ok: true };
     },
-    [dateKey, priorities.length],
+    [dateKey],
   );
 
   const toggleTask = useCallback((id: string) => {
@@ -93,9 +88,9 @@ export function useTasks(dateKey: string) {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  /** Carry every leftover quest onto today, demoting extras when the 3 slots are full. */
+  /** Carry every leftover quest onto today as a side quest. */
   const bringLeftovers = useCallback(() => {
-    setTasks((prev) => carryOver(prev, dateKey, MAX_PRIORITIES));
+    setTasks((prev) => carryOver(prev, dateKey));
   }, [dateKey]);
 
   /** Let leftovers go without destroying them — flagged and hidden for good. */
@@ -106,8 +101,7 @@ export function useTasks(dateKey: string) {
   return {
     tasks,
     todayTasks,
-    priorities,
-    others,
+    quests: todayTasks,
     leftovers,
     loading,
     addTask,

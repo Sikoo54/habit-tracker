@@ -80,7 +80,7 @@ const DEFS: Def[] = [
     id: 'quest-slayer',
     icon: '🗡️',
     name: 'Quest Slayer',
-    desc: 'Complete 15 tasks.',
+    desc: 'Complete 15 side quests.',
     check: (d) => {
       const n = d.tasks.filter((t) => t.done).length;
       return { unlocked: n >= 15, progress: `${Math.min(n, 15)}/15` };
@@ -89,33 +89,29 @@ const DEFS: Def[] = [
   {
     id: 'priority-master',
     icon: '🎯',
-    name: 'Priority Master',
-    desc: 'Complete 10 priority quests.',
+    name: 'Quest Runner',
+    desc: 'Complete 25 side quests.',
     check: (d) => {
-      const n = d.tasks.filter((t) => t.done && t.priority).length;
-      return { unlocked: n >= 10, progress: `${Math.min(n, 10)}/10` };
+      const n = d.tasks.filter((t) => t.done).length;
+      return { unlocked: n >= 25, progress: `${Math.min(n, 25)}/25` };
     },
   },
   {
     id: 'perfect-day',
     icon: '⭐',
     name: 'Perfect Day',
-    desc: 'Finish everything due today.',
+    desc: 'Finish every main quest in one day.',
     check: (d) => {
-      const todays = d.tasks.filter((t) => t.date === d.todayKey);
       const active = d.habits.filter((h) => h.active);
-      const doneTasks = todays.filter((t) => t.done).length;
-      const doneHabits = active.filter((h) => d.checkins.some((c) => c.habitId === h.id && c.date === d.todayKey)).length;
-      const total = todays.length + active.length;
-      const done = doneTasks + doneHabits;
-      return { unlocked: total > 0 && done === total, progress: `${done}/${total}` };
+      const done = active.filter((h) => d.checkins.some((c) => c.habitId === h.id && c.date === d.todayKey)).length;
+      return { unlocked: active.length > 0 && done === active.length, progress: `${done}/${active.length}` };
     },
   },
   {
     id: 'streak-3',
     icon: '🔥',
     name: 'On Fire',
-    desc: 'Finish all daily training 3 days in a row.',
+    desc: 'Finish every main quest 3 days in a row.',
     check: (d) => {
       const n = streakFor(d);
       return { unlocked: n >= 3, progress: `${Math.min(n, 3)}/3` };
@@ -125,7 +121,7 @@ const DEFS: Def[] = [
     id: 'streak-7',
     icon: '☄️',
     name: 'Unstoppable',
-    desc: 'Finish all daily training 7 days in a row.',
+    desc: 'Finish every main quest 7 days in a row.',
     check: (d) => {
       const n = streakFor(d);
       return { unlocked: n >= 7, progress: `${Math.min(n, 7)}/7` };

@@ -1,5 +1,5 @@
 /**
- * Daily Training Streak
+ * Main Quest Streak
  * A day only counts when *every* habit that existed that day was checked in.
  * One habit left open breaks the chain — this is the number shown in the HUD.
  */

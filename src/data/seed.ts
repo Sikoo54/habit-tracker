@@ -1,6 +1,6 @@
 /**
  * Initial Starter Seed Data
- * Provides default starter habits and priority tasks when a user opens the app
+ * Provides default starter habits and side quests when a user opens the app
  * for the first time.
  */
 
@@ -45,11 +45,11 @@ export function seedHabits(): Habit[] {
   ];
 }
 
-/** Generates default high-priority tasks for day one */
+/** Generates default side quests for day one */
 export function seedTasks(): Task[] {
   const date = todayKey();
   return [
-    { id: 'seed_task_1', title: 'Finish the single most important work item', done: false, priority: true, date, createdAt: now() },
-    { id: 'seed_task_2', title: 'Tidy desk for 5 minutes', done: false, priority: true, date, createdAt: now() },
+    { id: 'seed_task_1', title: 'Finish the single most important work item', done: false, priority: false, date, createdAt: now() },
+    { id: 'seed_task_2', title: 'Tidy desk for 5 minutes', done: false, priority: false, date, createdAt: now() },
   ];
 }

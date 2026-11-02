@@ -70,7 +70,7 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
         </button>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p className={`text-[15px] font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
+            <p className={`text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
               {habit.name}
             </p>
             <span className="flex shrink-0 items-center gap-1 text-sm tabular-nums" title={streakMessage(streak)}>

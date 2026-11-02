@@ -36,7 +36,7 @@ export interface GameStats {
   decayTotal: number;
   /** Consecutive days where every habit due that day was completed. */
   streak: number;
-  /** True when today's whole training list is already done. */
+  /** True when every main quest habit due today is already done. */
   todayTrainingDone: boolean;
   progress: LevelProgress;
   rank: Rank;

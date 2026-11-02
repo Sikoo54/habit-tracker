@@ -8,7 +8,7 @@ import type { Attendance, Checkin, Reflection, Task } from '../types';
 import { attendanceXp } from './attendance';
 
 // XP is DERIVED from existing data — no new storage, no migration.
-// Full version > small version, priorities > side quests, reflection = bonus.
+// Full version > small version, legacy priority quests > side quests, reflection = bonus.
 
 /** XP values awarded for different user activities */
 export const XP = {

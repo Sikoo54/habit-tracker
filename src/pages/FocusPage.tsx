@@ -1,6 +1,7 @@
 /**
  * Focus Page View
- * Pomodoro timer arena allowing users to pick a single quest or habit training
+ * Pomodoro timer arena allowing users to pick a single main quest habit or a
+ * side quest to focus on.
  * and focus in 25-minute deep work intervals.
  */
 
@@ -35,9 +36,10 @@ export function FocusPage({
   const open = todayTasks.filter((t) => !t.done);
   const trainings: FocusOption[] = habits
     .filter((h) => h.active && !checkinFor(h.id, today))
-    .map((h) => ({ id: h.id, title: h.name, icon: '🏋️' }));
-  const quests: FocusOption[] = open.map((t) => ({ id: t.id, title: t.title, icon: t.priority ? '🎯' : '📝' }));
-  const options = [...quests, ...trainings];
+    .map((h) => ({ id: h.id, title: h.name, icon: '🌿' }));
+  const quests: FocusOption[] = open.map((t) => ({ id: t.id, title: t.title, icon: '📜' }));
+  // Main quest (habits) first — they are what the day is really about.
+  const options = [...trainings, ...quests];
   const [focusId, setFocusId] = useState<string | null>(null);
   const [custom, setCustom] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
@@ -64,7 +66,7 @@ export function FocusPage({
       {options.length > 0 ? (
         <div>
           <label htmlFor="focus-task" className="section-title text-slate-400 dark:text-slate-500">
-            From today's quests or habits
+            From today's main quest or side quests
           </label>
           <select
             id="focus-task"
@@ -72,20 +74,20 @@ export function FocusPage({
             onChange={(e) => setFocusId(e.target.value)}
             className="mt-2 min-h-[48px] w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
           >
-            {quests.length > 0 ? (
-              <optgroup label="Quests">
-                {quests.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.icon} {t.title}
+            {trainings.length > 0 ? (
+              <optgroup label="Main quest">
+                {trainings.map((h) => (
+                  <option key={h.id} value={h.id}>
+                    {h.icon} {h.title}
                   </option>
                 ))}
               </optgroup>
             ) : null}
-            {trainings.length > 0 ? (
-              <optgroup label="Daily training">
-                {trainings.map((h) => (
-                  <option key={h.id} value={h.id}>
-                    {h.icon} {h.title}
+            {quests.length > 0 ? (
+              <optgroup label="Side quests">
+                {quests.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.icon} {t.title}
                   </option>
                 ))}
               </optgroup>

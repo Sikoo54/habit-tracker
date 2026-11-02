@@ -84,15 +84,40 @@ describe('achievements', () => {
     expect(a.find((x) => x.id === 'streak-3')).toMatchObject({ unlocked: false, progress: '0/3' });
   });
 
-  it('perfect day needs everything done', () => {
+  it('perfect day only needs the main quest (habits)', () => {
     const habits = [habit('h')];
     const a = evaluateAchievements(
       base({
         habits,
-        tasks: [{ id: 't', title: 't', done: true, priority: true, date: '2026-09-10', createdAt: 'x' }],
+        // A side quest left open must not block a perfect day.
+        tasks: [{ id: 't', title: 't', done: false, priority: false, date: '2026-09-10', createdAt: 'x' }],
         checkins: [{ id: 'c', habitId: 'h', date: '2026-09-10', variant: 'full', createdAt: 'x' }],
       }),
     );
-    expect(a.find((x) => x.id === 'perfect-day')?.unlocked).toBe(true);
+    expect(a.find((x) => x.id === 'perfect-day')).toMatchObject({ unlocked: true, progress: '1/1' });
+  });
+
+  it('perfect day stays locked while a habit is open', () => {
+    const a = evaluateAchievements(
+      base({
+        habits: [habit('h1'), habit('h2')],
+        checkins: [{ id: 'c', habitId: 'h1', date: '2026-09-10', variant: 'full', createdAt: 'x' }],
+      }),
+    );
+    expect(a.find((x) => x.id === 'perfect-day')).toMatchObject({ unlocked: false, progress: '1/2' });
+  });
+
+  it('Quest Runner counts every completed side quest', () => {
+    const tasks = Array.from({ length: 25 }, (_, i) => ({
+      id: `t${i}`,
+      title: 't',
+      done: true,
+      priority: i % 2 === 0,
+      date: '2026-09-10',
+      createdAt: 'x',
+    }));
+    const a = evaluateAchievements(base({ tasks }));
+    expect(a.find((x) => x.id === 'priority-master')).toMatchObject({ unlocked: true, progress: '25/25' });
+    expect(a.find((x) => x.id === 'quest-slayer')?.unlocked).toBe(true);
   });
 });

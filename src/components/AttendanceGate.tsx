@@ -57,7 +57,7 @@ export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactN
 
         <p className="mt-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-cream-100">
           <span aria-hidden="true">{showsStreak(streak) ? '🔥' : '✦'}</span>
-          {showsStreak(streak) ? `${streak}-day training streak` : 'Daily training builds the streak'}
+          {showsStreak(streak) ? `${streak}-day main quest streak` : 'Daily habits build the streak'}
         </p>
 
         <button

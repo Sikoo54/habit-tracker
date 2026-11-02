@@ -17,10 +17,12 @@ interface Props {
   onRemove: (id: string) => void;
   onAdd: (title: string) => { ok: boolean; reason?: string };
   icon: string;
+  /** Renders the list as secondary content: smaller, muted heading. */
+  quiet?: boolean;
 }
 
-/** Render section for a grouped list of tasks (Priority vs Other) */
-export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon }: Props): ReactNode {
+/** Render a grouped quest list (side quests) with add, toggle and delete */
+export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon, quiet = false }: Props): ReactNode {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +42,13 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
   return (
     <section aria-label={title}>
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">
+        <h2
+          className={
+            quiet
+              ? 'text-[13px] font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500'
+              : 'text-base font-bold text-slate-800 dark:text-slate-100'
+          }
+        >
           <span aria-hidden="true">{icon} </span>
           {title}
         </h2>
@@ -50,7 +58,9 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
           </span>
         ) : null}
       </div>
-      <p className="mt-0.5 text-sm text-ink-500 dark:text-slate-400">{subtitle}</p>
+      <p className={quiet ? 'mt-0.5 text-[13px] text-slate-400 dark:text-slate-500' : 'mt-0.5 text-sm text-ink-500 dark:text-slate-400'}>
+        {subtitle}
+      </p>
 
       <form onSubmit={submit} className="mt-3 flex gap-2">
         <label htmlFor={`tambah-${icon}`} className="sr-only">

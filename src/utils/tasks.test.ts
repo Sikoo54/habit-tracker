@@ -28,33 +28,21 @@ describe('leftover quests', () => {
 
   it('moves leftovers to today and keeps finished quests alone', () => {
     const all = [task({ id: 'a', date: YESTERDAY }), task({ id: 'b', date: OLDER, done: true })];
-    const moved = carryOver(all, TODAY, 3);
+    const moved = carryOver(all, TODAY);
     expect(moved.find((t) => t.id === 'a')?.date).toBe(TODAY);
     expect(moved.find((t) => t.id === 'b')?.date).toBe(OLDER);
     expect(leftoversOf(moved, TODAY)).toEqual([]);
   });
 
-  it('demotes priorities beyond the daily cap instead of dropping them', () => {
-    const all = [
-      task({ id: 'p1', date: TODAY, priority: true }),
-      task({ id: 'p2', date: TODAY, priority: true }),
-      task({ id: 'p3', date: TODAY, priority: true }),
-      task({ id: 'old', date: YESTERDAY, priority: true }),
-    ];
-    const moved = carryOver(all, TODAY, 3);
-    expect(moved.find((t) => t.id === 'old')?.priority).toBe(false);
-    expect(moved.find((t) => t.id === 'old')?.date).toBe(TODAY);
+  it('carries legacy priority quests over as plain side quests', () => {
+    const all = [task({ id: 'old', date: YESTERDAY, priority: true })];
+    const moved = carryOver(all, TODAY);
+    expect(moved[0]).toMatchObject({ date: TODAY, priority: false });
   });
 
-  it('fills remaining priority slots first', () => {
-    const all = [
-      task({ id: 'p1', date: TODAY, priority: true }),
-      task({ id: 'old1', date: OLDER, priority: true }),
-      task({ id: 'old2', date: YESTERDAY, priority: true }),
-    ];
-    const moved = carryOver(all, TODAY, 3);
-    expect(moved.find((t) => t.id === 'old1')?.priority).toBe(true);
-    expect(moved.find((t) => t.id === 'old2')?.priority).toBe(true);
+  it('never touches quests that are already on today', () => {
+    const all = [task({ id: 'today', date: TODAY, priority: true })];
+    expect(carryOver(all, TODAY)[0]?.priority).toBe(true);
   });
 
   it('lets go without deleting the record', () => {

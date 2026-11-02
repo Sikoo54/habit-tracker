@@ -14,16 +14,13 @@ export function leftoversOf(tasks: Task[], today: string): Task[] {
 }
 
 /**
- * Moves leftovers onto `today`. Priority quests keep their slot only while the
- * daily cap allows it — the rest become side quests instead of vanishing.
+ * Moves leftovers onto `today` as side quests. Legacy priority flags are
+ * cleared so the merged list stays uniform.
  */
-export function carryOver(tasks: Task[], today: string, maxPriorities: number): Task[] {
-  let prioritySlots = tasks.filter((t) => t.date === today && t.priority && !t.dropped).length;
+export function carryOver(tasks: Task[], today: string): Task[] {
   return tasks.map((t) => {
     if (t.done || t.dropped || t.date >= today) return t;
-    const priority = t.priority && prioritySlots < maxPriorities;
-    if (priority) prioritySlots += 1;
-    return { ...t, date: today, priority };
+    return { ...t, date: today, priority: false };
   });
 }
 

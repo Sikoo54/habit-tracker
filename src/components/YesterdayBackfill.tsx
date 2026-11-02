@@ -1,6 +1,6 @@
 /**
  * Yesterday Backfill
- * A quiet disclosure under Daily Training that lets the climber log a habit
+ * A quiet disclosure under the Main Quest that lets the climber log a habit
  * they forgot to tap before midnight, or explicitly mark it as not done.
  * Entries written the next day stay marked "late" so the record never pretends
  * otherwise. Pressing Done closes the panel until the next day.

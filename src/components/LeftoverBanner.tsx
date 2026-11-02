@@ -42,7 +42,7 @@ export function LeftoverBanner({ leftovers, today, onBring, onDrop }: Props): Re
       <ul className="mt-1.5 space-y-0.5">
         {shown.map((t) => (
           <li key={t.id} className="truncate text-[13px] text-amber-900/80 dark:text-amber-100/80">
-            <span aria-hidden="true">{t.priority ? '🗡️' : '📜'}</span> {t.title}
+            <span aria-hidden="true">📜</span> {t.title}
           </li>
         ))}
         {hidden > 0 ? (
