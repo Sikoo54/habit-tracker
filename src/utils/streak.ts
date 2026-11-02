@@ -34,7 +34,7 @@ export function calculateStreak(completedKeys: string[], referenceKey: string): 
 export function streakMessage(streak: number): string {
   if (streak <= 0) return 'Starting small today is already great. 🌱';
   if (streak === 1) return 'First step done. Keep going gently. 🌱';
-  if (streak < 4) return `Small flame lit — ${streak} days running. Stick to your light version. 🔥`;
+  if (streak < 4) return `Small flame lit — ${streak} days running. Keep it going. 🔥`;
   if (streak < 8) return `Amazing — ${streak} days! Keep the flame alive today. 🔥`;
   return `Consistent for ${streak} days! You are building a new identity. 🔥`;
 }

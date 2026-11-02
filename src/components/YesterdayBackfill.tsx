@@ -8,7 +8,7 @@
 
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import type { Checkin, CheckinVariant, Habit } from '../types';
+import type { Checkin, Habit } from '../types';
 import {
   checkinsByHabit,
   isLateCheckin,
@@ -23,10 +23,10 @@ interface Props {
   checkins: Checkin[];
   /** Yesterday's date key. */
   date: string;
-  onSet: (habitId: string, variant: CheckinVariant | null) => void;
+  onSet: (habitId: string, done: boolean) => void;
 }
 
-/** Disclosure listing yesterday's habits with full/small/clear controls. */
+/** Disclosure listing yesterday's habits with done / not done controls. */
 export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): ReactNode {
   const [doneFor, setDoneFor] = useState<string | null>(readBackfillDone);
   const byHabit = checkinsByHabit(checkins, date);
@@ -77,32 +77,21 @@ export function YesterdayBackfill({ habits, checkins, date, onSet }: Props): Rea
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
-                    aria-pressed={c?.variant === 'full'}
-                    onClick={() => onSet(h.id, 'full')}
+                    aria-pressed={Boolean(c)}
+                    onClick={() => onSet(h.id, true)}
+                    aria-label={`${h.name} was done yesterday`}
                     className={`${chip} ${
-                      c?.variant === 'full'
+                      c
                         ? 'bg-sage-600 text-white'
                         : 'border border-cream-300 text-ink-600 hover:bg-cream-200/70 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
                     }`}
                   >
-                    Full
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={c?.variant === 'small'}
-                    onClick={() => onSet(h.id, 'small')}
-                    className={`${chip} ${
-                      c?.variant === 'small'
-                        ? 'bg-sage-600 text-white'
-                        : 'border border-cream-300 text-ink-600 hover:bg-cream-200/70 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
-                    }`}
-                  >
-                    Small
+                    Done
                   </button>
                   <button
                     type="button"
                     aria-pressed={!c}
-                    onClick={() => onSet(h.id, null)}
+                    onClick={() => onSet(h.id, false)}
                     aria-label={`${h.name} was not done yesterday`}
                     className={`${chip} ${
                       !c

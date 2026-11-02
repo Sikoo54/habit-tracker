@@ -12,14 +12,14 @@ function task(done: boolean, priority: boolean): Task {
   return { id: `${done}${priority}`, title: 't', done, priority, date: '2026-01-01', createdAt: 'x' };
 }
 
-function checkin(variant: 'full' | 'small'): Checkin {
-  return { id: variant, habitId: 'h', date: '2026-01-01', variant, createdAt: 'x' };
+function checkin(): Checkin {
+  return { id: 'c', habitId: 'h', date: '2026-01-01', createdAt: 'x' };
 }
 
 describe('xp', () => {
-  it('full > small, priority > other', () => {
-    expect(totalXp([checkin('full')], [], [])).toBe(20);
-    expect(totalXp([checkin('small')], [], [])).toBe(10);
+  it('habit check-ins are flat, priority > other', () => {
+    expect(totalXp([checkin()], [], [])).toBe(20);
+    expect(totalXp([checkin(), checkin()], [], [])).toBe(40);
     expect(totalXp([], [task(true, true)], [])).toBe(25);
     expect(totalXp([], [task(true, false)], [])).toBe(15);
     expect(totalXp([], [task(false, true)], [])).toBe(0);

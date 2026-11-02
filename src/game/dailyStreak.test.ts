@@ -9,7 +9,7 @@ import { activeDates, dailyStreak, lastActiveDate } from './dailyStreak';
 import type { Checkin, Reflection, Task } from '../types';
 
 function checkin(date: string): Checkin {
-  return { id: date, habitId: 'h', date, variant: 'full', createdAt: 'x' };
+  return { id: date, habitId: 'h', date, createdAt: 'x' };
 }
 
 function doneTask(date: string): Task {

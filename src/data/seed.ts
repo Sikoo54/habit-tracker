@@ -9,14 +9,13 @@ import { todayKey } from '../utils/dates';
 
 const now = (): string => new Date().toISOString();
 
-/** Generates starter habits (water, light exercise, reading) with 2-minute rule versions */
+/** Generates starter habits (water, light exercise, reading) */
 export function seedHabits(): Habit[] {
   return [
     {
       id: 'seed_habit_air',
       name: 'Drink water',
       fullVersion: 'Drink 8 glasses',
-      smallVersion: 'Drink 1 glass',
       trigger: 'After morning toothbrush',
       active: true,
       weeklyGoal: 7,
@@ -26,7 +25,6 @@ export function seedHabits(): Habit[] {
       id: 'seed_habit_olahraga',
       name: 'Light exercise',
       fullVersion: 'Walk 30 minutes',
-      smallVersion: 'Stretch 2 minutes',
       trigger: 'After lunch',
       active: true,
       weeklyGoal: 4,
@@ -36,7 +34,6 @@ export function seedHabits(): Habit[] {
       id: 'seed_habit_baca',
       name: 'Reading',
       fullVersion: 'Read 20 pages',
-      smallVersion: 'Read 1 page',
       trigger: 'Before bed',
       active: true,
       weeklyGoal: 5,

@@ -35,7 +35,7 @@ export const QUOTES: Quote[] = [
   { text: 'A missed day is a rest stop, not a dead end.', author: null },
   { text: 'Pack light. Pick one thing and carry it all the way up.', author: null },
   { text: 'The summit is not the point. The habit of climbing is.', author: null },
-  { text: 'Small versions are not lesser versions. They are the rope that holds you.', author: null },
+  { text: 'Half a step still moves you up the trail.', author: null },
   { text: 'Some days you move fast. Some days you just keep the fire lit.', author: null },
   { text: 'Discipline is a trail you walk, not a wall you build.', author: null },
   { text: 'You do not need a perfect week. You need a next step.', author: null },

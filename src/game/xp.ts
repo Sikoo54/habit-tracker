@@ -8,21 +8,18 @@ import type { Attendance, Checkin, Reflection, Task } from '../types';
 import { attendanceXp } from './attendance';
 
 // XP is DERIVED from existing data — no new storage, no migration.
-// Full version > small version, legacy priority quests > side quests, reflection = bonus.
-
-/** XP values awarded for different user activities */
-export const XP = {
-  checkinFull: 20,
-  checkinSmall: 10,
+// One habit check-in per day is worth the same XP, legacy priority quests > side quests.
+const XP = {
+  checkin: 20,
   taskPriority: 25,
   taskOther: 15,
   reflection: 15,
   reflectionBonus: 5, // mood + energy both filled
 } as const;
 
-/** Calculates XP awarded for a habit check-in variant */
-export function xpForCheckin(variant: 'full' | 'small'): number {
-  return variant === 'full' ? XP.checkinFull : XP.checkinSmall;
+/** XP awarded for a habit check-in. */
+export function xpForCheckin(): number {
+  return XP.checkin;
 }
 
 /** Calculates XP awarded for completing a task */
@@ -38,7 +35,7 @@ export function totalXp(
   attendance: Attendance[] = [],
 ): number {
   let xp = 0;
-  for (const c of checkins) xp += xpForCheckin(c.variant);
+  xp += xpForCheckin() * checkins.length;
   for (const t of tasks) if (t.done) xp += xpForTask(t.priority);
   for (const r of reflections) {
     xp += XP.reflection;

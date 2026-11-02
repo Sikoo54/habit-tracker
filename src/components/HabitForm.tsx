@@ -1,7 +1,7 @@
 /**
  * Habit Form Component
- * Expandable accordion form for creating new habits with full version,
- * 2-minute version, cue trigger, and weekly goal frequency.
+ * Expandable accordion form for creating new main quest habits with a target,
+ * cue trigger, and weekly goal frequency.
  */
 
 import { useState, type FormEvent, type ReactNode } from 'react';
@@ -12,25 +12,23 @@ interface Props {
   disabled: boolean;
 }
 
-/** Form creating new habits following Atomic Habits cues and small versions */
+/** Form creating new habits following Atomic Habits cues and a single target */
 export function HabitForm({ onAdd, disabled }: Props): ReactNode {
   const [name, setName] = useState('');
   const [full, setFull] = useState('');
-  const [small, setSmall] = useState('');
   const [trigger, setTrigger] = useState('');
   const [weeklyGoal, setWeeklyGoal] = useState(7);
   const [error, setError] = useState<string | null>(null);
 
   const submit = (e: FormEvent): void => {
     e.preventDefault();
-    const res = onAdd({ name, fullVersion: full, smallVersion: small, trigger, weeklyGoal });
+    const res = onAdd({ name, fullVersion: full, trigger, weeklyGoal });
     if (!res.ok) {
       setError(res.reason ?? 'Could not add habit.');
       return;
     }
     setName('');
     setFull('');
-    setSmall('');
     setTrigger('');
     setWeeklyGoal(7);
     setError(null);
@@ -53,17 +51,11 @@ export function HabitForm({ onAdd, disabled }: Props): ReactNode {
             </label>
             <input id="hn" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Reading" maxLength={60} className={inputCls} />
           </div>
-          <div>
+          <div className="col-span-2">
             <label htmlFor="hf" className="text-sm font-medium text-ink-600 dark:text-slate-300">
-              Full version
+              Target — what counts as done
             </label>
             <input id="hf" value={full} onChange={(e) => setFull(e.target.value)} placeholder="e.g. Read 20 pages" maxLength={80} className={inputCls} />
-          </div>
-          <div>
-            <label htmlFor="hs" className="text-sm font-medium text-ink-600 dark:text-slate-300">
-              Small version 🌱
-            </label>
-            <input id="hs" value={small} onChange={(e) => setSmall(e.target.value)} placeholder="e.g. Read 1 page" maxLength={80} className={inputCls} />
           </div>
           <div className="col-span-2">
             <label htmlFor="ht" className="text-sm font-medium text-ink-600 dark:text-slate-300">

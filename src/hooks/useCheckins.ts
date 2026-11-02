@@ -1,12 +1,11 @@
 /**
  * Habit Check-ins Hook
- * Manages daily habit check-in logs, variants (full vs small),
- * and persistent storage synchronization.
+ * Manages daily habit check-in logs and persistent storage synchronization.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStorage } from '../storage/StorageContext';
-import type { Checkin, CheckinVariant } from '../types';
+import type { Checkin } from '../types';
 import { createId } from '../utils/dates';
 
 /** Custom hook providing checkin status and toggle capabilities */
@@ -40,11 +39,11 @@ export function useCheckins() {
   }, [checkins, storage]);
 
   /** Toggle: jika sudah ada checkin habit+date -> hapus; jika tidak -> buat. */
-  const toggleCheckin = useCallback((habitId: string, date: string, variant: CheckinVariant) => {
+  const toggleCheckin = useCallback((habitId: string, date: string) => {
     setCheckins((prev) => {
       const existing = prev.find((c) => c.habitId === habitId && c.date === date);
       if (existing) return prev.filter((c) => c.id !== existing.id);
-      const c: Checkin = { id: createId('checkin'), habitId, date, variant, createdAt: new Date().toISOString() };
+      const c: Checkin = { id: createId('checkin'), habitId, date, createdAt: new Date().toISOString() };
       return [...prev, c];
     });
   }, []);
@@ -56,15 +55,15 @@ export function useCheckins() {
   );
 
   /**
-   * Explicit set used by backfill: null clears, a variant adds or replaces.
+   * Explicit set used by backfill: false clears, true adds.
    * `createdAt` stays from the original write so the late marker survives.
    */
-  const setCheckin = useCallback((habitId: string, date: string, variant: CheckinVariant | null) => {
+  const setCheckin = useCallback((habitId: string, date: string, done: boolean) => {
     setCheckins((prev) => {
       const existing = prev.find((c) => c.habitId === habitId && c.date === date);
-      if (variant === null) return existing ? prev.filter((c) => c.id !== existing.id) : prev;
-      if (existing) return prev.map((c) => (c.id === existing.id ? { ...c, variant } : c));
-      const c: Checkin = { id: createId('checkin'), habitId, date, variant, createdAt: new Date().toISOString() };
+      if (!done) return existing ? prev.filter((c) => c.id !== existing.id) : prev;
+      if (existing) return prev;
+      const c: Checkin = { id: createId('checkin'), habitId, date, createdAt: new Date().toISOString() };
       return [...prev, c];
     });
   }, []);

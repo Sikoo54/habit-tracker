@@ -19,7 +19,6 @@ function habit(id: string, weeklyGoal: number, active = true): Habit {
     id,
     name: id,
     fullVersion: 'full',
-    smallVersion: 'small',
     trigger: '',
     active,
     weeklyGoal,
@@ -28,7 +27,7 @@ function habit(id: string, weeklyGoal: number, active = true): Habit {
 }
 
 function checkin(habitId: string, date: string): Checkin {
-  return { id: `${habitId}_${date}`, habitId, date, variant: 'full', createdAt: date };
+  return { id: `${habitId}_${date}`, habitId, date, createdAt: date };
 }
 
 describe('weekly goals', () => {

@@ -4,11 +4,11 @@ import { checkinsByHabit, habitsOn, isLateCheckin, markBackfillDone, readBackfil
 import { toDateKey } from './dates';
 
 function checkin(date: string, createdAt: string): Checkin {
-  return { id: 'c1', habitId: 'h1', date, variant: 'full', createdAt };
+  return { id: 'c1', habitId: 'h1', date, createdAt };
 }
 
 function habit(id: string, createdAt: string, active = true): Habit {
-  return { id, name: id, fullVersion: '', smallVersion: '', trigger: '', active, weeklyGoal: 0, createdAt };
+  return { id, name: id, fullVersion: '', trigger: '', active, weeklyGoal: 0, createdAt };
 }
 
 /** Local-time ISO string for a given local day/hour. */

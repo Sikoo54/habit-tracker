@@ -115,7 +115,7 @@ export function TodayPage({
               ? 'A fresh route. Add your first main quest below.'
               : allDone
                 ? `All main quests cleared${quests.length > 0 ? ' · side quests are optional.' : '.'} Rest easy — you earned it.`
-                : `${mainDone} of ${mainTotal} main quests behind you · +${game.xp} XP banked. Small versions count too.`}
+                : `${mainDone} of ${mainTotal} main quests behind you · +${game.xp} XP banked. One tap per habit.`}
           </p>
           <AscentTrail done={mainDone} total={mainTotal} />
         </div>
@@ -156,7 +156,7 @@ export function TodayPage({
               ) : null}
               {mainTotal > 0 ? (
                 <span className="text-xs font-medium text-slate-400 tabular-nums dark:text-slate-500">
-                  {mainDone}/{mainTotal} · full +20 / small +10 XP
+                  {mainDone}/{mainTotal} · +20 XP each
                 </span>
               ) : null}
             </div>
@@ -181,8 +181,7 @@ export function TodayPage({
                     weekMonday={weekMonday}
                     todayKey={today}
                     checked={Boolean(c)}
-                    variant={c?.variant ?? null}
-                    onToggle={(v) => toggleCheckin(h.id, today, v)}
+                    onToggle={() => toggleCheckin(h.id, today)}
                     onUpdate={(input) => updateHabit(h.id, input)}
                     onRemove={() => removeHabit(h.id)}
                   />
@@ -195,7 +194,7 @@ export function TodayPage({
             habits={backfillHabits}
             checkins={checkins}
             date={yesterday}
-            onSet={(habitId, variant) => setCheckin(habitId, yesterday, variant)}
+            onSet={(habitId, done) => setCheckin(habitId, yesterday, done)}
           />
 
           <div className="mt-5">

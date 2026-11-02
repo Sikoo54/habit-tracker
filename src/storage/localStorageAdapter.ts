@@ -39,7 +39,6 @@ function validHabit(v: unknown): v is Habit {
     isString(v.id) &&
     isString(v.name) &&
     isString(v.fullVersion) &&
-    isString(v.smallVersion) &&
     isString(v.trigger) &&
     isBoolean(v.active) &&
     (v.weeklyGoal === undefined || typeof v.weeklyGoal === 'number') &&
@@ -47,9 +46,20 @@ function validHabit(v: unknown): v is Habit {
   );
 }
 
-/** Fill fields added after v1 so old saved habits keep working. */
+/**
+ * Fill fields added after v1 and drop retired ones (the old small version), so
+ * saved habits stay lean and keep working.
+ */
 function normalizeHabit(h: Habit): Habit {
-  return { ...h, weeklyGoal: typeof h.weeklyGoal === 'number' ? h.weeklyGoal : 0 };
+  return {
+    id: h.id,
+    name: h.name,
+    fullVersion: h.fullVersion,
+    trigger: h.trigger,
+    active: h.active,
+    weeklyGoal: typeof h.weeklyGoal === 'number' ? h.weeklyGoal : 0,
+    createdAt: h.createdAt,
+  };
 }
 
 function validTask(v: unknown): v is Task {
@@ -70,7 +80,6 @@ function validCheckin(v: unknown): v is Checkin {
     isString(v.id) &&
     isString(v.habitId) &&
     isString(v.date) &&
-    (v.variant === 'full' || v.variant === 'small') &&
     isString(v.createdAt)
   );
 }

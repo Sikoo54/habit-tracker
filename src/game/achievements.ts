@@ -36,10 +36,6 @@ interface Def {
   check: (d: GameData) => { unlocked: boolean; progress: string };
 }
 
-function countCheckins(checkins: Checkin[], variant?: 'full' | 'small'): number {
-  return checkins.filter((c) => !variant || c.variant === variant).length;
-}
-
 /**
  * The same streak the HUD shows: consecutive days where every habit due that
  * day was completed. Achievement progress must match that number exactly.
@@ -57,23 +53,23 @@ const DEFS: Def[] = [
     check: (d) => ({ unlocked: d.checkins.length >= 1, progress: `${Math.min(d.checkins.length, 1)}/1` }),
   },
   {
-    id: 'small-wins',
-    icon: '🐜',
-    name: 'Small Wins',
-    desc: 'Finish 10 small versions.',
+    id: 'habit-devotee',
+    icon: '🧗',
+    name: 'Habit Devotee',
+    desc: 'Complete 25 habits.',
     check: (d) => {
-      const n = countCheckins(d.checkins, 'small');
-      return { unlocked: n >= 10, progress: `${Math.min(n, 10)}/10` };
+      const n = d.checkins.length;
+      return { unlocked: n >= 25, progress: `${Math.min(n, 25)}/25` };
     },
   },
   {
-    id: 'full-power',
-    icon: '💪',
-    name: 'Full Power',
-    desc: 'Finish 10 full versions.',
+    id: 'iron-routine',
+    icon: '⛰️',
+    name: 'Iron Routine',
+    desc: 'Complete 50 habits.',
     check: (d) => {
-      const n = countCheckins(d.checkins, 'full');
-      return { unlocked: n >= 10, progress: `${Math.min(n, 10)}/10` };
+      const n = d.checkins.length;
+      return { unlocked: n >= 50, progress: `${Math.min(n, 50)}/50` };
     },
   },
   {

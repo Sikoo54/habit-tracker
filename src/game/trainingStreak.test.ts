@@ -3,11 +3,11 @@ import type { Checkin, Habit } from '../types';
 import { trainingDays, trainingStreak } from './trainingStreak';
 
 function habit(id: string, createdAt = '2026-09-01T00:00:00.000Z', active = true): Habit {
-  return { id, name: id, fullVersion: 'f', smallVersion: 's', trigger: '', active, weeklyGoal: 0, createdAt };
+  return { id, name: id, fullVersion: 'f', trigger: '', active, weeklyGoal: 0, createdAt };
 }
 
 function checkin(habitId: string, date: string): Checkin {
-  return { id: `${habitId}-${date}`, habitId, date, variant: 'full', createdAt: 'x' };
+  return { id: `${habitId}-${date}`, habitId, date, createdAt: 'x' };
 }
 
 const H1 = habit('h1');

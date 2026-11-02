@@ -6,15 +6,12 @@
 
 // Core domain types. No `any`, every field explicit.
 
-/** Type of checkin: full target vs small minimum version */
-export type CheckinVariant = 'full' | 'small';
-
 /** Habit entity representation */
 export interface Habit {
   id: string;
   name: string;
+  /** What finishing the habit looks like — the single target. */
   fullVersion: string;
-  smallVersion: string;
   trigger: string;
   active: boolean;
   /** Target check-ins per week. 0 = no weekly goal. */
@@ -26,7 +23,6 @@ export interface Habit {
 export interface HabitInput {
   name: string;
   fullVersion: string;
-  smallVersion: string;
   trigger: string;
   weeklyGoal: number;
 }
@@ -49,7 +45,6 @@ export interface Checkin {
   id: string;
   habitId: string;
   date: string; // YYYY-MM-DD
-  variant: CheckinVariant;
   createdAt: string;
 }
 

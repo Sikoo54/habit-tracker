@@ -13,7 +13,6 @@ function habit(id: string): Habit {
     id,
     name: id,
     fullVersion: 'full',
-    smallVersion: 'small',
     trigger: '',
     active: true,
     weeklyGoal: 0,
@@ -22,7 +21,7 @@ function habit(id: string): Habit {
 }
 
 function checkin(habitId: string, date: string): Checkin {
-  return { id: `${habitId}_${date}`, habitId, date, variant: 'full', createdAt: date };
+  return { id: `${habitId}_${date}`, habitId, date, createdAt: date };
 }
 
 describe('weekly stats', () => {
