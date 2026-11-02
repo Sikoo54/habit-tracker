@@ -22,10 +22,10 @@ const CIRC = 2 * Math.PI * R;
 /** Route position: rank title, circular ascent meter, path from base camp to summit. */
 export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): ReactNode {
   return (
-    <div className="rounded-3xl border border-cream-200 bg-cream-50 p-5 dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-3xl border border-cream-200 bg-cream-50 p-5 max-md:p-4 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-center gap-4">
         <div className="relative shrink-0" role="img" aria-label={`Level ${progress.level}, ${progress.pct}% to next rank`}>
-          <svg width="96" height="96" viewBox="0 0 96 96">
+          <svg width="96" height="96" viewBox="0 0 96 96" className="max-md:h-16 max-md:w-16">
             <circle cx="48" cy="48" r={R} fill="none" strokeWidth="8" className="stroke-cream-200 dark:stroke-slate-800" />
             <circle
               cx="48"
@@ -40,7 +40,7 @@ export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): R
               className="stroke-summit-500 transition-all duration-700"
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-4xl" aria-hidden="true">
+          <span className="absolute inset-0 flex items-center justify-center text-4xl max-md:text-2xl" aria-hidden="true">
             {ascent.emoji}
           </span>
         </div>
@@ -63,7 +63,11 @@ export function AscentCard({ ascent, progress, next, rank, nextRank }: Props): R
           <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">total XP</p>
         </div>
       </div>
-      <ol className="mt-4 flex items-center justify-between gap-0.5 border-t border-cream-200 pt-3 dark:border-slate-800" aria-label="Route to the summit">
+      {/* The rank ladder repeats the trail above on phones; keep it for wider screens. */}
+      <ol
+        className="mt-4 flex items-center justify-between gap-0.5 border-t border-cream-200 pt-3 max-md:hidden dark:border-slate-800"
+        aria-label="Route to the summit"
+      >
         {ASCENT_STAGES.map((s) => {
           const reached = progress.level >= s.level;
           const isCurrent = ascent.level === s.level;

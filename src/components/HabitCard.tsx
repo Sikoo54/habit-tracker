@@ -58,6 +58,22 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
     .filter(Boolean)
     .join(' · ');
 
+  // The weekly goal lives on the meta line to keep the name roomy on narrow screens.
+  const goalChip =
+    habit.weeklyGoal > 0 ? (
+      <span
+        className={`shrink-0 rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums ${
+          goal.met
+            ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900/40 dark:text-emerald-200'
+            : 'bg-cream-200 text-ink-600 dark:bg-slate-800 dark:text-slate-300'
+        }`}
+        title={`Weekly goal: ${goal.done} of ${goal.goal} this week`}
+      >
+        {goal.met ? '✓ ' : ''}
+        {goal.done}/{goal.goal} wk
+      </span>
+    ) : null;
+
   return (
     <li className="py-2.5">
       <div className="flex items-start gap-3">
@@ -88,30 +104,20 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
                   <span aria-hidden="true">🔥</span> {streak}
                 </span>
               ) : null}
-              {habit.weeklyGoal > 0 ? (
-                <span
-                  className={`rounded-full px-1.5 py-0.5 font-semibold ${
-                    goal.met
-                      ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900/40 dark:text-emerald-200'
-                      : 'bg-cream-200 text-ink-600 dark:bg-slate-800 dark:text-slate-300'
-                  }`}
-                  title={`Weekly goal: ${goal.done} of ${goal.goal} this week`}
-                >
-                  {goal.met ? '✓ ' : ''}
-                  {goal.done}/{goal.goal} wk
-                </span>
-              ) : null}
               {checked ? (
                 <span className="font-extrabold text-amber-600 dark:text-amber-300">+{xpForCheckin()}</span>
               ) : null}
             </span>
           </div>
-          {meta ? (
-            <p className="mt-0.5 truncate text-[13px] text-ink-500 dark:text-slate-400">{meta}</p>
+          {meta || goalChip ? (
+            <div className="mt-0.5 flex items-center gap-2">
+              {meta ? <p className="min-w-0 flex-1 truncate text-[13px] text-ink-500 dark:text-slate-400">{meta}</p> : <span className="flex-1" />}
+              {goalChip}
+            </div>
           ) : null}
           {atRisk ? (
             <p className="mt-0.5 text-[13px] text-amber-700 dark:text-amber-300">
-              Yesterday missed — streak reset. Do it today to relight it. 💛
+              Yesterday missed — streak reset.
             </p>
           ) : null}
           {/* The encouragement line stays for screen readers only; the row itself stays compact. */}
