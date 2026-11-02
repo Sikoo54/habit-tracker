@@ -68,7 +68,7 @@ export function TodayPage({
   const frostTotal = (penaltyNotice ?? []).reduce((s, p) => s + p.amount, 0);
 
   return (
-    <div>
+    <div className="mx-auto w-full max-w-5xl">
       {penaltyNotice && penaltyNotice.length > 0 ? (
         <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-sky-100 p-4 dark:bg-sky-950">
           <span className="text-2xl" aria-hidden="true">
@@ -124,8 +124,6 @@ export function TodayPage({
         </div>
       </div>
 
-      <QuoteCard todayKey={today} />
-
       <LeftoverBanner
         leftovers={leftovers}
         today={today}
@@ -133,7 +131,7 @@ export function TodayPage({
         onDrop={dropLeftovers}
       />
 
-      <div className="mt-8 space-y-6 border-t border-cream-200 pt-8 dark:border-slate-800">
+      <div className="mx-auto mt-8 max-w-4xl space-y-6 border-t border-cream-200 pt-8 dark:border-slate-800">
         <section
           aria-label="Main quest"
           className="rounded-3xl border border-cream-200 bg-cream-50/80 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/40"
@@ -165,7 +163,7 @@ export function TodayPage({
           {mainTotal === 0 ? (
             <EmptyState
               message="No main quests yet."
-              hint="Add your first daily habit below — start with the 2-minute version. 🌱"
+              hint="Add your first daily habit below — one clear target is enough. 🌱"
             />
           ) : (
             <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
@@ -217,6 +215,11 @@ export function TodayPage({
             icon="📜"
           />
         </section>
+      </div>
+
+      {/* Trail note sits after the quests now, so the day starts at the habit list. */}
+      <div className="mx-auto max-w-4xl">
+        <QuoteCard todayKey={today} />
       </div>
     </div>
   );

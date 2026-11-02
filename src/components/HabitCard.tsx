@@ -1,7 +1,8 @@
 /**
  * Habit Card Component
  * Interactive Main Quest row: one tap marks the habit done, with streak,
- * risk badges, weekly goal progress, and inline edit dialog.
+ * risk warning, weekly goal chip, and inline edit dialog. Target and trigger
+ * share a single meta line so ten habits stay a short scroll.
  */
 
 import { useState, type FormEvent, type ReactNode } from 'react';
@@ -49,8 +50,16 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
     setEditing(false);
   };
 
+  // Target and trigger share one muted line so the row stays one glance tall.
+  const meta = [
+    habit.fullVersion && habit.fullVersion !== habit.name ? habit.fullVersion : '',
+    habit.trigger ? `⏰ ${habit.trigger}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
   return (
-    <li className="py-3">
+    <li className="py-2.5">
       <div className="flex items-start gap-3">
         <button
           type="button"
@@ -67,53 +76,48 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
         </button>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p className={`text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
+            <p className={`truncate text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
               {habit.name}
             </p>
-            <span className="flex shrink-0 items-center gap-1 text-sm tabular-nums" title={streakMessage(streak)}>
+            <span
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs tabular-nums"
+              title={streakMessage(streak)}
+            >
               {showsStreak(streak) ? (
-                <>
-                  <span aria-hidden="true">🔥</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-200">{streak}</span>
-                </>
+                <span className="font-bold text-slate-700 dark:text-slate-200">
+                  <span aria-hidden="true">🔥</span> {streak}
+                </span>
+              ) : null}
+              {habit.weeklyGoal > 0 ? (
+                <span
+                  className={`rounded-full px-1.5 py-0.5 font-semibold ${
+                    goal.met
+                      ? 'bg-sage-100 text-sage-700 dark:bg-emerald-900/40 dark:text-emerald-200'
+                      : 'bg-cream-200 text-ink-600 dark:bg-slate-800 dark:text-slate-300'
+                  }`}
+                  title={`Weekly goal: ${goal.done} of ${goal.goal} this week`}
+                >
+                  {goal.met ? '✓ ' : ''}
+                  {goal.done}/{goal.goal} wk
+                </span>
               ) : null}
               {checked ? (
                 <span className="font-extrabold text-amber-600 dark:text-amber-300">+{xpForCheckin()}</span>
               ) : null}
             </span>
           </div>
-          {habit.fullVersion && habit.fullVersion !== habit.name ? (
-            <p className="mt-0.5 truncate text-[13px] text-ink-500 dark:text-slate-400">{habit.fullVersion}</p>
+          {meta ? (
+            <p className="mt-0.5 truncate text-[13px] text-ink-500 dark:text-slate-400">{meta}</p>
           ) : null}
-          {habit.trigger ? (
-            <p className="truncate text-[13px] text-slate-400 dark:text-slate-500">⏰ {habit.trigger}</p>
-          ) : null}
-          <p className="mt-0.5 text-[13px] text-ink-500 dark:text-slate-400" aria-live="polite">
-            {streakMessage(streak)}
-          </p>
           {atRisk ? (
             <p className="mt-0.5 text-[13px] text-amber-700 dark:text-amber-300">
               Yesterday missed — streak reset. Do it today to relight it. 💛
             </p>
           ) : null}
-          {habit.weeklyGoal > 0 ? (
-            <div className="mt-2">
-              <div className="flex items-center justify-between gap-2 text-[12px]">
-                <span className="font-medium text-ink-500 dark:text-slate-400">
-                  {goal.met ? '✓ Weekly goal met' : 'Weekly goal'}
-                </span>
-                <span className="text-ink-500 tabular-nums dark:text-slate-400">
-                  {goal.done}/{goal.goal} this week
-                </span>
-              </div>
-              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
-                <div
-                  className={`h-full rounded-full ${goal.met ? 'bg-summit-500' : 'bg-sage-500 dark:bg-emerald-400'}`}
-                  style={{ width: `${Math.round(goal.rate * 100)}%` }}
-                />
-              </div>
-            </div>
-          ) : null}
+          {/* The encouragement line stays for screen readers only; the row itself stays compact. */}
+          <p className="sr-only" aria-live="polite">
+            {streakMessage(streak)}
+          </p>
           {editing ? (
             <form onSubmit={submitEdit} aria-label={`Edit ${habit.name}`} className="mt-3 space-y-2 rounded-xl bg-cream-100 p-3 dark:bg-slate-900/60">
               <div>
