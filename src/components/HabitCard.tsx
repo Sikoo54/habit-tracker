@@ -9,7 +9,7 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
 import type { Checkin, Habit, HabitInput } from '../types';
-import { calculateStreak, isStreakAtRisk, showsStreak, streakMessage } from '../utils/streak';
+import { calculateStreak, showsStreak, streakMessage } from '../utils/streak';
 
 interface Props {
   habit: Habit;
@@ -36,7 +36,6 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
   const [weeklyGoal, setWeeklyGoal] = useState(habit.weeklyGoal);
   const [error, setError] = useState<string | null>(null);
   const streak = calculateStreak(completedDates, todayKey);
-  const atRisk = isStreakAtRisk(completedDates, todayKey) && !checked;
   const goal = goalProgress(habit, checkins, weekMonday);
 
   const submitEdit = (e: FormEvent): void => {
@@ -114,11 +113,6 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
               {meta ? <p className="min-w-0 flex-1 truncate text-[13px] text-ink-500 dark:text-slate-400">{meta}</p> : <span className="flex-1" />}
               {goalChip}
             </div>
-          ) : null}
-          {atRisk ? (
-            <p className="mt-0.5 text-[13px] text-amber-700 dark:text-amber-300">
-              Yesterday missed — streak reset.
-            </p>
           ) : null}
           {/* The encouragement line stays for screen readers only; the row itself stays compact. */}
           <p className="sr-only" aria-live="polite">
