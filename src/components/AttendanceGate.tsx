@@ -69,9 +69,7 @@ export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactN
           {morning ? "I'm awake — begin" : "I'm off to bed"}
         </button>
 
-        <p className="mt-4 text-xs font-medium text-cream-200/60">
-          +5 XP · logging attendance does not feed the streak
-        </p>
+        <p className="mt-4 text-xs font-medium text-cream-200/60">+5 XP · just for showing up.</p>
       </div>
     </main>
   );
