@@ -1,4 +1,4 @@
-# ⛰️ AscendHabit — From little changes to a Better Life
+# ⛰️ AscendHabit — From small changes to a Better Life
 
 ![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 
