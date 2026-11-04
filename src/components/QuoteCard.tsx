@@ -1,7 +1,7 @@
 /**
  * Daily Quote Strip
  * Shows one deterministic line per day with a refresh button that skips to the
- * next one. Sits below the quest board as a quiet trail note.
+ * next one. Sits between the hero and the quest board as a quiet trail note.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -22,7 +22,7 @@ export function QuoteCard({ todayKey }: Props): ReactNode {
   return (
     <section
       aria-label="Daily motivational quote"
-      className="mt-8 border-l-2 border-summit-500/70 pl-4 max-md:mt-6 max-md:pl-3"
+      className="mt-6 border-l-2 border-summit-500/70 pl-4 max-md:mt-5 max-md:pl-3"
     >
       <p aria-live="polite" className="font-display text-xl italic leading-snug text-ink-700 dark:text-slate-200 max-md:text-lg">
         “{quote.text}”

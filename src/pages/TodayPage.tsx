@@ -113,6 +113,8 @@ export function TodayPage({
         </div>
       </div>
 
+      <QuoteCard todayKey={today} />
+
       <LeftoverBanner
         leftovers={leftovers}
         today={today}
@@ -202,11 +204,6 @@ export function TodayPage({
             icon="📜"
           />
         </section>
-      </div>
-
-      {/* Trail note sits after the quests now, so the day starts at the habit list. */}
-      <div className="mx-auto max-w-4xl">
-        <QuoteCard todayKey={today} />
       </div>
     </div>
   );
