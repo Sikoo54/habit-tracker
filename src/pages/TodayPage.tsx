@@ -5,6 +5,7 @@
  */
 
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { AscentTrail } from '../components/AscentTrail';
 import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
@@ -15,13 +16,14 @@ import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import { YesterdayBackfill } from '../components/YesterdayBackfill';
 import type { AppliedPenalty } from '../game/decay';
+import { streakReset } from '../game/trainingStreak';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
 import { addDays, formatTanggalID, startOfWeekMonday, todayKey } from '../utils/dates';
-import { showsStreak } from '../utils/streak';
+import { showsStreak, markStreakResetDismissed, readStreakResetDismissed } from '../utils/streak';
 
 function greeting(hour: number): string {
   if (hour < 11) return 'Good morning';
@@ -66,8 +68,40 @@ export function TodayPage({
   const headline = mainTotal === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
   const frostTotal = (penaltyNotice ?? []).reduce((s, p) => s + p.amount, 0);
 
+  // The morning after a missed board: say the chain ended once, then stay quiet.
+  const reset = streakReset(habits, checkins, today);
+  const [dismissedReset, setDismissedReset] = useState<string | null>(() => readStreakResetDismissed());
+  const showReset =
+    reset !== null && showsStreak(reset.lost) && !game.todayTrainingDone && dismissedReset !== today;
+
   return (
     <div className="mx-auto w-full max-w-5xl">
+      {showReset && reset ? (
+        <div role="status" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
+          <span className="text-2xl" aria-hidden="true">
+            🔥
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-amber-900 dark:text-amber-100">
+              Streak reset — the {reset.lost}-day chain ended.
+            </p>
+            <p className="text-sm text-amber-900/90 dark:text-amber-100/90">
+              Yesterday was not a full board. Finish every main quest today to start a new one.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              markStreakResetDismissed(today);
+              setDismissedReset(today);
+            }}
+            aria-label="Dismiss streak reset notice"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-amber-900 hover:bg-amber-200/60 dark:text-amber-100 dark:hover:bg-amber-900"
+          >
+            ✕
+          </button>
+        </div>
+      ) : null}
       {penaltyNotice && penaltyNotice.length > 0 ? (
         <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-sky-100 p-4 dark:bg-sky-950">
           <span className="text-2xl" aria-hidden="true">

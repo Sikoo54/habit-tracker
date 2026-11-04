@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
-import { trainingDays, trainingStreak } from './trainingStreak';
+import { trainingDays, streakReset, trainingStreak } from './trainingStreak';
 
 function habit(id: string, createdAt = '2026-09-01T00:00:00.000Z', active = true): Habit {
   return { id, name: id, fullVersion: 'f', trigger: '', active, weeklyGoal: 0, createdAt };
@@ -81,5 +81,27 @@ describe('training streak', () => {
   it('a gap resets the count', () => {
     const checkins = ['2026-09-07', '2026-09-09', '2026-09-10'].map((d) => checkin('h1', d));
     expect(trainingStreak([H1], checkins, '2026-09-10')).toBe(2);
+  });
+});
+
+describe('streak reset notice', () => {
+  it('reports the lost chain the morning after a miss', () => {
+    const checkins = ['2026-09-07', '2026-09-08', '2026-09-09'].map((d) => checkin('h1', d));
+    // Today is the 11th: the 10th was missed, the 9th closed a 3-day chain.
+    expect(streakReset([H1], checkins, '2026-09-11')).toEqual({ lost: 3, brokenDay: '2026-09-10' });
+  });
+
+  it('says nothing when yesterday was complete', () => {
+    const checkins = ['2026-09-09', '2026-09-10'].map((d) => checkin('h1', d));
+    expect(streakReset([H1], checkins, '2026-09-11')).toBeNull();
+  });
+
+  it('does not repeat after two missed days', () => {
+    const checkins = ['2026-09-07', '2026-09-08'].map((d) => checkin('h1', d));
+    expect(streakReset([H1], checkins, '2026-09-11')).toBeNull();
+  });
+
+  it('ignores a day with no habits', () => {
+    expect(streakReset([], [], '2026-09-11')).toBeNull();
   });
 });

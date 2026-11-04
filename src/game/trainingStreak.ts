@@ -6,6 +6,7 @@
 
 import type { Checkin, Habit } from '../types';
 import { habitsOn } from '../utils/checkins';
+import { addDays } from '../utils/dates';
 import { dailyStreak } from './dailyStreak';
 
 /** Dates where every habit that existed on that day got a check-in. */
@@ -28,4 +29,25 @@ export function trainingDays(habits: Habit[], checkins: Checkin[]): Set<string> 
 /** Consecutive fully-completed training days. Today may still be in progress. */
 export function trainingStreak(habits: Habit[], checkins: Checkin[], referenceKey: string): number {
   return dailyStreak(trainingDays(habits, checkins), referenceKey);
+}
+
+/** A chain that ended last night, with the count it had reached. */
+export interface StreakReset {
+  /** Streak length before the miss. */
+  lost: number;
+  /** The day that was left incomplete. */
+  brokenDay: string;
+}
+
+/**
+ * True only the morning after a miss: yesterday was imperfect while the day
+ * before was perfect. Two or more missed days are not a fresh reset, and a
+ * completed today means the notice is no longer relevant.
+ */
+export function streakReset(habits: Habit[], checkins: Checkin[], todayKey: string): StreakReset | null {
+  const perfect = trainingDays(habits, checkins);
+  const yesterday = addDays(todayKey, -1);
+  const dayBefore = addDays(todayKey, -2);
+  if (perfect.has(yesterday) || !perfect.has(dayBefore)) return null;
+  return { lost: dailyStreak(perfect, yesterday), brokenDay: yesterday };
 }
