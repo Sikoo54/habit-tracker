@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A gentle habit tracker + to-do list: 3 daily priorities, tolerant streaks, nightly reflection.",
+  "description": "Turn daily habits into a climb: one tap per habit, XP for showing up, ranks from base camp to the summit.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -1,4 +1,4 @@
-# ⛰️ AscendHabit — Gamified Habit Tracker + To-Do
+# ⛰️ AscendHabit — Climb Your Habits
 
 ![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 

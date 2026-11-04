@@ -1,7 +1,7 @@
 {
-  "name": "AscendHabit — Gamified Habit Tracker",
+  "name": "AscendHabit — Climb Your Habits",
   "short_name": "AscendHabit",
-  "description": "A gamified habit tracker: earn XP, ascend ranks, clear daily quests.",
+  "description": "Turn daily habits into a climb: one tap per habit, XP for showing up, ranks from base camp to the summit.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
