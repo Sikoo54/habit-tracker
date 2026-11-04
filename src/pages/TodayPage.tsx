@@ -15,7 +15,6 @@ import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import { YesterdayBackfill } from '../components/YesterdayBackfill';
 import type { AppliedPenalty } from '../game/decay';
-import { penaltyFor } from '../game/decay';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
@@ -91,16 +90,6 @@ export function TodayPage({
           >
             ✕
           </button>
-        </div>
-      ) : showsStreak(game.streak) && !game.todayTrainingDone ? (
-        <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
-          <span className="text-2xl" aria-hidden="true">
-            ⚠️
-          </span>
-          <p className="text-sm text-amber-900 dark:text-amber-100">
-            <strong>{game.streak}-day streak at risk.</strong> Finish every main quest today, or
-            the chain breaks and frost burns ~{penaltyFor(game.xp)} XP overnight.
-          </p>
         </div>
       ) : null}
       {/* Hero: greeting + companion side by side */}
