@@ -23,7 +23,7 @@ Most habit apps punish users: a forgotten tap can wipe weeks of consistency, end
 - **12 achievements** — First Step, Perfect Day, On Fire, Unstoppable, Week Warrior, and more, with progress counters.
 - **Today page** — Main Quest habit card first (streak + progress), then optional side quests, greeting hero + XP summary.
 - **Habits (max 10 active)** — name, one target, trigger (habit stacking), weekly goal.
-- **Per-habit streaks** — 🔥 counter per habit with friendly messages and an at-risk warning when yesterday was missed. The header streak is the stricter full-day number.
+- **One streak, one meaning** — the 🔥 number is daily and whole-board: it appears only once every main quest habit due that day is done. Habits no longer carry their own counters; a row just says "Yesterday missed." when that day stays open after a miss.
 - **Nightly reflection** — "what went well / what to change", history accordion, optional mood/energy 1–5.
 - **Weekly stats** — completion %, this-week vs last-week delta, 7-day mini calendar, per-day bars.
 - **Extras** — Pomodoro 25/5 linked to the selected main quest or side quest, dark mode, JSON export/import, reset with confirm dialog.
@@ -48,7 +48,7 @@ npm run build && npm run preview
 ## Design decisions
 
 - **Why is the habit list the Main Quest?** The app is an ascent built on habits, not a task manager. Habits get the visual weight, the streak, and the hero progress; tasks live under Side Quests as optional extras that earn XP without ever blocking a perfect day.
-- **Why a full-day streak?** A streak that survives on one check-in says nothing about consistency. Counting only days where every main quest habit is done makes the number mean "I showed up for all of it", and achievements read the exact same calculation so the badge can never argue with the header. Per-habit 🔥 counters stay available for granular encouragement.
+- **Why a full-day streak?** A streak that survives on one check-in says nothing about consistency. Counting only days where every main quest habit is done makes the number mean "I showed up for all of it", and achievements read the exact same calculation so the badge can never argue with the header.
 - **Why a storage adapter?** Components/hooks talk only to the `StorageAdapter` interface (injected via `StorageContext`). Today it is `LocalStorageAdapter` (validated reads, schemaVersion for migration); tomorrow it can be `SupabaseAdapter` with zero UI changes. See `src/storage/`.
 - **Why desktop-first responsive?** Base layout targets laptop (1100px centered, left sidebar, single wide Main Quest card), then collapses with `max-lg:`/`max-md:` variants to top bar (tablet) and bottom tabs + 1 column + 44px touch targets (phone).
 - **Why one target per habit?** Two versions of the same habit split attention and make "did I do it?" ambiguous. One clear target and one tap keeps the daily list honest and fast to finish.

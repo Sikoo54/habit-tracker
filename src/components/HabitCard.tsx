@@ -9,11 +9,10 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
 import type { Checkin, Habit, HabitInput } from '../types';
-import { calculateStreak, isStreakAtRisk, showsStreak, streakMessage } from '../utils/streak';
+import { isStreakAtRisk } from '../utils/streak';
 
 interface Props {
   habit: Habit;
-  completedDates: string[];
   checkins: Checkin[];
   weekMonday: string;
   todayKey: string;
@@ -27,7 +26,7 @@ const inputCls =
   'min-h-[44px] w-full rounded-xl border border-cream-200 bg-cream-50 px-3 text-slate-800 placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100';
 
 /** Individual habit list card item */
-export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKey, checked, onToggle, onUpdate, onRemove }: Props): ReactNode {
+export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onToggle, onUpdate, onRemove }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(habit.name);
@@ -35,9 +34,11 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
   const [trigger, setTrigger] = useState(habit.trigger);
   const [weeklyGoal, setWeeklyGoal] = useState(habit.weeklyGoal);
   const [error, setError] = useState<string | null>(null);
-  const streak = calculateStreak(completedDates, todayKey);
   // Only the plain fact: yesterday was missed. The reset story is not worth a line.
-  const yesterdayMissed = isStreakAtRisk(completedDates, todayKey) && !checked;
+  const yesterdayMissed = isStreakAtRisk(
+    checkins.filter((c) => c.habitId === habit.id).map((c) => c.date),
+    todayKey,
+  ) && !checked;
   const goal = goalProgress(habit, checkins, weekMonday);
 
   const submitEdit = (e: FormEvent): void => {
@@ -98,13 +99,7 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
             </p>
             <span
               className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs tabular-nums"
-              title={streakMessage(streak)}
             >
-              {showsStreak(streak) ? (
-                <span className="font-bold text-slate-700 dark:text-slate-200">
-                  <span aria-hidden="true">🔥</span> {streak}
-                </span>
-              ) : null}
               {checked ? (
                 <span className="font-extrabold text-amber-600 dark:text-amber-300">+{xpForCheckin()}</span>
               ) : null}
@@ -119,10 +114,6 @@ export function HabitCard({ habit, completedDates, checkins, weekMonday, todayKe
           {yesterdayMissed ? (
             <p className="mt-0.5 text-[13px] font-medium text-amber-700 dark:text-amber-300">Yesterday missed.</p>
           ) : null}
-          {/* The encouragement line stays for screen readers only; the row itself stays compact. */}
-          <p className="sr-only" aria-live="polite">
-            {streakMessage(streak)}
-          </p>
           {editing ? (
             <form onSubmit={submitEdit} aria-label={`Edit ${habit.name}`} className="mt-3 space-y-2 rounded-xl bg-cream-100 p-3 dark:bg-slate-900/60">
               <div>

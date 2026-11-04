@@ -169,12 +169,10 @@ export function TodayPage({
             <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
               {activeHabits.map((h) => {
                 const c = checkinFor(h.id, today);
-                const dates = checkins.filter((x) => x.habitId === h.id).map((x) => x.date);
                 return (
                   <HabitCard
                     key={h.id}
                     habit={h}
-                    completedDates={dates}
                     checkins={checkins}
                     weekMonday={weekMonday}
                     todayKey={today}
