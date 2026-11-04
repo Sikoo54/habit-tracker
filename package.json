@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Turn daily habits into a climb: one tap per habit, XP for showing up, ranks from base camp to the summit.",
+  "description": "Small daily habits become a better life: one tap per habit, XP for showing up, ranks from base camp to the summit.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

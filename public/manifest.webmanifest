@@ -1,7 +1,7 @@
 {
-  "name": "AscendHabit — Climb Your Habits",
+  "name": "AscendHabit — From Habits to a Better Life",
   "short_name": "AscendHabit",
-  "description": "Turn daily habits into a climb: one tap per habit, XP for showing up, ranks from base camp to the summit.",
+  "description": "Small daily habits become a better life: one tap per habit, XP for showing up, ranks from base camp to the summit.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

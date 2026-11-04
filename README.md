@@ -1,4 +1,4 @@
-# ⛰️ AscendHabit — Climb Your Habits
+# ⛰️ AscendHabit — From Habits to a Better Life
 
 ![CI](https://github.com/Sikoo54/habit-tracker/actions/workflows/ci.yml/badge.svg)
 
