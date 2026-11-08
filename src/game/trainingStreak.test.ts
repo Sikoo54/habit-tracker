@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
-import { trainingDays, streakReset, trainingStreak } from './trainingStreak';
+import { bestTrainingStreak, trainingDays, streakReset, trainingStreak } from './trainingStreak';
 
 function habit(id: string, createdAt = '2026-09-01T00:00:00.000Z', active = true): Habit {
   return { id, name: id, fullVersion: 'f', trigger: '', active, weeklyGoal: 0, createdAt };
@@ -81,6 +81,13 @@ describe('training streak', () => {
   it('a gap resets the count', () => {
     const checkins = ['2026-09-07', '2026-09-09', '2026-09-10'].map((d) => checkin('h1', d));
     expect(trainingStreak([H1], checkins, '2026-09-10')).toBe(2);
+  });
+
+  it('keeps the best run even after a later gap', () => {
+    const checkins = ['2026-09-07', '2026-09-08', '2026-09-09', '2026-09-11'].map((d) =>
+      checkin('h1', d),
+    );
+    expect(bestTrainingStreak([H1], checkins)).toBe(3);
   });
 });
 

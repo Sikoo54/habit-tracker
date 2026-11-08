@@ -69,8 +69,8 @@ export function useGameStats(
       checkins,
       tasks,
       reflections,
-      todayKey,
-      level: progress.level,
+      attendance,
+      grossXp,
     });
     return {
       xp,

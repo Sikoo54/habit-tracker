@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Achievement } from '../game/achievements';
+import type { Achievement, AchievementTier } from '../game/achievements';
 import {
   newlyUnlockedIds,
   readSeenAchievementIds,
@@ -18,6 +18,8 @@ export interface UnlockToast {
   icon: string;
   name: string;
   desc: string;
+  /** Tier of a freshly unlocked badge; absent on the first-run summary. */
+  tier?: AchievementTier;
   /** Informational card shown once for existing users, not a fresh unlock. */
   summary?: boolean;
 }
@@ -33,7 +35,10 @@ export interface AchievementToasts {
 }
 
 /** Watches achievements and surfaces unlocks that were never announced. */
-export function useAchievementToasts(achievements: Achievement[], ready: boolean): AchievementToasts {
+export function useAchievementToasts(
+  achievements: Achievement[],
+  ready: boolean,
+): AchievementToasts {
   const [queue, setQueue] = useState<UnlockToast[]>([]);
   const seenRef = useRef<Set<string> | null>(null);
 
@@ -73,7 +78,7 @@ export function useAchievementToasts(achievements: Achievement[], ready: boolean
       ...q,
       ...achievements
         .filter((a) => fresh.includes(a.id))
-        .map((a) => ({ id: a.id, icon: a.icon, name: a.name, desc: a.desc })),
+        .map((a) => ({ id: a.id, icon: a.icon, name: a.name, desc: a.desc, tier: a.tier })),
     ]);
   }, [achievements, ready]);
 

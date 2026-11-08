@@ -31,6 +31,23 @@ export function trainingStreak(habits: Habit[], checkins: Checkin[], referenceKe
   return dailyStreak(trainingDays(habits, checkins), referenceKey);
 }
 
+/**
+ * Longest run of perfect days ever recorded. Achievements read this rather
+ * than the current streak, so a badge never disappears after a missed day.
+ */
+export function bestTrainingStreak(habits: Habit[], checkins: Checkin[]): number {
+  const days = [...trainingDays(habits, checkins)].sort();
+  let best = 0;
+  let run = 0;
+  let previous: string | null = null;
+  for (const day of days) {
+    run = previous !== null && addDays(previous, 1) === day ? run + 1 : 1;
+    if (run > best) best = run;
+    previous = day;
+  }
+  return best;
+}
+
 /** A chain that ended last night, with the count it had reached. */
 export interface StreakReset {
   /** Streak length before the miss. */
@@ -44,7 +61,11 @@ export interface StreakReset {
  * before was perfect. Two or more missed days are not a fresh reset, and a
  * completed today means the notice is no longer relevant.
  */
-export function streakReset(habits: Habit[], checkins: Checkin[], todayKey: string): StreakReset | null {
+export function streakReset(
+  habits: Habit[],
+  checkins: Checkin[],
+  todayKey: string,
+): StreakReset | null {
   const perfect = trainingDays(habits, checkins);
   const yesterday = addDays(todayKey, -1);
   const dayBefore = addDays(todayKey, -2);
