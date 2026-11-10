@@ -26,19 +26,28 @@ export function useTasks(dateKey: string) {
       .then((all) => {
         if (!alive) return;
         if (all.length === 0 && storage === localStorageAdapter) {
-          const seed = seedTasks();
-          void storage.saveTasks(seed).then(() => {
-            if (alive) {
-              setTasks(seed);
-              setLoading(false);
-            }
-          });
-          loaded.current = true;
-          return;
+          // Seed starter quests once. After the user deletes them all, the flag
+          // keeps the samples from creeping back on the next reload.
+          const adapter = storage as typeof localStorageAdapter;
+          if (!adapter.isTasksSeeded()) {
+            const seed = seedTasks();
+            adapter.markTasksSeeded();
+            void storage.saveTasks(seed).then(() => {
+              if (alive) {
+                setTasks(seed);
+                setLoading(false);
+              }
+            });
+            loaded.current = true;
+            return;
+          }
         }
         // Priorities no longer exist: undo unfinished ones so the old +25 slots
         // merge into side quests. Finished ones keep their flag so XP history
         // stays exactly as it was earned.
+        if (all.length > 0 && storage === localStorageAdapter) {
+          (storage as typeof localStorageAdapter).markTasksSeeded();
+        }
         setTasks(all.map((t) => (!t.done && t.priority ? { ...t, priority: false } : t)));
         setLoading(false);
         loaded.current = true;

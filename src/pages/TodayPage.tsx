@@ -52,7 +52,7 @@ export function TodayPage({
 }: Props): ReactNode {
   const today = todayKey();
   const weekMonday = startOfWeekMonday(today);
-  const { habits, addHabit, updateHabit, removeHabit } = habitsApi;
+  const { habits, addHabit, updateHabit, archiveHabit } = habitsApi;
   const { quests, addTask, toggleTask, removeTask } = tasksApi;
   const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
   const { checkins, toggleCheckin, setCheckin, checkinFor } = checkinsApi;
@@ -65,19 +65,28 @@ export function TodayPage({
   const mainTotal = activeHabits.length;
   const mainDone = doneHabits.length;
   const allDone = mainTotal > 0 && mainDone === mainTotal;
-  const headline = mainTotal === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
+  const headline =
+    mainTotal === 0 ? 'Pack your bag.' : allDone ? 'Summit reached.' : 'On the ascent.';
   const frostTotal = (penaltyNotice ?? []).reduce((s, p) => s + p.amount, 0);
 
   // The morning after a missed board: say the chain ended once, then stay quiet.
   const reset = streakReset(habits, checkins, today);
-  const [dismissedReset, setDismissedReset] = useState<string | null>(() => readStreakResetDismissed());
+  const [dismissedReset, setDismissedReset] = useState<string | null>(() =>
+    readStreakResetDismissed(),
+  );
   const showReset =
-    reset !== null && showsStreak(reset.lost) && !game.todayTrainingDone && dismissedReset !== today;
+    reset !== null &&
+    showsStreak(reset.lost) &&
+    !game.todayTrainingDone &&
+    dismissedReset !== today;
 
   return (
     <div className="mx-auto w-full max-w-5xl">
       {showReset && reset ? (
-        <div role="status" className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950">
+        <div
+          role="status"
+          className="mb-6 flex items-start gap-3 rounded-2xl bg-amber-100 p-4 dark:bg-amber-950"
+        >
           <span className="text-2xl" aria-hidden="true">
             🔥
           </span>
@@ -103,7 +112,10 @@ export function TodayPage({
         </div>
       ) : null}
       {penaltyNotice && penaltyNotice.length > 0 ? (
-        <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-sky-100 p-4 dark:bg-sky-950">
+        <div
+          role="alert"
+          className="mb-6 flex items-start gap-3 rounded-2xl bg-sky-100 p-4 dark:bg-sky-950"
+        >
           <span className="text-2xl" aria-hidden="true">
             ❄️
           </span>
@@ -112,8 +124,8 @@ export function TodayPage({
               The ascent froze over — {frostTotal} XP lost.
             </p>
             <p className="text-sm text-sky-800 dark:text-sky-200">
-              {penaltyNotice.length} idle {penaltyNotice.length === 1 ? 'day' : 'days'} with zero activity.
-              Do one small thing today to thaw it.
+              {penaltyNotice.length} idle {penaltyNotice.length === 1 ? 'day' : 'days'} with zero
+              activity. Do one small thing today to thaw it.
             </p>
           </div>
           <button
@@ -129,7 +141,9 @@ export function TodayPage({
       {/* Hero: greeting + companion side by side */}
       <div className="grid grid-cols-5 items-stretch gap-6 max-md:grid-cols-1">
         <div className="col-span-3 flex flex-col justify-center max-md:col-span-1">
-          <p className="section-title text-sage-600 dark:text-emerald-300">{formatTanggalID(today)}</p>
+          <p className="section-title text-sage-600 dark:text-emerald-300">
+            {formatTanggalID(today)}
+          </p>
           <h1 className="mt-1 font-display text-5xl font-semibold leading-[1.05] tracking-tight max-md:text-4xl">
             {greeting(new Date().getHours())}. {headline}
           </h1>
@@ -143,7 +157,13 @@ export function TodayPage({
           <AscentTrail done={mainDone} total={mainTotal} />
         </div>
         <div className="col-span-2 max-md:col-span-1">
-          <AscentCard ascent={game.ascent} progress={game.progress} next={game.nextAscent} rank={game.rank} nextRank={game.nextRank} />
+          <AscentCard
+            ascent={game.ascent}
+            progress={game.progress}
+            next={game.nextAscent}
+            rank={game.rank}
+            nextRank={game.nextRank}
+          />
         </div>
       </div>
 
@@ -204,7 +224,7 @@ export function TodayPage({
                     checked={Boolean(c)}
                     onToggle={() => toggleCheckin(h.id, today)}
                     onUpdate={(input) => updateHabit(h.id, input)}
-                    onRemove={() => removeHabit(h.id)}
+                    onArchive={() => archiveHabit(h.id)}
                   />
                 );
               })}

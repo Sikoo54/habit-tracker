@@ -1,8 +1,8 @@
 /**
  * Habit Card Component
  * Interactive Main Quest row: one tap marks the habit done, with streak,
- * risk warning, weekly goal chip, and inline edit dialog. Target and trigger
- * share a single meta line so ten habits stay a short scroll.
+ * risk warning, weekly goal chip, and inline edit dialog. Habits are archived,
+ * not deleted, so their history stays honest.
  */
 
 import { useState, type FormEvent, type ReactNode } from 'react';
@@ -19,14 +19,23 @@ interface Props {
   checked: boolean;
   onToggle: () => void;
   onUpdate: (input: HabitInput) => { ok: boolean; reason?: string };
-  onRemove: () => void;
+  onArchive: () => void;
 }
 
 const inputCls =
   'min-h-[44px] w-full rounded-xl border border-cream-200 bg-cream-50 px-3 text-slate-800 placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100';
 
 /** Individual habit list card item */
-export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onToggle, onUpdate, onRemove }: Props): ReactNode {
+export function HabitCard({
+  habit,
+  checkins,
+  weekMonday,
+  todayKey,
+  checked,
+  onToggle,
+  onUpdate,
+  onArchive,
+}: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(habit.name);
@@ -35,10 +44,11 @@ export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onTo
   const [weeklyGoal, setWeeklyGoal] = useState(habit.weeklyGoal);
   const [error, setError] = useState<string | null>(null);
   // Only the plain fact: yesterday was missed. The reset story is not worth a line.
-  const yesterdayMissed = isStreakAtRisk(
-    checkins.filter((c) => c.habitId === habit.id).map((c) => c.date),
-    todayKey,
-  ) && !checked;
+  const yesterdayMissed =
+    isStreakAtRisk(
+      checkins.filter((c) => c.habitId === habit.id).map((c) => c.date),
+      todayKey,
+    ) && !checked;
   const goal = goalProgress(habit, checkins, weekMonday);
 
   const submitEdit = (e: FormEvent): void => {
@@ -94,45 +104,77 @@ export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onTo
         </button>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p className={`truncate text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
+            <p
+              className={`truncate text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}
+            >
               {habit.name}
             </p>
-            <span
-              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs tabular-nums"
-            >
+            <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs tabular-nums">
               {checked ? (
-                <span className="font-extrabold text-amber-600 dark:text-amber-300">+{xpForCheckin()}</span>
+                <span className="font-extrabold text-amber-600 dark:text-amber-300">
+                  +{xpForCheckin()}
+                </span>
               ) : null}
             </span>
           </div>
           {meta || goalChip ? (
             <div className="mt-0.5 flex items-center gap-2">
-              {meta ? <p className="min-w-0 flex-1 truncate text-[13px] text-ink-500 dark:text-slate-400">{meta}</p> : <span className="flex-1" />}
+              {meta ? (
+                <p className="min-w-0 flex-1 truncate text-[13px] text-ink-500 dark:text-slate-400">
+                  {meta}
+                </p>
+              ) : (
+                <span className="flex-1" />
+              )}
               {goalChip}
             </div>
           ) : null}
           {yesterdayMissed ? (
-            <p className="mt-0.5 text-[13px] font-medium text-amber-700 dark:text-amber-300">Yesterday missed.</p>
+            <p className="mt-0.5 text-[13px] font-medium text-amber-700 dark:text-amber-300">
+              Yesterday missed.
+            </p>
           ) : null}
           {editing ? (
-            <form onSubmit={submitEdit} aria-label={`Edit ${habit.name}`} className="mt-3 space-y-2 rounded-xl bg-cream-100 p-3 dark:bg-slate-900/60">
+            <form
+              onSubmit={submitEdit}
+              aria-label={`Edit ${habit.name}`}
+              className="mt-3 space-y-2 rounded-xl bg-cream-100 p-3 dark:bg-slate-900/60"
+            >
               <div>
                 <label htmlFor={`en-${habit.id}`} className="text-xs font-semibold text-ink-500">
                   Name
                 </label>
-                <input id={`en-${habit.id}`} value={name} onChange={(e) => setName(e.target.value)} maxLength={60} className={inputCls} />
+                <input
+                  id={`en-${habit.id}`}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  maxLength={60}
+                  className={inputCls}
+                />
               </div>
               <div>
                 <label htmlFor={`ef-${habit.id}`} className="text-xs font-semibold text-ink-500">
                   Target — what counts as done
                 </label>
-                <input id={`ef-${habit.id}`} value={full} onChange={(e) => setFull(e.target.value)} maxLength={80} className={inputCls} />
+                <input
+                  id={`ef-${habit.id}`}
+                  value={full}
+                  onChange={(e) => setFull(e.target.value)}
+                  maxLength={80}
+                  className={inputCls}
+                />
               </div>
               <div>
                 <label htmlFor={`et-${habit.id}`} className="text-xs font-semibold text-ink-500">
                   Trigger
                 </label>
-                <input id={`et-${habit.id}`} value={trigger} onChange={(e) => setTrigger(e.target.value)} maxLength={80} className={inputCls} />
+                <input
+                  id={`et-${habit.id}`}
+                  value={trigger}
+                  onChange={(e) => setTrigger(e.target.value)}
+                  maxLength={80}
+                  className={inputCls}
+                />
               </div>
               <div>
                 <label htmlFor={`eg-${habit.id}`} className="text-xs font-semibold text-ink-500">
@@ -154,7 +196,10 @@ export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onTo
                 </p>
               ) : null}
               <div className="flex gap-2">
-                <button type="submit" className="min-h-[44px] flex-1 rounded-xl bg-sage-600 px-3 text-sm font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500">
+                <button
+                  type="submit"
+                  className="min-h-[44px] flex-1 rounded-xl bg-sage-600 px-3 text-sm font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+                >
                   Save
                 </button>
                 <button
@@ -201,12 +246,17 @@ export function HabitCard({ habit, checkins, weekMonday, todayKey, checked, onTo
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm(`Delete habit "${habit.name}"?`)) onRemove();
+                  if (
+                    window.confirm(
+                      `Archive habit "${habit.name}"? It leaves the board, but past check-ins and streak days stay intact.`,
+                    )
+                  )
+                    onArchive();
                   setMenuOpen(false);
                 }}
-                className="block min-h-[44px] w-full px-3 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950"
+                className="block min-h-[44px] w-full px-3 text-left text-sm text-amber-700 hover:bg-amber-50 dark:text-amber-300 dark:hover:bg-amber-950"
               >
-                Delete
+                Archive
               </button>
             </div>
           ) : null}

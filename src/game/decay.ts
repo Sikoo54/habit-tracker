@@ -16,6 +16,9 @@ export interface DecayLedger {
   appliedThrough: string | null; // last fully-processed date (YYYY-MM-DD)
 }
 
+/** Storage key for the ledger, shared by the game hook and the backup adapter. */
+export const DECAY_KEY = 'habittracker.v2.decay';
+
 /** Record of a penalty applied to a specific missed day */
 export interface AppliedPenalty {
   date: string; // the idle day

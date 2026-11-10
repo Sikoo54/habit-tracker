@@ -27,13 +27,20 @@ export function checkinsByHabit(checkins: Checkin[], date: string): Map<string, 
   return map;
 }
 
-/** Active habits that already existed on `date`, so newer habits are not backfilled. */
+/**
+ * Habits that were part of the board on `date`: created on or before that day
+ * and either still active or archived after it. Archived habits keep their
+ * history, so past totals and perfect days never change.
+ */
 export function habitsOn(habits: Habit[], date: string): Habit[] {
   return habits.filter((h) => {
-    if (!h.active) return false;
     const created = new Date(h.createdAt);
-    if (Number.isNaN(created.getTime())) return true;
-    return toDateKey(created) <= date;
+    if (!Number.isNaN(created.getTime()) && toDateKey(created) > date) return false;
+    if (h.archivedAt) {
+      const archived = new Date(h.archivedAt);
+      if (!Number.isNaN(archived.getTime())) return date < toDateKey(archived);
+    }
+    return h.active;
   });
 }
 

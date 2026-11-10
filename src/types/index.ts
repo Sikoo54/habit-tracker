@@ -4,6 +4,8 @@
  * navigation pages, and backup export/import payloads.
  */
 
+import type { DecayLedger } from '../game/decay';
+
 // Core domain types. No `any`, every field explicit.
 
 /** Habit entity representation */
@@ -17,6 +19,11 @@ export interface Habit {
   /** Target check-ins per week. 0 = no weekly goal. */
   weeklyGoal: number;
   createdAt: string; // ISO timestamp
+  /**
+   * When the habit was archived. Archived habits leave the daily board but
+   * still count for every date before this timestamp, so history never changes.
+   */
+  archivedAt?: string;
 }
 
 /** Input payload for creating or updating a habit */
@@ -79,4 +86,6 @@ export interface ExportPayload {
   checkins: Checkin[];
   reflections: Reflection[];
   attendance: Attendance[];
+  /** Frost ledger; absent in backups made before it was included. */
+  decay?: DecayLedger;
 }

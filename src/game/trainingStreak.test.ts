@@ -42,6 +42,20 @@ describe('training days', () => {
     expect(days.has('2026-09-09')).toBe(true);
   });
 
+  it('keeps an archived habit in days before it was archived', () => {
+    const archived: Habit = {
+      ...H2,
+      active: false,
+      archivedAt: '2026-09-10T09:00:00.000Z',
+    };
+    const days = trainingDays(
+      [H1, archived],
+      [checkin('h1', '2026-09-09'), checkin('h2', '2026-09-09'), checkin('h1', '2026-09-10')],
+    );
+    expect(days.has('2026-09-09')).toBe(true);
+    expect(days.has('2026-09-10')).toBe(true);
+  });
+
   it('returns nothing when there are no habits', () => {
     expect(trainingDays([], [checkin('h1', '2026-09-09')])).toEqual(new Set());
   });

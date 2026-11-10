@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { Checkin, Habit } from '../types';
-import { checkinsByHabit, habitsOn, isLateCheckin, markBackfillDone, readBackfillDone } from './checkins';
+import {
+  checkinsByHabit,
+  habitsOn,
+  isLateCheckin,
+  markBackfillDone,
+  readBackfillDone,
+} from './checkins';
 import { toDateKey } from './dates';
 
 function checkin(date: string, createdAt: string): Checkin {
@@ -58,6 +64,16 @@ describe('habits available for a date', () => {
 
   it('drops inactive habits', () => {
     expect(habitsOn(habits, '2026-11-01').some((h) => h.id === 'archived')).toBe(false);
+  });
+
+  it('keeps an archived habit on dates before the archive, drops it after', () => {
+    const archived: Habit = {
+      ...habit('archived-later', localIso(2026, 10, 1, 9), false),
+      archivedAt: localIso(2026, 11, 2, 12),
+    };
+    expect(habitsOn([archived], '2026-11-01').map((h) => h.id)).toEqual(['archived-later']);
+    expect(habitsOn([archived], '2026-11-02')).toEqual([]);
+    expect(habitsOn([archived], '2026-11-03')).toEqual([]);
   });
 
   it('matches the created day key exactly', () => {

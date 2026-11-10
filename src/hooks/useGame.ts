@@ -9,6 +9,7 @@ import { evaluateAchievements, type Achievement } from '../game/achievements';
 import { dailyStreak } from '../game/dailyStreak';
 import {
   applyDecay,
+  DECAY_KEY,
   eachDayAfter,
   MAX_CATCHUP_DAYS,
   type AppliedPenalty,
@@ -89,8 +90,6 @@ export function useGameStats(
   }, [habits, checkins, tasks, reflections, attendance, todayKey, decayTotal]);
 }
 
-const DECAY_KEY = 'habittracker.v2.decay';
-
 function readLedger(): DecayLedger {
   try {
     const raw = window.localStorage.getItem(DECAY_KEY);
@@ -98,7 +97,10 @@ function readLedger(): DecayLedger {
     const p = JSON.parse(raw) as Partial<DecayLedger>;
     return {
       total: typeof p.total === 'number' && p.total >= 0 ? p.total : 0,
-      appliedThrough: typeof p.appliedThrough === 'string' || p.appliedThrough === null ? (p.appliedThrough ?? null) : null,
+      appliedThrough:
+        typeof p.appliedThrough === 'string' || p.appliedThrough === null
+          ? (p.appliedThrough ?? null)
+          : null,
     };
   } catch {
     return { total: 0, appliedThrough: null };

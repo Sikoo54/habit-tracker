@@ -23,6 +23,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **Side Quests** are optional daily tasks worth **+15 XP**. Unfinished quests from earlier days surface in a banner so they can be carried over or let go instead of silently disappearing.
 - **Yesterday backfill** — a "Fix yesterday" panel logs a forgotten habit the next morning. Late entries stay marked `late` and still count for XP and the streak; the user can also mark a habit explicitly **Not done**.
 - **Weekly goals** — each habit can target 0–7 check-ins per week, shown as a `n/7 wk` chip on the row and as progress meters on Stats.
+- **Archive instead of delete** — a retired habit leaves the daily board but keeps its check-ins, streak days, and heatmap cells. Past totals are calculated from the habits due on each date, so archiving never rewrites history.
 
 ### Progression
 
@@ -59,7 +60,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **Installable PWA** with offline caching and auto-update.
 - **Local-first storage** — data lives in this browser under `habittracker.v2.*`. Export/import moves it between devices; imports replace, never merge, and there is no sync.
 - **Backup nudge** — Settings warns when the last export is older than 30 days or missing.
-- **Reset** with a confirmation step.
+- **Reset** with a confirmation step clears every app key (checked-in data, frost ledger, achievement notices, and seed flags) while keeping the chosen theme.
 
 ## Tech stack
 
@@ -83,7 +84,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 
 - Everything is stored on the device in `localStorage`; nothing is sent to a server.
 - Clearing browser data wipes the app, so export a JSON backup regularly from Settings.
-- One export covers habits, side quests, check-ins, reflections, and attendance (`schemaVersion: 1`).
+- One export covers habits, side quests, check-ins, reflections, attendance, and the frost-decay ledger (`schemaVersion: 1`).
 - Import **replaces** all local data and requires a reload. Devices do not sync.
 
 ## Design decisions
@@ -91,6 +92,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 - **Why is the habit list the Main Quest?** The app is an ascent built on habits, not a task manager. Habits carry the streak, the hero progress, and the visual weight; quests are optional extras that earn XP without ever blocking a perfect day.
 - **Why a whole-board streak?** A streak that survives on one check-in says nothing about consistency. Counting only days where every main quest habit is done makes the number mean "I showed up for all of it". Achievements use the same perfect-day rule but read the best run ever, so a reset can never take a badge away.
 - **Why one target per habit?** Two versions of the same habit split attention and make "did I do it?" ambiguous. One clear target and one tap keeps the daily board honest and fast to finish.
+- **Why archive instead of delete?** A deleted habit silently changes what "every habit due that day" meant last week, which can resurrect old streak days and inflate past completion rates. Archiving records an end date, so the history keeps the same answer forever.
 - **Why a storage adapter?** Components and hooks talk only to the `StorageAdapter` interface (injected via `StorageContext`). Today it is `LocalStorageAdapter` with validated reads and normalization; a Supabase adapter can replace it without touching the UI.
 - **Why desktop-first responsive?** The base layout targets a wide screen with a top bar and a `max-w-5xl` board, then collapses to bottom tabs, one column, and larger touch targets on phones.
 - **Why midnight, not noon?** A day is the local calendar day, and the shell ticks every 60 seconds so the board rolls over within a minute of 00:00.
@@ -133,7 +135,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [ ] Reminders / notifications
 - [x] PWA offline support
 - [ ] Habit notes and longer-range charts
-- [ ] Per-day habit snapshot, so archiving or deleting a habit cannot rewrite past streak days
+- [ ] Archived-habit management screen (restore, permanent delete)
 
 ## Author
 

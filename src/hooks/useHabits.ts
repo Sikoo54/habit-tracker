@@ -1,7 +1,7 @@
 /**
  * Habits Management Hook
  * Handles loading, automatic starter seeding, validation, creating, editing,
- * and deleting user habits with storage persistence.
+ * and archiving user habits with storage persistence.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -103,9 +103,12 @@ export function useHabits() {
     [],
   );
 
-  const removeHabit = useCallback((id: string) => {
-    setHabits((prev) => prev.filter((h) => h.id !== id));
+  const archiveHabit = useCallback((id: string) => {
+    const archivedAt = new Date().toISOString();
+    setHabits((prev) =>
+      prev.map((h) => (h.id === id && !h.archivedAt ? { ...h, active: false, archivedAt } : h)),
+    );
   }, []);
 
-  return { habits, loading, addHabit, updateHabit, removeHabit, setHabits };
+  return { habits, loading, addHabit, updateHabit, archiveHabit, setHabits };
 }

@@ -12,6 +12,7 @@ import { daysLeftInWeek, weeklyGoalSummary, weeklyGoals } from '../game/weeklyGo
 import type { GameStats } from '../hooks/useGame';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { useHabits } from '../hooks/useHabits';
+import { habitsOn } from '../utils/checkins';
 import { addDays, parseDateKey, startOfWeekMonday, todayKey } from '../utils/dates';
 import { compareWeeks, formatPercent } from '../utils/stats';
 
@@ -31,15 +32,21 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
 
   const cmp = useMemo(() => compareWeeks(habits, checkins, today), [habits, checkins, today]);
   const goals = useMemo(() => weeklyGoals(habits, checkins, today), [habits, checkins, today]);
-  const goalSum = useMemo(() => weeklyGoalSummary(habits, checkins, today), [habits, checkins, today]);
+  const goalSum = useMemo(
+    () => weeklyGoalSummary(habits, checkins, today),
+    [habits, checkins, today],
+  );
   const daysLeft = daysLeftInWeek(today);
-  const activeCount = habits.filter((h) => h.active).length;
 
-  if (activeCount === 0) {
+  if (habits.length === 0) {
     return (
       <div>
         <p className="section-title text-sage-600 dark:text-emerald-300">Statistics</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>        <EmptyState message="No active habits to measure yet." hint="Add a habit on the Today page first. 🌱" />
+        <h1 className="mt-1 text-3xl font-extrabold tracking-tight">📊 Adventure Log</h1>{' '}
+        <EmptyState
+          message="No active habits to measure yet."
+          hint="Add a habit on the Today page first. 🌱"
+        />
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
@@ -48,7 +55,11 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
   }
 
   const deltaTxt =
-    cmp.delta > 0.005 ? `▲ ${formatPercent(cmp.delta)} from last week` : cmp.delta < -0.005 ? `▼ ${formatPercent(-cmp.delta)} from last week` : 'Same as last week';
+    cmp.delta > 0.005
+      ? `▲ ${formatPercent(cmp.delta)} from last week`
+      : cmp.delta < -0.005
+        ? `▼ ${formatPercent(-cmp.delta)} from last week`
+        : 'Same as last week';
   const deltaGood = cmp.delta >= -0.005;
 
   return (
@@ -66,21 +77,27 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
             {deltaTxt}
           </span>
           <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
-            {cmp.thisWeek.totalDone} of {cmp.thisWeek.totalSlots} check-ins this week · +{game.xp} XP all time.
+            {cmp.thisWeek.totalDone} of {cmp.thisWeek.totalSlots} check-ins this week · +{game.xp}{' '}
+            XP all time.
           </p>
         </div>
       </div>
-
       <h2 className="section-title mt-10 text-slate-400 dark:text-slate-500">Last 7 days</h2>
-      <ol className="mt-3 grid grid-cols-7 gap-2 max-sm:gap-1" aria-label="7-day mini calendar">        {Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)).map((date) => {
+      <ol className="mt-3 grid grid-cols-7 gap-2 max-sm:gap-1" aria-label="7-day mini calendar">
+        {Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)).map((date) => {
           const d = parseDateKey(date);
           const idx = (d.getDay() + 6) % 7;
-          const done = new Set(checkins.filter((c) => c.date === date).map((c) => c.habitId)).size;
-          const capped = Math.min(done, activeCount);
-          const full = activeCount > 0 && capped === activeCount;
+          const due = habitsOn(habits, date);
+          const dueIds = new Set(due.map((h) => h.id));
+          const done = new Set(
+            checkins.filter((c) => c.date === date && dueIds.has(c.habitId)).map((c) => c.habitId),
+          ).size;
+          const total = due.length;
+          const capped = Math.min(done, total);
+          const full = total > 0 && capped === total;
           const some = capped > 0 && !full;
           return (
-            <li key={date} title={`${date}: ${capped}/${activeCount}`} className="text-center">
+            <li key={date} title={`${date}: ${capped}/${total}`} className="text-center">
               <span className="text-xs font-medium text-slate-400">{HARI_SINGKAT[idx]}</span>
               <span
                 className={`mx-auto mt-1 flex h-11 w-11 items-center justify-center rounded-full text-lg max-sm:h-9 max-sm:w-9 max-sm:text-base ${
@@ -93,15 +110,16 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
               >
                 <span aria-hidden="true">{full ? '●' : some ? '◐' : '○'}</span>
                 <span className="sr-only">
-                  {date}: {capped} of {activeCount} done
+                  {date}: {capped} of {total} done
                 </span>
               </span>
-              <span className="mt-0.5 block text-xs text-slate-400 tabular-nums">{d.getDate()}</span>
+              <span className="mt-0.5 block text-xs text-slate-400 tabular-nums">
+                {d.getDate()}
+              </span>
             </li>
           );
         })}
       </ol>
-
       {goals.length > 0 ? (
         <>
           <div className="mt-10 flex items-baseline justify-between gap-3 border-t border-cream-200 pt-8 dark:border-slate-800">
@@ -133,19 +151,21 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           </ul>
         </>
       ) : null}
-
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
         <Heatmap habits={habits} checkins={checkins} today={today} />
       </div>
-
       <h2 className="section-title mt-10 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">
         This week · from {cmp.thisWeek.monday}
-      </h2>      <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
+      </h2>{' '}
+      <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
         {cmp.thisWeek.days.map((day, i) => (
           <li key={day.date} className="flex items-center gap-3 py-2">
             <span className="w-8 text-sm font-medium text-ink-500 sm:w-10">{HARI_SINGKAT[i]}</span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
-              <div className="h-full rounded-full bg-sage-500 dark:bg-emerald-400" style={{ width: `${Math.round(day.rate * 100)}%` }} />
+              <div
+                className="h-full rounded-full bg-sage-500 dark:bg-emerald-400"
+                style={{ width: `${Math.round(day.rate * 100)}%` }}
+              />
             </div>
             <span className="w-14 text-right text-[13px] text-slate-400 tabular-nums sm:w-20">
               {day.done}/{day.total}
@@ -153,11 +173,12 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           </li>
         ))}
       </ul>
-
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
         <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
       </div>
-      <p className="mt-4 text-xs text-slate-400">Weeks start Monday ({startOfWeekMonday(today)}).</p>
+      <p className="mt-4 text-xs text-slate-400">
+        Weeks start Monday ({startOfWeekMonday(today)}).
+      </p>
     </div>
   );
 }

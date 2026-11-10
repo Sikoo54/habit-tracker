@@ -4,6 +4,7 @@
  * complete with runtime schema validation, normalization, import/export, and clear capabilities.
  */
 
+import { DECAY_KEY, type DecayLedger } from '../game/decay';
 import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
@@ -17,6 +18,7 @@ const KEYS = {
   reflections: `${PREFIX}reflections`,
   attendance: `${PREFIX}attendance`,
   seeded: `${PREFIX}seeded`,
+  tasksSeeded: `${PREFIX}tasksSeeded`,
 } as const;
 
 // --- Runtime validation on read (localStorage data can be corrupt / old version) ---
@@ -42,6 +44,7 @@ function validHabit(v: unknown): v is Habit {
     isString(v.trigger) &&
     isBoolean(v.active) &&
     (v.weeklyGoal === undefined || typeof v.weeklyGoal === 'number') &&
+    (v.archivedAt === undefined || isString(v.archivedAt)) &&
     isString(v.createdAt)
   );
 }
@@ -59,6 +62,7 @@ function normalizeHabit(h: Habit): Habit {
     active: h.active,
     weeklyGoal: typeof h.weeklyGoal === 'number' ? h.weeklyGoal : 0,
     createdAt: h.createdAt,
+    ...(h.archivedAt ? { archivedAt: h.archivedAt } : {}),
   };
 }
 
@@ -125,6 +129,39 @@ function writeArray(key: string, value: unknown[]): void {
   }
 }
 
+/** True when a parsed value is a usable frost ledger. */
+function validDecay(v: unknown): v is DecayLedger {
+  return (
+    isRecord(v) &&
+    typeof v.total === 'number' &&
+    Number.isFinite(v.total) &&
+    v.total >= 0 &&
+    (typeof v.appliedThrough === 'string' || v.appliedThrough === null)
+  );
+}
+
+/** Reads the frost ledger kept beside the domain stores. */
+function readDecay(): DecayLedger | undefined {
+  try {
+    const raw = window.localStorage.getItem(DECAY_KEY);
+    if (!raw) return undefined;
+    const parsed: unknown = JSON.parse(raw);
+    return validDecay(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Writes (or clears) the frost ledger. Failures are non-fatal. */
+function writeDecay(ledger: DecayLedger | undefined): void {
+  try {
+    if (ledger === undefined) window.localStorage.removeItem(DECAY_KEY);
+    else window.localStorage.setItem(DECAY_KEY, JSON.stringify(ledger));
+  } catch {
+    // Quota full / private mode: keep the in-memory session running.
+  }
+}
+
 /** Default implementation: localStorage. Always safe (try/catch + validation). */
 export class LocalStorageAdapter implements StorageAdapter {
   readonly schemaVersion = SCHEMA_VERSION;
@@ -168,6 +205,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       this.getReflections(),
       this.getAttendance(),
     ]);
+    const decay = readDecay();
     return {
       schemaVersion: SCHEMA_VERSION,
       exportedAt: new Date().toISOString(),
@@ -176,6 +214,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       checkins,
       reflections,
       attendance,
+      ...(decay ? { decay } : {}),
     };
   }
 
@@ -184,14 +223,24 @@ export class LocalStorageAdapter implements StorageAdapter {
       throw new Error('Unrecognized import format (schemaVersion mismatch).');
     }
     const p = payload as unknown as Record<string, unknown>;
-    if (!Array.isArray(p.habits) || !Array.isArray(p.tasks) || !Array.isArray(p.checkins) || !Array.isArray(p.reflections)) {
+    if (
+      !Array.isArray(p.habits) ||
+      !Array.isArray(p.tasks) ||
+      !Array.isArray(p.checkins) ||
+      !Array.isArray(p.reflections)
+    ) {
       throw new Error('Import file is corrupt: main fields missing.');
+    }
+    if (p.decay !== undefined && !validDecay(p.decay)) {
+      throw new Error('Import file is corrupt: decay ledger is invalid.');
     }
     const habits = (p.habits as unknown[]).filter(validHabit);
     const tasks = (p.tasks as unknown[]).filter(validTask);
     const checkins = (p.checkins as unknown[]).filter(validCheckin);
     const reflections = (p.reflections as unknown[]).filter(validReflection);
-    const attendance = Array.isArray(p.attendance) ? (p.attendance as unknown[]).filter(validAttendance) : [];
+    const attendance = Array.isArray(p.attendance)
+      ? (p.attendance as unknown[]).filter(validAttendance)
+      : [];
     await Promise.all([
       this.saveHabits(habits),
       this.saveTasks(tasks),
@@ -199,16 +248,22 @@ export class LocalStorageAdapter implements StorageAdapter {
       this.saveReflections(reflections),
       this.saveAttendance(attendance),
     ]);
+    // Older backups carry no ledger: clearing it prevents stale frost from
+    // eating the freshly imported XP.
+    writeDecay(p.decay as DecayLedger | undefined);
+    // An intentional empty list must stay empty after the reload.
+    this.markSeeded();
+    this.markTasksSeeded();
   }
 
   async clearAll(): Promise<void> {
     try {
-      window.localStorage.removeItem(KEYS.habits);
-      window.localStorage.removeItem(KEYS.tasks);
-      window.localStorage.removeItem(KEYS.checkins);
-      window.localStorage.removeItem(KEYS.reflections);
-      window.localStorage.removeItem(KEYS.attendance);
-      window.localStorage.removeItem(KEYS.seeded);
+      const keys: string[] = [];
+      for (let i = 0; i < window.localStorage.length; i += 1) {
+        const key = window.localStorage.key(i);
+        if (key?.startsWith(PREFIX)) keys.push(key);
+      }
+      for (const key of keys) window.localStorage.removeItem(key);
     } catch {
       // abaikan
     }
@@ -227,6 +282,24 @@ export class LocalStorageAdapter implements StorageAdapter {
   markSeeded(): void {
     try {
       window.localStorage.setItem(KEYS.seeded, '1');
+    } catch {
+      // abaikan
+    }
+  }
+
+  /** True once the starter side quests have been offered (or deliberately skipped). */
+  isTasksSeeded(): boolean {
+    try {
+      return window.localStorage.getItem(KEYS.tasksSeeded) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  /** Remembers that starter side quests must not come back after deletion. */
+  markTasksSeeded(): void {
+    try {
+      window.localStorage.setItem(KEYS.tasksSeeded, '1');
     } catch {
       // abaikan
     }
