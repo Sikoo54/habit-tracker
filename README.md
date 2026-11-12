@@ -23,7 +23,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **Side Quests** are optional daily tasks worth **+15 XP**. Unfinished quests from earlier days surface in a banner so they can be carried over or let go instead of silently disappearing.
 - **Yesterday backfill** — a "Fix yesterday" panel logs a forgotten habit the next morning. Late entries stay marked `late` and still count for XP and the streak; the user can also mark a habit explicitly **Not done**.
 - **Weekly goals** — each habit can target 0–7 check-ins per week, shown as a `n/7 wk` chip on the row and as progress meters on Stats.
-- **Archive instead of delete** — a retired habit leaves the daily board but keeps its check-ins, streak days, and heatmap cells. Past totals are calculated from the habits due on each date, so archiving never rewrites history.
+- **Archive instead of delete** — a retired habit leaves the daily board but keeps its check-ins, streak days, and heatmap cells. An archived-habits panel can restore it or delete it permanently after a warning. Past totals are calculated from the habits due on each date, so archiving never rewrites history.
 
 ### Progression
 
@@ -104,7 +104,7 @@ src/
   components/  Layout, Hud, HabitCard, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
                Heatmap, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
-               DataTools, EmptyState, RankInfo
+               DataTools, ArchivedHabits, EmptyState, RankInfo
   pages/       TodayPage, StatsPage, ReflectionPage, FocusPage
   hooks/       useHabits, useTasks, useCheckins, useReflections, useAttendance,
                useGame, useDarkMode, useAchievementToasts
@@ -135,7 +135,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [ ] Reminders / notifications
 - [x] PWA offline support
 - [ ] Habit notes and longer-range charts
-- [ ] Archived-habit management screen (restore, permanent delete)
+- [x] Archived-habit management screen (restore, permanent delete)
 
 ## Author
 

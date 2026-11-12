@@ -29,17 +29,26 @@ export function checkinsByHabit(checkins: Checkin[], date: string): Map<string, 
 
 /**
  * Habits that were part of the board on `date`: created on or before that day
- * and either still active or archived after it. Archived habits keep their
- * history, so past totals and perfect days never change.
+ * and not inside an archive period. Closed archive periods are gaps, so
+ * restoring a habit never makes it retroactively due for the time it was away.
  */
 export function habitsOn(habits: Habit[], date: string): Habit[] {
   return habits.filter((h) => {
     const created = new Date(h.createdAt);
     if (!Number.isNaN(created.getTime()) && toDateKey(created) > date) return false;
-    if (h.archivedAt) {
-      const archived = new Date(h.archivedAt);
-      if (!Number.isNaN(archived.getTime())) return date < toDateKey(archived);
+
+    const archives = h.archives ?? (h.archivedAt ? [{ from: h.archivedAt }] : []);
+    if (archives.length > 0) {
+      for (const period of archives) {
+        const from = new Date(period.from);
+        if (Number.isNaN(from.getTime()) || date < toDateKey(from)) continue;
+        if (!period.to) return false; // still archived
+        const to = new Date(period.to);
+        if (Number.isNaN(to.getTime()) || date < toDateKey(to)) return false;
+      }
+      return true;
     }
+
     return h.active;
   });
 }

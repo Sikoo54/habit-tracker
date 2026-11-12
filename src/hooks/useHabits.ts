@@ -106,9 +106,62 @@ export function useHabits() {
   const archiveHabit = useCallback((id: string) => {
     const archivedAt = new Date().toISOString();
     setHabits((prev) =>
-      prev.map((h) => (h.id === id && !h.archivedAt ? { ...h, active: false, archivedAt } : h)),
+      prev.map((h) => {
+        if (h.id !== id || h.archivedAt) return h;
+        const archives = h.archives ?? [];
+        return {
+          ...h,
+          active: false,
+          archivedAt,
+          archives: [...archives, { from: archivedAt }],
+        };
+      }),
     );
   }, []);
 
-  return { habits, loading, addHabit, updateHabit, archiveHabit, setHabits };
+  /** Puts an archived habit back on the board, respecting the active-habit cap. */
+  const restoreHabit = useCallback(
+    (id: string): { ok: boolean; reason?: string } => {
+      const target = habits.find((h) => h.id === id);
+      if (!target?.archivedAt) return { ok: false, reason: 'This habit is not archived.' };
+      if (habits.filter((h) => h.active).length >= MAX_ACTIVE_HABITS) {
+        return {
+          ok: false,
+          reason: `Max ${MAX_ACTIVE_HABITS} active habits. Archive another first.`,
+        };
+      }
+      const restoredAt = new Date().toISOString();
+      setHabits((prev) =>
+        prev.map((h) => {
+          if (h.id !== id) return h;
+          // Close the open archive period so the gap stays out of past stats.
+          const archives =
+            h.archives && h.archives.length > 0
+              ? [...h.archives]
+              : [{ from: h.archivedAt ?? restoredAt }];
+          const last = archives[archives.length - 1];
+          if (last && !last.to) archives[archives.length - 1] = { ...last, to: restoredAt };
+          return { ...h, active: true, archivedAt: undefined, archives };
+        }),
+      );
+      return { ok: true };
+    },
+    [habits],
+  );
+
+  /** Removes an archived habit for good. Callers must also delete its check-ins. */
+  const deleteHabit = useCallback((id: string) => {
+    setHabits((prev) => prev.filter((h) => !(h.id === id && h.archivedAt)));
+  }, []);
+
+  return {
+    habits,
+    loading,
+    addHabit,
+    updateHabit,
+    archiveHabit,
+    restoreHabit,
+    deleteHabit,
+    setHabits,
+  };
 }
