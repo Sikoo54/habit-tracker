@@ -1,8 +1,8 @@
 /**
  * Habit Card Component
  * Interactive Main Quest row: one tap marks the habit done, with streak,
- * risk warning, weekly goal chip, and inline edit dialog. Habits are archived,
- * not deleted, so their history stays honest.
+ * risk warning, weekly goal chip, and inline edit dialog. The menu offers
+ * Edit, Delete, and Archive; archive keeps history, delete does not.
  */
 
 import { useState, type FormEvent, type ReactNode } from 'react';
@@ -19,6 +19,7 @@ interface Props {
   checked: boolean;
   onToggle: () => void;
   onUpdate: (input: HabitInput) => { ok: boolean; reason?: string };
+  onDelete: () => void;
   onArchive: () => void;
 }
 
@@ -34,6 +35,7 @@ export function HabitCard({
   checked,
   onToggle,
   onUpdate,
+  onDelete,
   onArchive,
 }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -242,6 +244,21 @@ export function HabitCard({
                 className="block min-h-[44px] w-full px-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-slate-700"
               >
                 Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Delete habit "${habit.name}" permanently? Its check-ins and XP will be removed, and past streak days may change. Archive is safer if you want to keep history.`,
+                    )
+                  )
+                    onDelete();
+                  setMenuOpen(false);
+                }}
+                className="block min-h-[44px] w-full px-3 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950"
+              >
+                Delete
               </button>
               <button
                 type="button"

@@ -5,8 +5,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { useCallback, useState } from 'react';
-import { ArchivedHabits } from '../components/ArchivedHabits';
+import { useState } from 'react';
 import { AscentTrail } from '../components/AscentTrail';
 import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
@@ -53,15 +52,21 @@ export function TodayPage({
 }: Props): ReactNode {
   const today = todayKey();
   const weekMonday = startOfWeekMonday(today);
-  const { habits, addHabit, updateHabit, archiveHabit, restoreHabit, deleteHabit } = habitsApi;
+  const { habits, addHabit, updateHabit, archiveHabit, removeHabit } = habitsApi;
   const { quests, addTask, toggleTask, removeTask } = tasksApi;
   const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
-  const { checkins, toggleCheckin, setCheckin, checkinFor, removeCheckinsForHabit } = checkinsApi;
+  const { checkins, toggleCheckin, setCheckin, checkinFor, setCheckins } = checkinsApi;
   const yesterday = addDays(today, -1);
   const backfillHabits = habitsOn(habits, yesterday);
 
+  // Permanent delete also removes the habit's check-ins so no orphan XP or
+  // invisible history is left behind. Archive remains the history-safe option.
+  const deleteHabit = (id: string): void => {
+    removeHabit(id);
+    setCheckins((prev) => prev.filter((c) => c.habitId !== id));
+  };
+
   const activeHabits = habits.filter((h) => h.active);
-  const archivedHabits = habits.filter((h) => h.archivedAt);
   const doneHabits = activeHabits.filter((h) => checkinFor(h.id, today));
   // The Main Quest is the day: only habits move the trail and the headline.
   const mainTotal = activeHabits.length;
@@ -81,14 +86,6 @@ export function TodayPage({
     showsStreak(reset.lost) &&
     !game.todayTrainingDone &&
     dismissedReset !== today;
-
-  // Archived list is a takeover, not another row on the daily board.
-  const [archivedOpen, setArchivedOpen] = useState(false);
-  const closeArchived = useCallback(() => setArchivedOpen(false), []);
-  const deleteArchivedHabit = (id: string): void => {
-    deleteHabit(id);
-    removeCheckinsForHabit(id);
-  };
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -202,16 +199,6 @@ export function TodayPage({
               </p>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
-              {archivedHabits.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => setArchivedOpen(true)}
-                  aria-haspopup="dialog"
-                  className="flex min-h-[32px] items-center gap-1 rounded-full bg-cream-200 px-2.5 py-1 text-xs font-bold text-ink-600 hover:bg-cream-300 max-md:min-h-[44px] dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
-                >
-                  <span aria-hidden="true">🗂️</span> Archived {archivedHabits.length}
-                </button>
-              ) : null}
               {showsStreak(game.streak) ? (
                 <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800 tabular-nums dark:bg-amber-950 dark:text-amber-200">
                   🔥 {game.streak}
@@ -244,6 +231,7 @@ export function TodayPage({
                     checked={Boolean(c)}
                     onToggle={() => toggleCheckin(h.id, today)}
                     onUpdate={(input) => updateHabit(h.id, input)}
+                    onDelete={() => deleteHabit(h.id)}
                     onArchive={() => archiveHabit(h.id)}
                   />
                 );
@@ -279,16 +267,6 @@ export function TodayPage({
           />
         </section>
       </div>
-
-      {archivedOpen ? (
-        <ArchivedHabits
-          habits={archivedHabits}
-          checkins={checkins}
-          onRestore={restoreHabit}
-          onDelete={deleteArchivedHabit}
-          onClose={closeArchived}
-        />
-      ) : null}
     </div>
   );
 }

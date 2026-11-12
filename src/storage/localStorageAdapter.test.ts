@@ -101,7 +101,7 @@ describe('LocalStorageAdapter', () => {
     expect(await a.getReflections()).toHaveLength(1);
   });
 
-  it('keeps archivedAt through a save/read cycle and derives the archive gap', async () => {
+  it('keeps archivedAt through a save/read cycle', async () => {
     const a = new LocalStorageAdapter();
     await a.saveHabits([
       {
@@ -115,30 +115,7 @@ describe('LocalStorageAdapter', () => {
         archivedAt: '2026-09-10T08:00:00.000Z',
       },
     ]);
-    const [habit] = await a.getHabits();
-    expect(habit?.archivedAt).toBe('2026-09-10T08:00:00.000Z');
-    expect(habit?.archives).toEqual([{ from: '2026-09-10T08:00:00.000Z' }]);
-  });
-
-  it('keeps closed archive gaps after a restore', async () => {
-    const a = new LocalStorageAdapter();
-    await a.saveHabits([
-      {
-        id: 'restored',
-        name: 'Back habit',
-        fullVersion: 'full',
-        trigger: '',
-        active: true,
-        weeklyGoal: 0,
-        createdAt: '2026-01-01T00:00:00.000Z',
-        archives: [{ from: '2026-09-10T08:00:00.000Z', to: '2026-09-14T08:00:00.000Z' }],
-      },
-    ]);
-    const [habit] = await a.getHabits();
-    expect(habit?.archivedAt).toBeUndefined();
-    expect(habit?.archives).toEqual([
-      { from: '2026-09-10T08:00:00.000Z', to: '2026-09-14T08:00:00.000Z' },
-    ]);
+    expect((await a.getHabits())[0]?.archivedAt).toBe('2026-09-10T08:00:00.000Z');
   });
 
   it('clearAll removes every v2 key, including ledgers, but keeps the theme', async () => {

@@ -76,22 +76,6 @@ describe('habits available for a date', () => {
     expect(habitsOn([archived], '2026-11-03')).toEqual([]);
   });
 
-  it('keeps every archive gap after a restore', () => {
-    const restored: Habit = {
-      ...habit('restored', localIso(2026, 10, 1, 9)),
-      archives: [
-        { from: localIso(2026, 11, 2, 12), to: localIso(2026, 11, 5, 9) },
-        { from: localIso(2026, 11, 8, 12), to: localIso(2026, 11, 10, 9) },
-      ],
-    };
-    expect(habitsOn([restored], '2026-11-01').map((h) => h.id)).toEqual(['restored']);
-    expect(habitsOn([restored], '2026-11-02')).toEqual([]);
-    expect(habitsOn([restored], '2026-11-04')).toEqual([]);
-    expect(habitsOn([restored], '2026-11-05').map((h) => h.id)).toEqual(['restored']);
-    expect(habitsOn([restored], '2026-11-08')).toEqual([]);
-    expect(habitsOn([restored], '2026-11-10').map((h) => h.id)).toEqual(['restored']);
-  });
-
   it('matches the created day key exactly', () => {
     expect(toDateKey(new Date(habits[1]?.createdAt ?? ''))).toBe('2026-11-01');
   });

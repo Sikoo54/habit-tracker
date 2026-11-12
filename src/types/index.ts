@@ -8,13 +8,6 @@ import type { DecayLedger } from '../game/decay';
 
 // Core domain types. No `any`, every field explicit.
 
-/** One stretch when a habit was off the daily board. */
-export interface HabitArchivePeriod {
-  from: string; // ISO timestamp, archive start
-  /** ISO timestamp, restore time. Missing while the habit is still archived. */
-  to?: string;
-}
-
 /** Habit entity representation */
 export interface Habit {
   id: string;
@@ -27,15 +20,10 @@ export interface Habit {
   weeklyGoal: number;
   createdAt: string; // ISO timestamp
   /**
-   * Start of the current archive, or absent while active. Archived habits leave
-   * the daily board but still count for every date before this timestamp.
+   * When the habit was archived. Archived habits leave the daily board but
+   * still count for every date before this timestamp, so history never changes.
    */
   archivedAt?: string;
-  /**
-   * Every archive period, oldest first. A closed period is a gap when the habit
-   * was not due; keeping it means restore never rewrites past stats.
-   */
-  archives?: HabitArchivePeriod[];
 }
 
 /** Input payload for creating or updating a habit */

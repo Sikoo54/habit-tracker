@@ -5,15 +5,7 @@
  */
 
 import { DECAY_KEY, type DecayLedger } from '../game/decay';
-import type {
-  Attendance,
-  Checkin,
-  ExportPayload,
-  Habit,
-  HabitArchivePeriod,
-  Reflection,
-  Task,
-} from '../types';
+import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
 const SCHEMA_VERSION = 1;
@@ -43,10 +35,6 @@ function isBoolean(v: unknown): v is boolean {
   return typeof v === 'boolean';
 }
 
-function validArchivePeriod(v: unknown): v is HabitArchivePeriod {
-  return isRecord(v) && isString(v.from) && (v.to === undefined || isString(v.to));
-}
-
 function validHabit(v: unknown): v is Habit {
   return (
     isRecord(v) &&
@@ -57,8 +45,6 @@ function validHabit(v: unknown): v is Habit {
     isBoolean(v.active) &&
     (v.weeklyGoal === undefined || typeof v.weeklyGoal === 'number') &&
     (v.archivedAt === undefined || isString(v.archivedAt)) &&
-    (v.archives === undefined ||
-      (Array.isArray(v.archives) && v.archives.every(validArchivePeriod))) &&
     isString(v.createdAt)
   );
 }
@@ -68,14 +54,6 @@ function validHabit(v: unknown): v is Habit {
  * saved habits stay lean and keep working.
  */
 function normalizeHabit(h: Habit): Habit {
-  // Older saves only know `archivedAt`; promote it to a single archive period
-  // so restore can close the gap without rewriting history.
-  const archives =
-    h.archives && h.archives.length > 0
-      ? h.archives
-      : h.archivedAt
-        ? [{ from: h.archivedAt }]
-        : undefined;
   return {
     id: h.id,
     name: h.name,
@@ -85,7 +63,6 @@ function normalizeHabit(h: Habit): Habit {
     weeklyGoal: typeof h.weeklyGoal === 'number' ? h.weeklyGoal : 0,
     createdAt: h.createdAt,
     ...(h.archivedAt ? { archivedAt: h.archivedAt } : {}),
-    ...(archives ? { archives } : {}),
   };
 }
 

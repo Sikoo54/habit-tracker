@@ -43,12 +43,7 @@ export function useCheckins() {
     setCheckins((prev) => {
       const existing = prev.find((c) => c.habitId === habitId && c.date === date);
       if (existing) return prev.filter((c) => c.id !== existing.id);
-      const c: Checkin = {
-        id: createId('checkin'),
-        habitId,
-        date,
-        createdAt: new Date().toISOString(),
-      };
+      const c: Checkin = { id: createId('checkin'), habitId, date, createdAt: new Date().toISOString() };
       return [...prev, c];
     });
   }, []);
@@ -68,28 +63,10 @@ export function useCheckins() {
       const existing = prev.find((c) => c.habitId === habitId && c.date === date);
       if (!done) return existing ? prev.filter((c) => c.id !== existing.id) : prev;
       if (existing) return prev;
-      const c: Checkin = {
-        id: createId('checkin'),
-        habitId,
-        date,
-        createdAt: new Date().toISOString(),
-      };
+      const c: Checkin = { id: createId('checkin'), habitId, date, createdAt: new Date().toISOString() };
       return [...prev, c];
     });
   }, []);
 
-  /** Drops every check-in for a habit that is being permanently deleted. */
-  const removeCheckinsForHabit = useCallback((habitId: string) => {
-    setCheckins((prev) => prev.filter((c) => c.habitId !== habitId));
-  }, []);
-
-  return {
-    checkins,
-    loading,
-    toggleCheckin,
-    setCheckin,
-    checkinFor,
-    setCheckins,
-    removeCheckinsForHabit,
-  };
+  return { checkins, loading, toggleCheckin, setCheckin, checkinFor, setCheckins };
 }
