@@ -10,6 +10,7 @@ import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
 import type { Checkin, Habit, HabitInput } from '../types';
 import { isStreakAtRisk } from '../utils/streak';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface Props {
   habit: Habit;
@@ -39,6 +40,7 @@ export function HabitCard({
   onArchive,
 }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirming, setConfirming] = useState<'delete' | 'archive' | null>(null);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(habit.name);
   const [full, setFull] = useState(habit.fullVersion);
@@ -52,6 +54,8 @@ export function HabitCard({
       todayKey,
     ) && !checked;
   const goal = goalProgress(habit, checkins, weekMonday);
+  const checkinCount = checkins.filter((c) => c.habitId === habit.id).length;
+  const checkinXp = checkinCount * xpForCheckin();
 
   const submitEdit = (e: FormEvent): void => {
     e.preventDefault();
@@ -248,12 +252,7 @@ export function HabitCard({
               <button
                 type="button"
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      `Delete habit "${habit.name}" permanently? Its check-ins and XP will be removed, and past streak days may change. Archive is safer if you want to keep history.`,
-                    )
-                  )
-                    onDelete();
+                  setConfirming('delete');
                   setMenuOpen(false);
                 }}
                 className="block min-h-[44px] w-full px-3 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950"
@@ -263,12 +262,7 @@ export function HabitCard({
               <button
                 type="button"
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      `Archive habit "${habit.name}"? It leaves the board, but past check-ins and streak days stay intact.`,
-                    )
-                  )
-                    onArchive();
+                  setConfirming('archive');
                   setMenuOpen(false);
                 }}
                 className="block min-h-[44px] w-full px-3 text-left text-sm text-amber-700 hover:bg-amber-50 dark:text-amber-300 dark:hover:bg-amber-950"
@@ -279,6 +273,44 @@ export function HabitCard({
           ) : null}
         </div>
       </div>
+
+      {confirming === 'delete' ? (
+        <ConfirmDialog
+          tone="danger"
+          title={`Delete "${habit.name}" forever?`}
+          description="Its check-ins and XP will be removed, and past streak days, stats, and achievements can change. Archive is safer if you want to keep history."
+          detail={
+            checkinCount > 0
+              ? `${checkinCount} ${checkinCount === 1 ? 'check-in' : 'check-ins'} (${checkinXp} XP) will be deleted with this habit. This cannot be undone.`
+              : 'This habit has no check-ins yet, so your stats will not change. This cannot be undone.'
+          }
+          confirmLabel="Delete forever"
+          onConfirm={() => {
+            setConfirming(null);
+            onDelete();
+          }}
+          onCancel={() => setConfirming(null)}
+        />
+      ) : null}
+
+      {confirming === 'archive' ? (
+        <ConfirmDialog
+          tone="archive"
+          title={`Archive "${habit.name}"?`}
+          description="It leaves today's board, but its check-ins, streak days, and heatmap stay exactly as they are."
+          detail={
+            checkinCount > 0
+              ? `${checkinCount} ${checkinCount === 1 ? 'check-in' : 'check-ins'} will be kept. Restore it anytime from the Archived panel.`
+              : 'Restore it anytime from the Archived panel.'
+          }
+          confirmLabel="Archive habit"
+          onConfirm={() => {
+            setConfirming(null);
+            onArchive();
+          }}
+          onCancel={() => setConfirming(null)}
+        />
+      ) : null}
     </li>
   );
 }

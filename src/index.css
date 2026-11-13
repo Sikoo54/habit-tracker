@@ -101,3 +101,23 @@ body {
     transition: none;
   }
 }
+
+/* Confirmation modals rise in softly, and stay still when motion is reduced. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.dialog-in {
+  animation: dialog-in 0.18s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dialog-in {
+    animation: none;
+  }
+}

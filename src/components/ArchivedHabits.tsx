@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import type { Checkin, Habit } from '../types';
 import { formatTanggalID, toDateKey } from '../utils/dates';
+import { ConfirmDialog } from './ConfirmDialog';
 import { EmptyState } from './EmptyState';
 
 interface Props {
@@ -40,18 +41,32 @@ export function ArchivedHabits({
 
   useEffect(() => {
     closeRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape') onClose();
+      // The confirm dialog owns Escape while it is open.
+      if (e.key === 'Escape' && !confirmingId) onClose();
     };
     document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose, confirmingId]);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
     };
-  }, [onClose]);
+  }, []);
 
   const sorted = [...habits].sort((a, b) => (b.archivedAt ?? '').localeCompare(a.archivedAt ?? ''));
+  const confirmingHabit = confirmingId
+    ? sorted.find((habit) => habit.id === confirmingId)
+    : undefined;
+  const confirmingCount = confirmingHabit
+    ? checkins.filter((c) => c.habitId === confirmingHabit.id).length
+    : 0;
 
   const restore = (id: string): void => {
     const result = onRestore(id);
@@ -118,8 +133,6 @@ export function ArchivedHabits({
             <ul className="space-y-3">
               {sorted.map((habit) => {
                 const count = checkins.filter((c) => c.habitId === habit.id).length;
-                const xp = count * xpForCheckin();
-                const confirming = confirmingId === habit.id;
                 const meta = [
                   habit.fullVersion && habit.fullVersion !== habit.name ? habit.fullVersion : '',
                   habit.trigger ? `⏰ ${habit.trigger}` : '',
@@ -149,63 +162,25 @@ export function ArchivedHabits({
                       </span>
                     </div>
 
-                    {confirming ? (
-                      <div
-                        role="alertdialog"
-                        aria-label={`Delete ${habit.name} forever`}
-                        className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950/60"
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => restore(habit.id)}
+                        className="min-h-[44px] flex-1 rounded-xl bg-sage-600 px-3 text-sm font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
                       >
-                        <p className="text-sm font-bold text-red-800 dark:text-red-200">
-                          Delete &quot;{habit.name}&quot; forever?
-                        </p>
-                        <p className="mt-1 text-[13px] leading-relaxed text-red-800/90 dark:text-red-200/90">
-                          {count > 0
-                            ? `This removes ${count} ${count === 1 ? 'check-in' : 'check-ins'} (${xp} XP) and can change past stats, streaks, and achievements.`
-                            : 'This habit has no check-ins, so your stats will not change.'}{' '}
-                          It cannot be undone.
-                        </p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onDelete(habit.id);
-                              setConfirmingId(null);
-                              setError(null);
-                            }}
-                            className="min-h-[44px] flex-1 rounded-xl bg-red-600 px-3 text-sm font-semibold text-white hover:bg-red-700"
-                          >
-                            Yes, delete forever
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmingId(null)}
-                            className="min-h-[44px] flex-1 rounded-xl border border-red-300 px-3 text-sm font-medium text-red-800 hover:bg-red-100 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-950"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => restore(habit.id)}
-                          className="min-h-[44px] flex-1 rounded-xl bg-sage-600 px-3 text-sm font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
-                        >
-                          Restore
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setConfirmingId(habit.id);
-                            setError(null);
-                          }}
-                          className="min-h-[44px] flex-1 rounded-xl border border-red-300 px-3 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
-                        >
-                          Delete forever
-                        </button>
-                      </div>
-                    )}
+                        Restore
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setConfirmingId(habit.id);
+                          setError(null);
+                        }}
+                        className="min-h-[44px] flex-1 rounded-xl border border-red-300 px-3 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
+                      >
+                        Delete forever
+                      </button>
+                    </div>
                   </li>
                 );
               })}
@@ -213,6 +188,26 @@ export function ArchivedHabits({
           )}
         </div>
       </div>
+
+      {confirmingHabit ? (
+        <ConfirmDialog
+          tone="danger"
+          title={`Delete "${confirmingHabit.name}" forever?`}
+          description="Its check-ins and XP will be removed, and past streak days, stats, and achievements can change. Archive keeps history safe."
+          detail={
+            confirmingCount > 0
+              ? `${confirmingCount} ${confirmingCount === 1 ? 'check-in' : 'check-ins'} (${confirmingCount * xpForCheckin()} XP) will be deleted with this habit. This cannot be undone.`
+              : 'This habit has no check-ins, so your stats will not change. This cannot be undone.'
+          }
+          confirmLabel="Delete forever"
+          onConfirm={() => {
+            onDelete(confirmingHabit.id);
+            setConfirmingId(null);
+            setError(null);
+          }}
+          onCancel={() => setConfirmingId(null)}
+        />
+      ) : null}
     </div>
   );
 }
