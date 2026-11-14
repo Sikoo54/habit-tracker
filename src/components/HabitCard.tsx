@@ -22,6 +22,7 @@ interface Props {
   onUpdate: (input: HabitInput) => { ok: boolean; reason?: string };
   onDelete: () => void;
   onArchive: () => void;
+  onOpenDetail: () => void;
 }
 
 const inputCls =
@@ -38,6 +39,7 @@ export function HabitCard({
   onUpdate,
   onDelete,
   onArchive,
+  onOpenDetail,
 }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirming, setConfirming] = useState<'delete' | 'archive' | null>(null);
@@ -110,11 +112,22 @@ export function HabitCard({
         </button>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p
-              className={`truncate text-base font-semibold ${checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}
+            <button
+              type="button"
+              onClick={onOpenDetail}
+              aria-label={`View 30-day history for ${habit.name}`}
+              className={`group min-w-0 truncate text-left text-base font-semibold hover:underline hover:decoration-sage-500/50 hover:underline-offset-2 ${
+                checked ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'
+              }`}
             >
               {habit.name}
-            </p>
+              <span
+                aria-hidden="true"
+                className="ml-1 text-xs font-normal text-slate-400 group-hover:text-sage-600 dark:group-hover:text-emerald-300"
+              >
+                ›
+              </span>
+            </button>
             <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs tabular-nums">
               {checked ? (
                 <span className="font-extrabold text-amber-600 dark:text-amber-300">

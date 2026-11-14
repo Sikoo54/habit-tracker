@@ -11,6 +11,7 @@ import { AscentTrail } from '../components/AscentTrail';
 import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
 import { HabitCard } from '../components/HabitCard';
+import { HabitDetail } from '../components/HabitDetail';
 import { HabitForm } from '../components/HabitForm';
 import { LeftoverBanner } from '../components/LeftoverBanner';
 import { QuoteCard } from '../components/QuoteCard';
@@ -92,6 +93,10 @@ export function TodayPage({
   // Archived list is a takeover, not another row on the daily board.
   const [archivedOpen, setArchivedOpen] = useState(false);
   const closeArchived = useCallback(() => setArchivedOpen(false), []);
+  const [detailHabitId, setDetailHabitId] = useState<string | null>(null);
+  const detailHabit = detailHabitId
+    ? habits.find((habit) => habit.id === detailHabitId)
+    : undefined;
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -249,6 +254,7 @@ export function TodayPage({
                     onUpdate={(input) => updateHabit(h.id, input)}
                     onDelete={() => deleteHabit(h.id)}
                     onArchive={() => archiveHabit(h.id)}
+                    onOpenDetail={() => setDetailHabitId(h.id)}
                   />
                 );
               })}
@@ -291,6 +297,14 @@ export function TodayPage({
           onRestore={restoreHabit}
           onDelete={deleteHabit}
           onClose={closeArchived}
+        />
+      ) : null}
+
+      {detailHabit ? (
+        <HabitDetail
+          habit={detailHabit}
+          checkins={checkins}
+          onClose={() => setDetailHabitId(null)}
         />
       ) : null}
     </div>
