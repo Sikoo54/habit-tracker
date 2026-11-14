@@ -12,6 +12,10 @@ export type ConfirmTone = 'danger' | 'archive';
 interface Props {
   title: string;
   description: string;
+  /** Optional custom icon; defaults to the tone's icon. */
+  icon?: string;
+  /** Optional extra content rendered between the description and detail. */
+  children?: ReactNode;
   /** Optional impact summary shown in a tinted box below the description. */
   detail?: string;
   confirmLabel: string;
@@ -41,6 +45,8 @@ const TONE = {
 export function ConfirmDialog({
   title,
   description,
+  icon,
+  children,
   detail,
   confirmLabel,
   tone = 'danger',
@@ -84,7 +90,7 @@ export function ConfirmDialog({
             aria-hidden="true"
             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xl ${style.iconCls}`}
           >
-            {style.icon}
+            {icon ?? style.icon}
           </span>
           <div className="min-w-0 flex-1 pt-0.5">
             <h2 id={titleId} className="font-display text-xl font-semibold leading-tight">
@@ -98,6 +104,8 @@ export function ConfirmDialog({
             </p>
           </div>
         </div>
+
+        {children}
 
         {detail ? (
           <p

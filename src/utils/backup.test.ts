@@ -1,13 +1,35 @@
-import { describe, expect, it } from 'vitest';
-import { backupLabel, backupStatus } from './backup';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ExportPayload } from '../types';
+import {
+  backupLabel,
+  backupStatus,
+  PRE_IMPORT_BACKUP_KEY,
+  readPreImportBackup,
+  savePreImportBackup,
+} from './backup';
 
 const NOW = new Date('2026-10-31T12:00:00.000Z');
+
+/** Empty but valid backup payload for snapshot tests. */
+const EMPTY_PAYLOAD: ExportPayload = {
+  schemaVersion: 1,
+  exportedAt: '2026-10-31T00:00:00.000Z',
+  habits: [],
+  tasks: [],
+  checkins: [],
+  reflections: [],
+  attendance: [],
+};
 
 function daysAgoIso(days: number): string {
   return new Date(NOW.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
 }
 
 describe('backup status', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
   it('is due when no backup was ever made', () => {
     const s = backupStatus(null, NOW);
     expect(s.due).toBe(true);
@@ -48,5 +70,38 @@ describe('backup status', () => {
 
   it('labels a single day in the singular', () => {
     expect(backupLabel(backupStatus(daysAgoIso(1), NOW))).toBe('Backed up 1 day ago');
+  });
+});
+
+describe('pre-import backup', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('round-trips the snapshot with its timestamp', () => {
+    expect(savePreImportBackup(EMPTY_PAYLOAD, NOW)).toBe(true);
+    expect(readPreImportBackup()).toEqual({
+      createdAt: NOW.toISOString(),
+      payload: EMPTY_PAYLOAD,
+    });
+  });
+
+  it('returns null for corrupt or invalid snapshots', () => {
+    window.localStorage.setItem(PRE_IMPORT_BACKUP_KEY, 'not-json');
+    expect(readPreImportBackup()).toBeNull();
+
+    window.localStorage.setItem(
+      PRE_IMPORT_BACKUP_KEY,
+      JSON.stringify({ createdAt: NOW.toISOString(), payload: { schemaVersion: 9 } }),
+    );
+    expect(readPreImportBackup()).toBeNull();
+  });
+
+  it('reports failure when storage refuses the write', () => {
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+    expect(savePreImportBackup(EMPTY_PAYLOAD, NOW)).toBe(false);
+    spy.mockRestore();
   });
 });

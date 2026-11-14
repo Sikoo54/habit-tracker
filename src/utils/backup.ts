@@ -2,9 +2,17 @@
  * Backup Nudge
  * Data lives only in this browser, so a cleared browser or evicted storage is
  * total loss. Tracks the last successful export and flags when it is stale.
+ * Also keeps one snapshot of the data from just before the last import.
  */
 
+import { previewImport } from '../storage/importPreview';
+import { isRecord, isString } from '../storage/validation';
+import type { ExportPayload } from '../types';
+
 const BACKUP_KEY = 'habittracker.v2.lastBackup';
+
+/** Key holding the safety snapshot written before an import replaces data. */
+export const PRE_IMPORT_BACKUP_KEY = 'habittracker.v2.preImportBackup';
 
 /** A backup older than this is considered stale. */
 export const BACKUP_STALE_DAYS = 30;
@@ -55,4 +63,39 @@ export function backupLabel(status: BackupStatus): string {
   if (status.daysAgo === 0) return 'Backed up today';
   if (status.daysAgo === 1) return 'Backed up 1 day ago';
   return `Backed up ${status.daysAgo} days ago`;
+}
+
+/** Local safety snapshot taken right before an import overwrites data. */
+export interface PreImportBackup {
+  createdAt: string;
+  payload: ExportPayload;
+}
+
+/**
+ * Saves the current data before an import. Returns false when storage is full
+ * or blocked, so the caller can cancel the import instead of risking data loss.
+ */
+export function savePreImportBackup(payload: ExportPayload, now: Date = new Date()): boolean {
+  try {
+    const backup: PreImportBackup = { createdAt: now.toISOString(), payload };
+    window.localStorage.setItem(PRE_IMPORT_BACKUP_KEY, JSON.stringify(backup));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Reads the pre-import snapshot, dropping it if it is corrupt or unreadable. */
+export function readPreImportBackup(): PreImportBackup | null {
+  try {
+    const raw = window.localStorage.getItem(PRE_IMPORT_BACKUP_KEY);
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (!isRecord(parsed) || !isString(parsed.createdAt)) return null;
+    const preview = previewImport(parsed.payload);
+    if (!preview.ok) return null;
+    return { createdAt: parsed.createdAt, payload: preview.payload };
+  } catch {
+    return null;
+  }
 }

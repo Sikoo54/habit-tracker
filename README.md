@@ -60,6 +60,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **Responsive** — top navigation on desktop, bottom tabs with 44px touch targets on phones; habits stay above side quests on small screens.
 - **Installable PWA** with offline caching and auto-update.
 - **Local-first storage** — data lives in this browser under `habittracker.v2.*`. Export/import moves it between devices; imports replace, never merge, and there is no sync.
+- **Import preview + safety snapshot** — choosing a JSON file shows its habits, check-ins, quests, reflections, and invalid-record count before anything changes. Confirming first saves a local snapshot of the current data, and Settings can restore that snapshot if the wrong file was imported.
 - **Backup nudge** — Settings warns when the last export is older than 30 days or missing.
 - **Reset** with a confirmation step clears every app key (checked-in data, frost ledger, achievement notices, and seed flags) while keeping the chosen theme.
 
@@ -87,6 +88,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 - Clearing browser data wipes the app, so export a JSON backup regularly from Settings.
 - One export covers habits, side quests, check-ins, reflections, attendance, and the frost-decay ledger (`schemaVersion: 1`).
 - Import **replaces** all local data and requires a reload. Devices do not sync.
+- Before replacing, the import dialog summarizes the file and Settings saves one local snapshot of the outgoing data. If the snapshot cannot be written, the import is cancelled.
 
 ## Design decisions
 
@@ -94,6 +96,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 - **Why a whole-board streak?** A streak that survives on one check-in says nothing about consistency. Counting only days where every main quest habit is done makes the number mean "I showed up for all of it". Achievements use the same perfect-day rule but read the best run ever, so a reset can never take a badge away.
 - **Why one target per habit?** Two versions of the same habit split attention and make "did I do it?" ambiguous. One clear target and one tap keeps the daily board honest and fast to finish.
 - **Why archive instead of delete?** A deleted habit silently changes what "every habit due that day" meant last week, which can resurrect old streak days and inflate past completion rates. Archiving records an end date, so the history keeps the same answer forever.
+- **Why preview an import and snapshot first?** Import is a full replace, so one wrong file could erase every local habit and check-in. The preview makes the file's contents visible, and the snapshot keeps a one-step undo without relying on a download that mobile browsers may block.
 - **Why a storage adapter?** Components and hooks talk only to the `StorageAdapter` interface (injected via `StorageContext`). Today it is `LocalStorageAdapter` with validated reads and normalization; a Supabase adapter can replace it without touching the UI.
 - **Why desktop-first responsive?** The base layout targets a wide screen with a top bar and a `max-w-5xl` board, then collapses to bottom tabs, one column, and larger touch targets on phones.
 - **Why midnight, not noon?** A day is the local calendar day, and the shell ticks every 60 seconds so the board rolls over within a minute of 00:00.
@@ -114,8 +117,8 @@ src/
                weeklyGoals (+ tests)
   utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, quote
                (+ tests)
-  storage/     types (StorageAdapter), localStorageAdapter, supabaseAdapter (placeholder),
-               StorageContext
+  storage/     types (StorageAdapter), localStorageAdapter, importPreview, validation,
+               supabaseAdapter (placeholder), StorageContext
   data/        seed, quotes
   types/       Habit, Task, Checkin, Reflection, Attendance, ExportPayload
 ```
@@ -140,6 +143,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [ ] Habit notes and longer-range charts
 - [x] 30-day habit history (done, missed, late check-ins)
 - [x] Archived-habit management screen (restore, permanent delete)
+- [x] Import preview + automatic pre-import backup
 
 ## Author
 
