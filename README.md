@@ -52,7 +52,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, weekly goal meters, a 52-week activity heatmap, per-day bars, and the achievement grid.
 - **17 achievements** grouped into Habits, Streaks, Quests, Reflection, Attendance, and Progression, with bronze/silver/gold weight and a progress bar on every locked badge. Unlocks appear as toasts.
 - **Campfire Tales** — nightly reflection with "what happened" and "what to fix tomorrow", optional mood/energy 1–5, and a past-entry accordion.
-- **Focus arena** — a 25/5 Pomodoro linked to an open main quest, a side quest, or a custom focus.
+- **Focus arena** — a 25/5 Pomodoro linked to an open main quest, a side quest, or a custom focus. The timer survives refresh, navigation, and tab switches; remaining time is recalculated from a saved end timestamp.
 
 ### App shell
 
@@ -112,11 +112,11 @@ src/
                RankInfo
   pages/       TodayPage, StatsPage, ReflectionPage, FocusPage
   hooks/       useHabits, useTasks, useCheckins, useReflections, useAttendance,
-               useGame, useDarkMode, useAchievementToasts
+               useGame, useDarkMode, useAchievementToasts, usePomodoro
   game/        xp, achievements, attendance, decay, trainingStreak, dailyStreak,
                weeklyGoals (+ tests)
-  utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, quote
-               (+ tests)
+  utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, pomodoro,
+               quote (+ tests)
   storage/     types (StorageAdapter), localStorageAdapter, importPreview, validation,
                supabaseAdapter (placeholder), StorageContext
   data/        seed, quotes
@@ -144,6 +144,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] 30-day habit history (done, missed, late check-ins)
 - [x] Archived-habit management screen (restore, permanent delete)
 - [x] Import preview + automatic pre-import backup
+- [x] Pomodoro persistence across refresh and tab switches
 
 ## Author
 
