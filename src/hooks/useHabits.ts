@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { seedHabits } from '../data/seed';
 import type { Habit, HabitInput } from '../types';
 import { createId } from '../utils/dates';
+import { moveHabitBy, moveHabitTo } from '../utils/habits';
 import { localStorageAdapter } from '../storage/localStorageAdapter';
 import { useStorage } from '../storage/StorageContext';
 
@@ -155,6 +156,16 @@ export function useHabits() {
     setHabits((prev) => prev.filter((h) => h.id !== id));
   }, []);
 
+  /** Nudges an active habit one slot up or down on the daily board. */
+  const moveHabit = useCallback((id: string, direction: -1 | 1) => {
+    setHabits((prev) => moveHabitBy(prev, id, direction));
+  }, []);
+
+  /** Drops a dragged habit into another habit's slot. */
+  const reorderHabit = useCallback((id: string, targetId: string) => {
+    setHabits((prev) => moveHabitTo(prev, id, targetId));
+  }, []);
+
   return {
     habits,
     loading,
@@ -163,6 +174,8 @@ export function useHabits() {
     archiveHabit,
     restoreHabit,
     removeHabit,
+    moveHabit,
+    reorderHabit,
     setHabits,
   };
 }

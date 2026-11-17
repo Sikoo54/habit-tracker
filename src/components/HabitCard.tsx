@@ -23,6 +23,14 @@ interface Props {
   onDelete: () => void;
   onArchive: () => void;
   onOpenDetail: () => void;
+  /** False on the first row, where the habit cannot move up. */
+  canMoveUp: boolean;
+  /** False on the last row, where the habit cannot move down. */
+  canMoveDown: boolean;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  /** Receives the dragged habit id when another row is dropped here. */
+  onDropHabit: (draggedId: string) => void;
 }
 
 const inputCls =
@@ -40,9 +48,16 @@ export function HabitCard({
   onDelete,
   onArchive,
   onOpenDetail,
+  canMoveUp,
+  canMoveDown,
+  onMoveUp,
+  onMoveDown,
+  onDropHabit,
 }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirming, setConfirming] = useState<'delete' | 'archive' | null>(null);
+  // Highlight while another row hovers over this one during a drag.
+  const [dragOver, setDragOver] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(habit.name);
   const [full, setFull] = useState(habit.fullVersion);
@@ -95,8 +110,43 @@ export function HabitCard({
     ) : null;
 
   return (
-    <li className="py-2.5">
+    <li
+      // Desktop drag reorder; touch and keyboard use the menu actions below.
+      draggable={!editing}
+      onDragStart={(e) => {
+        e.dataTransfer.setData('text/plain', habit.id);
+        e.dataTransfer.effectAllowed = 'move';
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        setDragOver(true);
+      }}
+      onDragLeave={(e) => {
+        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+        setDragOver(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragOver(false);
+        const draggedId = e.dataTransfer.getData('text/plain');
+        if (draggedId && draggedId !== habit.id) onDropHabit(draggedId);
+      }}
+      onDragEnd={() => setDragOver(false)}
+      className={`py-2.5 ${
+        dragOver
+          ? 'rounded-xl bg-cream-100 ring-2 ring-sage-400 dark:bg-slate-800 dark:ring-emerald-500'
+          : ''
+      }`}
+    >
       <div className="flex items-start gap-3">
+        <span
+          aria-hidden="true"
+          title="Drag to reorder"
+          className="mt-1.5 hidden cursor-grab select-none text-lg leading-none text-slate-300 active:cursor-grabbing md:block dark:text-slate-600"
+        >
+          ⠿
+        </span>
         <button
           type="button"
           onClick={onToggle}
@@ -247,6 +297,28 @@ export function HabitCard({
           </button>
           {menuOpen ? (
             <div className="absolute right-0 z-10 mt-1 w-32 overflow-hidden rounded-xl border border-cream-200 bg-cream-50 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+              <button
+                type="button"
+                disabled={!canMoveUp}
+                onClick={() => {
+                  onMoveUp();
+                  setMenuOpen(false);
+                }}
+                className="block min-h-[44px] w-full px-3 text-left text-sm hover:bg-cream-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:hover:bg-slate-700 dark:disabled:hover:bg-transparent"
+              >
+                ↑ Move up
+              </button>
+              <button
+                type="button"
+                disabled={!canMoveDown}
+                onClick={() => {
+                  onMoveDown();
+                  setMenuOpen(false);
+                }}
+                className="block min-h-[44px] w-full px-3 text-left text-sm hover:bg-cream-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:hover:bg-slate-700 dark:disabled:hover:bg-transparent"
+              >
+                ↓ Move down
+              </button>
               <button
                 type="button"
                 onClick={() => {

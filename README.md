@@ -20,6 +20,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 ### Main Quest and Side Quests
 
 - **Main Quest** is the habit board. One tap marks a habit done and awards a flat **+20 XP**. There is one target per habit — no "small version" / "full version" split.
+- **Reorder the board** — drag a habit row on desktop, or use **Move up** / **Move down** in its ⋯ menu on any device. The order is saved in local storage, and archived habits keep their stored slot.
 - **Side Quests** are optional daily tasks worth **+15 XP**. Unfinished quests from earlier days surface in a banner so they can be carried over or let go instead of silently disappearing.
 - **Yesterday backfill** — a "Fix yesterday" panel logs a forgotten habit the next morning. Late entries stay marked `late` and still count for XP and the streak; the user can also mark a habit explicitly **Not done**.
 - **Weekly goals** — each habit can target 0–7 check-ins per week, shown as a `n/7 wk` chip on the row and as progress meters on Stats.
@@ -145,6 +146,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] Archived-habit management screen (restore, permanent delete)
 - [x] Import preview + automatic pre-import backup
 - [x] Pomodoro persistence across refresh and tab switches
+- [x] Reorder main quest habits (drag or move up/down)
 
 ## Author
 

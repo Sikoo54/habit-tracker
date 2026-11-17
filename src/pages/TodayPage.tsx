@@ -55,6 +55,7 @@ export function TodayPage({
   const today = todayKey();
   const weekMonday = startOfWeekMonday(today);
   const { habits, addHabit, updateHabit, archiveHabit, restoreHabit, removeHabit } = habitsApi;
+  const { moveHabit, reorderHabit } = habitsApi;
   const { quests, addTask, toggleTask, removeTask } = tasksApi;
   const { leftovers, bringLeftovers, dropLeftovers } = tasksApi;
   const { checkins, toggleCheckin, setCheckin, checkinFor, removeCheckinsForHabit } = checkinsApi;
@@ -240,7 +241,7 @@ export function TodayPage({
             />
           ) : (
             <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
-              {activeHabits.map((h) => {
+              {activeHabits.map((h, index) => {
                 const c = checkinFor(h.id, today);
                 return (
                   <HabitCard
@@ -255,6 +256,11 @@ export function TodayPage({
                     onDelete={() => deleteHabit(h.id)}
                     onArchive={() => archiveHabit(h.id)}
                     onOpenDetail={() => setDetailHabitId(h.id)}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < activeHabits.length - 1}
+                    onMoveUp={() => moveHabit(h.id, -1)}
+                    onMoveDown={() => moveHabit(h.id, 1)}
+                    onDropHabit={(draggedId) => reorderHabit(draggedId, h.id)}
                   />
                 );
               })}
