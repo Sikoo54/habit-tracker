@@ -5,9 +5,15 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { daysUntil, formatGoalDate, goalDeadlineLabel } from './goals';
+import type { Goal } from '../types';
+import { daysUntil, formatGoalDate, goalDeadlineLabel, moveGoalToFront } from './goals';
 
 const TODAY = '2026-11-18';
+
+/** Minimal stored goal for order tests. */
+function goal(id: string): Goal {
+  return { id, title: id, why: '', createdAt: '2026-11-18T00:00:00.000Z' };
+}
 
 describe('goal helpers', () => {
   it('formats a stored date key compactly', () => {
@@ -39,5 +45,18 @@ describe('goal helpers', () => {
   it('has no label without a target date', () => {
     expect(goalDeadlineLabel(undefined, TODAY)).toBe('');
     expect(goalDeadlineLabel('not-a-date', TODAY)).toBe('');
+  });
+
+  it('moves the chosen goal to the front for the North Star slot', () => {
+    const goals = [goal('a'), goal('b'), goal('c')];
+    expect(moveGoalToFront(goals, 'c').map((g) => g.id)).toEqual(['c', 'a', 'b']);
+    expect(moveGoalToFront(goals, 'b').map((g) => g.id)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('keeps the same list when the goal already leads or is gone', () => {
+    const goals = [goal('a'), goal('b')];
+    expect(moveGoalToFront(goals, 'a')).toBe(goals);
+    expect(moveGoalToFront(goals, 'missing')).toBe(goals);
+    expect(moveGoalToFront([], 'a')).toEqual([]);
   });
 });

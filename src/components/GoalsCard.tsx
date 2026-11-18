@@ -1,13 +1,12 @@
 /**
  * Goals Card
- * The North Star section at the top of Today: every goal with its reason and
- * deadline, so the reminder is visible the moment the app opens.
+ * The North Star signpost on Today. The lead goal carries the display type and
+ * its reason; the rest wait in a quiet list so the reminder stays scannable.
  */
 
 import { useState, type ReactNode } from 'react';
 import type { useGoals } from '../hooks/useGoals';
 import { formatGoalDate, goalDeadlineLabel } from '../utils/goals';
-import { EmptyState } from './EmptyState';
 import { GoalsPanel } from './GoalsPanel';
 
 interface Props {
@@ -15,69 +14,137 @@ interface Props {
   todayKey: string;
 }
 
-/** Card listing the user's goals, with the goal editor behind one button. */
+/** Supporting goals shown before the list folds behind a "more" control. */
+const VISIBLE_SUPPORTING = 2;
+
+/** Small pencil that marks the edit affordance. */
+function PencilIcon(): ReactNode {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  );
+}
+
+/** North Star card: one lead goal, then the supporting ones as a quiet list. */
 export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const { goals } = goalsApi;
+  const [lead, ...supporting] = goals;
+
+  const folded = !expanded && supporting.length > VISIBLE_SUPPORTING;
+  const shownSupporting = folded ? supporting.slice(0, VISIBLE_SUPPORTING) : supporting;
+  const hiddenCount = supporting.length - VISIBLE_SUPPORTING;
 
   return (
     <section
       aria-label="Goals"
-      className="mt-6 rounded-3xl border border-amber-200/70 bg-amber-50/60 p-5 max-md:p-4 dark:border-amber-900/40 dark:bg-amber-950/20"
+      className="mt-6 rounded-2xl border border-amber-200/70 bg-amber-50/60 px-5 py-4 max-md:px-4 max-md:py-3.5 dark:border-amber-900/40 dark:bg-amber-950/20"
     >
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-        <div className="min-w-0">
-          <p className="section-title text-amber-700 dark:text-amber-300">North Star</p>
-          <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
-            <span aria-hidden="true">🎯 </span>Goals
-          </h2>
-          <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-            What this climb is for. Read it before the day starts.
-          </p>
-        </div>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="section-title flex items-center gap-1.5 text-summit-600 dark:text-amber-300">
+          <span aria-hidden="true" className="text-[13px] leading-none">
+            ★
+          </span>
+          North Star
+        </h2>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex min-h-[32px] shrink-0 items-center gap-1 rounded-full bg-amber-200/70 px-3 py-1 text-xs font-bold text-amber-900 hover:bg-amber-200 max-md:min-h-[44px] dark:bg-amber-900/50 dark:text-amber-100 dark:hover:bg-amber-900"
+          className="-mr-1 flex min-h-[32px] shrink-0 items-center gap-1.5 rounded-full px-2 text-xs font-semibold text-ink-600 hover:bg-amber-100/70 max-md:min-h-[44px] max-md:px-3 dark:text-slate-300 dark:hover:bg-amber-900/30"
         >
-          <span aria-hidden="true">✎</span> {goals.length === 0 ? 'Write goals' : 'Edit goals'}
+          <PencilIcon />
+          {goals.length === 0 ? 'Set a goal' : 'Edit'}
         </button>
       </div>
 
-      {goals.length === 0 ? (
-        <EmptyState
-          icon="🎯"
-          message="No goals yet."
-          hint="Write what you are climbing toward — it shows here every day."
-        />
+      {lead ? (
+        <>
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h3 className="min-w-0 flex-1 font-display text-xl font-semibold leading-snug tracking-tight text-ink-700 sm:text-[22px] dark:text-slate-100">
+              {lead.title}
+            </h3>
+            {formatGoalDate(lead.targetDate) ? (
+              <span className="shrink-0 rounded-full bg-amber-100/80 px-2.5 py-0.5 text-[11px] font-bold tabular-nums text-amber-900 dark:bg-amber-950/60 dark:text-amber-200">
+                {formatGoalDate(lead.targetDate)}
+                {goalDeadlineLabel(lead.targetDate, todayKey)
+                  ? ` · ${goalDeadlineLabel(lead.targetDate, todayKey)}`
+                  : ''}
+              </span>
+            ) : null}
+          </div>
+
+          {lead.why ? (
+            <p className="mt-0.5 max-w-2xl text-[13px] leading-relaxed text-ink-500 dark:text-slate-400">
+              {lead.why}
+            </p>
+          ) : null}
+
+          {supporting.length > 0 ? (
+            <>
+              <ul className="mt-3 space-y-0.5 border-t border-amber-200/70 pt-2 dark:border-amber-900/40">
+                {shownSupporting.map((goal) => {
+                  const date = formatGoalDate(goal.targetDate);
+                  return (
+                    <li key={goal.id} className="flex items-baseline justify-between gap-4">
+                      <span
+                        className="min-w-0 truncate text-[13px] font-medium text-ink-600 dark:text-slate-300"
+                        title={goal.why || undefined}
+                      >
+                        {goal.title}
+                      </span>
+                      {date ? (
+                        <span className="shrink-0 text-[11px] tabular-nums text-ink-500 dark:text-slate-400">
+                          {date}
+                        </span>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+              {supporting.length > VISIBLE_SUPPORTING ? (
+                <button
+                  type="button"
+                  aria-expanded={expanded}
+                  onClick={() => setExpanded((value) => !value)}
+                  className="mt-1 flex min-h-[32px] items-center gap-1 rounded-full pr-2 text-[12px] font-semibold text-summit-600 hover:underline max-md:min-h-[44px] dark:text-amber-300"
+                >
+                  {expanded ? 'Show less' : `${hiddenCount} more`}
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+              ) : null}
+            </>
+          ) : null}
+        </>
       ) : (
-        <ul className="mt-3 space-y-2">
-          {goals.map((goal) => {
-            const date = formatGoalDate(goal.targetDate);
-            const countdown = goalDeadlineLabel(goal.targetDate, todayKey);
-            return (
-              <li
-                key={goal.id}
-                className="rounded-2xl border border-amber-200/60 bg-cream-50/80 px-3.5 py-3 dark:border-amber-900/40 dark:bg-slate-900/50"
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <p className="min-w-0 flex-1 text-[15px] font-semibold">{goal.title}</p>
-                  {date ? (
-                    <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-800 tabular-nums dark:bg-amber-950 dark:text-amber-200">
-                      {date}
-                      {countdown ? ` · ${countdown}` : ''}
-                    </span>
-                  ) : null}
-                </div>
-                {goal.why ? (
-                  <p className="mt-1 text-[13px] leading-relaxed text-ink-500 dark:text-slate-400">
-                    {goal.why}
-                  </p>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
+        <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
+          Name the reason you climb — it greets you here, every day.
+        </p>
       )}
 
       {open ? (

@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { Goal, GoalInput } from '../types';
 import { createId } from '../utils/dates';
+import { moveGoalToFront } from '../utils/goals';
 
 /** Keeps the Today card scannable and the goal editor short. */
 export const MAX_GOALS = 5;
@@ -81,11 +82,17 @@ export function useGoals() {
     setGoals((prev) => prev.filter((goal) => goal.id !== id));
   }, []);
 
+  /** Moves a goal to the front of the list, the slot the Today card leads with. */
+  const promoteGoal = useCallback((id: string) => {
+    setGoals((prev) => moveGoalToFront(prev, id));
+  }, []);
+
   return {
     goals,
     loading,
     addGoal,
     updateGoal,
     removeGoal,
+    promoteGoal,
   };
 }

@@ -134,7 +134,7 @@ function GoalForm({
 
 /** Panel that lets the user write and maintain their goals. */
 export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
-  const { goals, addGoal, updateGoal, removeGoal } = goalsApi;
+  const { goals, addGoal, updateGoal, removeGoal, promoteGoal } = goalsApi;
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -187,8 +187,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
               </span>
             </h2>
             <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-              Write what the climb is for. These show at the top of Today, every time you open the
-              app.
+              Write what the climb is for. The top goal leads Today as your North Star.
             </p>
           </div>
           <button
@@ -227,7 +226,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
             />
           ) : (
             <ul className="space-y-3">
-              {goals.map((goal) => {
+              {goals.map((goal, index) => {
                 const date = formatGoalDate(goal.targetDate);
                 const countdown = goalDeadlineLabel(goal.targetDate, todayKey);
 
@@ -263,7 +262,26 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
                             {goal.why}
                           </p>
                         ) : null}
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="mt-3 flex flex-wrap items-stretch gap-2">
+                          {index === 0 ? (
+                            <span
+                              title="This goal leads Today"
+                              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-amber-300/80 bg-amber-50 text-lg text-amber-700 select-none dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300"
+                            >
+                              <span aria-hidden="true">★</span>
+                              <span className="sr-only">Leads Today as the North Star</span>
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => promoteGoal(goal.id)}
+                              aria-label={`Make "${goal.title}" the North Star`}
+                              title="Lead the Today card with this goal"
+                              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cream-300 text-lg text-ink-500 hover:bg-cream-100 hover:text-summit-600 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-300"
+                            >
+                              <span aria-hidden="true">★</span>
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => setEditingId(goal.id)}

@@ -4,6 +4,7 @@
  * is reusable and easy to test. Missing or malformed dates render as nothing.
  */
 
+import type { Goal } from '../types';
 import { parseDateKey, toDateKey } from './dates';
 
 const SHORT_MONTHS = [
@@ -55,4 +56,18 @@ export function goalDeadlineLabel(targetDate: string | undefined, today: string)
   if (days === 0) return 'Today';
   if (days === -1) return 'Passed yesterday';
   return `${Math.abs(days)} days ago`;
+}
+
+/**
+ * Moves one goal to the front so it leads the Today card as the North Star.
+ * Returns the same array when that goal is already first or no longer exists.
+ */
+export function moveGoalToFront(goals: Goal[], id: string): Goal[] {
+  const index = goals.findIndex((goal) => goal.id === id);
+  if (index <= 0) return goals;
+  const next = goals.slice();
+  const [goal] = next.splice(index, 1);
+  if (!goal) return goals;
+  next.unshift(goal);
+  return next;
 }
