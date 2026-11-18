@@ -17,6 +17,7 @@ import { useAchievementToasts } from './hooks/useAchievementToasts';
 import { useCheckins } from './hooks/useCheckins';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useDecayLedger, useGameStats, useLevelUp } from './hooks/useGame';
+import { useGoals } from './hooks/useGoals';
 import { useHabits } from './hooks/useHabits';
 import { useReflections } from './hooks/useReflections';
 import { useTasks } from './hooks/useTasks';
@@ -67,6 +68,7 @@ function Shell({
   const checkinsApi = useCheckins();
   const reflectionsApi = useReflections();
   const attendanceApi = useAttendance();
+  const goalsApi = useGoals();
 
   // Storage readiness check across all domain collections
   const ready =
@@ -74,17 +76,29 @@ function Shell({
     !tasksApi.loading &&
     !checkinsApi.loading &&
     !reflectionsApi.loading &&
-    !attendanceApi.loading;
+    !attendanceApi.loading &&
+    !goalsApi.loading;
 
   // Active dates calculation for global streak and decay tracking
   const dates = useMemo(
     () =>
-      activeDates(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance),
+      activeDates(
+        checkinsApi.checkins,
+        tasksApi.tasks,
+        reflectionsApi.reflections,
+        attendanceApi.attendance,
+      ),
     [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance],
   );
   const lastActive = useMemo(() => lastActiveDate(dates), [dates]);
   const grossXp = useMemo(
-    () => totalXp(checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance),
+    () =>
+      totalXp(
+        checkinsApi.checkins,
+        tasksApi.tasks,
+        reflectionsApi.reflections,
+        attendanceApi.attendance,
+      ),
     [checkinsApi.checkins, tasksApi.tasks, reflectionsApi.reflections, attendanceApi.attendance],
   );
 
@@ -121,7 +135,14 @@ function Shell({
       onNavigate={onNavigate}
       dark={dark}
       onToggleDark={onToggleDark}
-      hud={<HudStats progress={game.progress} ascent={game.ascent} streak={game.streak} rank={game.rank} />}
+      hud={
+        <HudStats
+          progress={game.progress}
+          ascent={game.ascent}
+          streak={game.streak}
+          rank={game.rank}
+        />
+      }
     >
       {/* Route rendering based on active page state */}
       {page === 'today' ? (
@@ -130,6 +151,7 @@ function Shell({
           habitsApi={habitsApi}
           tasksApi={tasksApi}
           checkinsApi={checkinsApi}
+          goalsApi={goalsApi}
           game={game}
           penaltyNotice={decay.notice}
           onDismissPenalty={decay.dismissNotice}
@@ -143,9 +165,18 @@ function Shell({
       )}
       {/* Celebration modal when leveling up */}
       {levelUp.show ? (
-        <LevelUpModal level={game.progress.level} rank={game.rank} ascent={game.ascent} onClose={levelUp.dismiss} />
+        <LevelUpModal
+          level={game.progress.level}
+          rank={game.rank}
+          ascent={game.ascent}
+          onClose={levelUp.dismiss}
+        />
       ) : null}
-      <AchievementToast toast={unlockToasts.toast} queued={unlockToasts.queued} onDismiss={unlockToasts.dismiss} />
+      <AchievementToast
+        toast={unlockToasts.toast}
+        queued={unlockToasts.queued}
+        onDismiss={unlockToasts.dismiss}
+      />
     </Layout>
   );
 }

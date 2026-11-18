@@ -5,13 +5,14 @@
  */
 
 import { DECAY_KEY, type DecayLedger } from '../game/decay';
-import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
 import { previewImport } from './importPreview';
 import type { StorageAdapter } from './types';
 import {
   validAttendance,
   validCheckin,
   validDecay,
+  validGoal,
   validHabit,
   validReflection,
   validTask,
@@ -26,6 +27,7 @@ const KEYS = {
   checkins: `${PREFIX}checkins`,
   reflections: `${PREFIX}reflections`,
   attendance: `${PREFIX}attendance`,
+  goals: `${PREFIX}goals`,
   seeded: `${PREFIX}seeded`,
   tasksSeeded: `${PREFIX}tasksSeeded`,
 } as const;
@@ -137,14 +139,21 @@ export class LocalStorageAdapter implements StorageAdapter {
   async saveAttendance(attendance: Attendance[]): Promise<void> {
     writeArray(KEYS.attendance, attendance);
   }
+  async getGoals(): Promise<Goal[]> {
+    return readArray(KEYS.goals, validGoal);
+  }
+  async saveGoals(goals: Goal[]): Promise<void> {
+    writeArray(KEYS.goals, goals);
+  }
 
   async exportAll(): Promise<ExportPayload> {
-    const [habits, tasks, checkins, reflections, attendance] = await Promise.all([
+    const [habits, tasks, checkins, reflections, attendance, goals] = await Promise.all([
       this.getHabits(),
       this.getTasks(),
       this.getCheckins(),
       this.getReflections(),
       this.getAttendance(),
+      this.getGoals(),
     ]);
     const decay = readDecay();
     return {
@@ -155,6 +164,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       checkins,
       reflections,
       attendance,
+      goals,
       ...(decay ? { decay } : {}),
     };
   }
@@ -169,6 +179,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       this.saveCheckins(p.checkins),
       this.saveReflections(p.reflections),
       this.saveAttendance(p.attendance),
+      this.saveGoals(p.goals ?? []),
     ]);
     // Older backups carry no ledger: clearing it prevents stale frost from
     // eating the freshly imported XP.

@@ -5,7 +5,15 @@
  */
 
 import type { DecayLedger } from '../game/decay';
-import type { Attendance, Checkin, Habit, HabitArchivePeriod, Reflection, Task } from '../types';
+import type {
+  Attendance,
+  Checkin,
+  Goal,
+  Habit,
+  HabitArchivePeriod,
+  Reflection,
+  Task,
+} from '../types';
 
 /** True when the value is a non-null object record. */
 export function isRecord(v: unknown): v is Record<string, unknown> {
@@ -86,6 +94,18 @@ export function validReflection(v: unknown): v is Reflection {
 /** True when the value has every required attendance field. */
 export function validAttendance(v: unknown): v is Attendance {
   return isRecord(v) && isString(v.date) && isBoolean(v.morning) && isBoolean(v.night);
+}
+
+/** True when the value has a usable goal shape (target date is optional). */
+export function validGoal(v: unknown): v is Goal {
+  return (
+    isRecord(v) &&
+    isString(v.id) &&
+    isString(v.title) &&
+    isString(v.why) &&
+    (v.targetDate === undefined || isString(v.targetDate)) &&
+    isString(v.createdAt)
+  );
 }
 
 /** True when the value is a usable frost ledger. */

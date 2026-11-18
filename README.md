@@ -27,6 +27,10 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 - **30-day habit history** — tap a habit name to open its calendar: done, missed, late check-ins, and archive gaps at a glance, with a completion summary and the exact missed dates.
 - **Archive instead of delete** — a retired habit leaves the daily board but keeps its check-ins, streak days, and heatmap cells. An archived-habits panel can restore it or delete it permanently after a warning. Past totals are calculated from the habits due on each date, so archiving never rewrites history.
 
+### Goals
+
+- **North Star goals** — up to five long-range goals, each with a short "why" and an optional target date, shown at the top of Today so the reason for the climb is the first thing visible on every open. One button opens the full-screen editor; goals live in local storage and travel with exports.
+
 ### Progression
 
 - **XP** comes from habits (+20), side quests (+15), reflections (+15, +5 with mood and energy), and morning/night attendance (+5 each).
@@ -87,7 +91,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 
 - Everything is stored on the device in `localStorage`; nothing is sent to a server.
 - Clearing browser data wipes the app, so export a JSON backup regularly from Settings.
-- One export covers habits, side quests, check-ins, reflections, attendance, and the frost-decay ledger (`schemaVersion: 1`).
+- One export covers habits, side quests, check-ins, reflections, attendance, goals, and the frost-decay ledger (`schemaVersion: 1`).
 - Import **replaces** all local data and requires a reload. Devices do not sync.
 - Before replacing, the import dialog summarizes the file and Settings saves one local snapshot of the outgoing data. If the snapshot cannot be written, the import is cancelled.
 
@@ -109,19 +113,19 @@ src/
   components/  Layout, Hud, HabitCard, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
                Heatmap, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
-               DataTools, ArchivedHabits, HabitDetail, ConfirmDialog, EmptyState,
-               RankInfo
+               GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,
+               ConfirmDialog, EmptyState, RankInfo
   pages/       TodayPage, StatsPage, ReflectionPage, FocusPage
   hooks/       useHabits, useTasks, useCheckins, useReflections, useAttendance,
-               useGame, useDarkMode, useAchievementToasts, usePomodoro
+               useGoals, useGame, useDarkMode, useAchievementToasts, usePomodoro
   game/        xp, achievements, attendance, decay, trainingStreak, dailyStreak,
                weeklyGoals (+ tests)
-  utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, pomodoro,
-               quote (+ tests)
+  utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, goals,
+               pomodoro, quote (+ tests)
   storage/     types (StorageAdapter), localStorageAdapter, importPreview, validation,
                supabaseAdapter (placeholder), StorageContext
   data/        seed, quotes
-  types/       Habit, Task, Checkin, Reflection, Attendance, ExportPayload
+  types/       Habit, Task, Checkin, Reflection, Attendance, Goal, ExportPayload
 ```
 
 ## Deploy to Vercel
@@ -147,6 +151,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] Import preview + automatic pre-import backup
 - [x] Pomodoro persistence across refresh and tab switches
 - [x] Reorder main quest habits (drag or move up/down)
+- [x] North Star goals card on Today
 
 ## Author
 

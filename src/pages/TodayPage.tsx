@@ -10,6 +10,7 @@ import { ArchivedHabits } from '../components/ArchivedHabits';
 import { AscentTrail } from '../components/AscentTrail';
 import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
+import { GoalsCard } from '../components/GoalsCard';
 import { HabitCard } from '../components/HabitCard';
 import { HabitDetail } from '../components/HabitDetail';
 import { HabitForm } from '../components/HabitForm';
@@ -21,6 +22,7 @@ import type { AppliedPenalty } from '../game/decay';
 import { streakReset } from '../game/trainingStreak';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
+import type { useGoals } from '../hooks/useGoals';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
@@ -38,6 +40,7 @@ interface Props {
   habitsApi: ReturnType<typeof useHabits>;
   tasksApi: ReturnType<typeof useTasks>;
   checkinsApi: ReturnType<typeof useCheckins>;
+  goalsApi: ReturnType<typeof useGoals>;
   game: GameStats;
   penaltyNotice: AppliedPenalty[] | null;
   onDismissPenalty: () => void;
@@ -48,6 +51,7 @@ export function TodayPage({
   habitsApi,
   tasksApi,
   checkinsApi,
+  goalsApi,
   game,
   penaltyNotice,
   onDismissPenalty,
@@ -185,6 +189,8 @@ export function TodayPage({
           />
         </div>
       </div>
+
+      <GoalsCard goalsApi={goalsApi} todayKey={today} />
 
       <QuoteCard todayKey={today} />
 

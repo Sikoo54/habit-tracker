@@ -58,6 +58,15 @@ function payload(overrides: Record<string, unknown> = {}): Record<string, unknow
       },
     ],
     attendance: [{ date: '2026-09-10', morning: true, night: false }],
+    goals: [
+      {
+        id: 'g1',
+        title: 'Ship the app',
+        why: 'Prove the habit works',
+        targetDate: '2026-12-31',
+        createdAt: '2026-09-10T08:00:00.000Z',
+      },
+    ],
     ...overrides,
   };
 }
@@ -76,6 +85,7 @@ describe('import preview', () => {
       checkins: 1,
       reflections: 1,
       attendance: 1,
+      goals: 1,
       skipped: 0,
     });
   });
@@ -130,6 +140,35 @@ describe('import preview', () => {
       expect(result.payload.decay).toEqual({ total: 40, appliedThrough: '2026-09-09' });
 
     expect(previewImport(payload({ decay: { total: -1 } })).ok).toBe(false);
+  });
+
+  it('counts valid goals, drops broken ones, and rejects a bad goals field', () => {
+    const result = previewImport(
+      payload({
+        goals: [habit('not-a-goal'), { id: 'g2', title: 'Run', why: '', createdAt: 'x' }],
+      }),
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.summary.goals).toBe(1);
+    expect(result.summary.skipped).toBe(1);
+    expect(result.payload.goals?.map((g) => g.id)).toEqual(['g2']);
+
+    expect(previewImport(payload({ goals: 'nope' }))).toEqual({
+      ok: false,
+      reason: 'Import file is corrupt: goals are invalid.',
+    });
+  });
+
+  it('treats missing goals as empty', () => {
+    const raw = payload();
+    delete raw.goals;
+    const result = previewImport(raw);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.summary.goals).toBe(0);
+      expect(result.payload.goals).toBeUndefined();
+    }
   });
 
   it('tolerates a missing exportedAt', () => {

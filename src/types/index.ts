@@ -86,6 +86,25 @@ export interface Attendance {
   night: boolean;
 }
 
+/** A long-range goal shown at the top of Today so the reason stays visible. */
+export interface Goal {
+  id: string;
+  title: string;
+  /** Why this matters; empty when the user skips it. */
+  why: string;
+  /** Optional YYYY-MM-DD target date. */
+  targetDate?: string;
+  createdAt: string; // ISO timestamp
+}
+
+/** Input payload for creating or updating a goal */
+export interface GoalInput {
+  title: string;
+  why: string;
+  /** YYYY-MM-DD, or an empty string for no deadline. */
+  targetDate: string;
+}
+
 /** Available navigation pages */
 export type PageKey = 'today' | 'stats' | 'reflection' | 'focus';
 
@@ -100,4 +119,6 @@ export interface ExportPayload {
   attendance: Attendance[];
   /** Frost ledger; absent in backups made before it was included. */
   decay?: DecayLedger;
+  /** Long-range goals; absent in backups made before they were included. */
+  goals?: Goal[];
 }

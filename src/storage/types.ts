@@ -4,7 +4,7 @@
  * allowing seamless swapping of backend implementations.
  */
 
-import type { Attendance, Checkin, ExportPayload, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
 
 // Storage abstraction. Components/hooks only talk to this interface,
 // never localStorage / Supabase directly.
@@ -22,6 +22,8 @@ export interface StorageAdapter {
   saveReflections(reflections: Reflection[]): Promise<void>;
   getAttendance(): Promise<Attendance[]>;
   saveAttendance(attendance: Attendance[]): Promise<void>;
+  getGoals(): Promise<Goal[]>;
+  saveGoals(goals: Goal[]): Promise<void>;
   exportAll(): Promise<ExportPayload>;
   importAll(payload: ExportPayload): Promise<void>;
   clearAll(): Promise<void>;

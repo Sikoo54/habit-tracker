@@ -178,6 +178,27 @@ describe('LocalStorageAdapter', () => {
     expect(JSON.parse(window.localStorage.getItem(DECAY_KEY) ?? 'null')).toEqual(ledger);
   });
 
+  it('export carries goals and import restores them', async () => {
+    const a = new LocalStorageAdapter();
+    const goal = {
+      id: 'g1',
+      title: 'Ship the app',
+      why: 'Proof the habit works',
+      targetDate: '2026-12-31',
+      createdAt: '2026-11-18T00:00:00.000Z',
+    };
+    await a.saveGoals([goal]);
+
+    const dump = await a.exportAll();
+    expect(dump.goals).toEqual([goal]);
+
+    await a.clearAll();
+    expect(await a.getGoals()).toEqual([]);
+
+    await a.importAll(dump);
+    expect(await a.getGoals()).toEqual([goal]);
+  });
+
   it('importing an older backup without decay clears stale frost', async () => {
     const a = new LocalStorageAdapter();
     window.localStorage.setItem(
@@ -197,6 +218,7 @@ describe('LocalStorageAdapter', () => {
     await a.importAll(legacy);
 
     expect(window.localStorage.getItem(DECAY_KEY)).toBeNull();
+    expect(await a.getGoals()).toEqual([]);
     // An imported empty list must stay empty, not trigger starter data.
     expect(a.isSeeded()).toBe(true);
     expect(a.isTasksSeeded()).toBe(true);
