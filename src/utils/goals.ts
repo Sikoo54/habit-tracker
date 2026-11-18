@@ -59,7 +59,7 @@ export function goalDeadlineLabel(targetDate: string | undefined, today: string)
 }
 
 /**
- * Moves one goal to the front so it leads the Today card as the North Star.
+ * Moves one goal to the front so it leads the Today card.
  * Returns the same array when that goal is already first or no longer exists.
  */
 export function moveGoalToFront(goals: Goal[], id: string): Goal[] {

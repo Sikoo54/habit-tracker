@@ -29,7 +29,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 
 ### Goals
 
-- **North Star goals** — up to five long-range goals, each with a short "why" and an optional target date, shown at the top of Today so the reason for the climb is the first thing visible on every open. One button opens the full-screen editor; goals live in local storage and travel with exports.
+- **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown at the top of Today so the reason for the climb is the first thing visible on every open. The first goal is shown big; ★ moves any goal to the top. One button opens the full-screen editor, and goals live in local storage and travel with exports.
 
 ### Progression
 
@@ -151,7 +151,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] Import preview + automatic pre-import backup
 - [x] Pomodoro persistence across refresh and tab switches
 - [x] Reorder main quest habits (drag or move up/down)
-- [x] North Star goals card on Today
+- [x] Goals card on Today
 
 ## Author
 

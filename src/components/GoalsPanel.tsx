@@ -179,7 +179,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
       <div className="relative flex h-full w-full flex-col bg-cream-50 shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-3xl dark:bg-slate-900">
         <div className="flex items-start justify-between gap-3 border-b border-cream-200 p-5 dark:border-slate-800">
           <div className="min-w-0">
-            <p className="section-title text-amber-700 dark:text-amber-300">North Star</p>
+            <p className="section-title text-amber-700 dark:text-amber-300">Motivation</p>
             <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
               Your goals
               <span className="ml-2 text-base font-medium text-slate-400 tabular-nums">
@@ -187,7 +187,8 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
               </span>
             </h2>
             <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-              Write what the climb is for. The top goal leads Today as your North Star.
+              Write what the climb is for. The first goal is shown big on Today; ★ moves any goal to
+              the top.
             </p>
           </div>
           <button
@@ -269,14 +270,14 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
                               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-amber-300/80 bg-amber-50 text-lg text-amber-700 select-none dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300"
                             >
                               <span aria-hidden="true">★</span>
-                              <span className="sr-only">Leads Today as the North Star</span>
+                              <span className="sr-only">Shown first on Today</span>
                             </span>
                           ) : (
                             <button
                               type="button"
                               onClick={() => promoteGoal(goal.id)}
-                              aria-label={`Make "${goal.title}" the North Star`}
-                              title="Lead the Today card with this goal"
+                              aria-label={`Show "${goal.title}" first on Today`}
+                              title="Show this goal first on Today"
                               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cream-300 text-lg text-ink-500 hover:bg-cream-100 hover:text-summit-600 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-300"
                             >
                               <span aria-hidden="true">★</span>

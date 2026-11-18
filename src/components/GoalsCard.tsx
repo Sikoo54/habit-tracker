@@ -1,7 +1,7 @@
 /**
  * Goals Card
- * The North Star signpost on Today. The lead goal carries the display type and
- * its reason; the rest wait in a quiet list so the reminder stays scannable.
+ * The goals signpost on Today. The lead goal carries the display type and its
+ * reason; the rest wait in a quiet list so the reminder stays scannable.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -37,7 +37,7 @@ function PencilIcon(): ReactNode {
   );
 }
 
-/** North Star card: one lead goal, then the supporting ones as a quiet list. */
+/** Goals card: one lead goal, then the supporting ones as a quiet list. */
 export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -58,7 +58,7 @@ export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
           <span aria-hidden="true" className="text-[13px] leading-none">
             ★
           </span>
-          North Star
+          My goals
         </h2>
         <button
           type="button"

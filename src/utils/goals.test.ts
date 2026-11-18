@@ -47,7 +47,7 @@ describe('goal helpers', () => {
     expect(goalDeadlineLabel('not-a-date', TODAY)).toBe('');
   });
 
-  it('moves the chosen goal to the front for the North Star slot', () => {
+  it('moves the chosen goal to the top of the list', () => {
     const goals = [goal('a'), goal('b'), goal('c')];
     expect(moveGoalToFront(goals, 'c').map((g) => g.id)).toEqual(['c', 'a', 'b']);
     expect(moveGoalToFront(goals, 'b').map((g) => g.id)).toEqual(['b', 'a', 'c']);
