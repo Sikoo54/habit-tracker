@@ -50,12 +50,12 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 ### Attendance gate
 
 - A full-screen logbook opens at **04:00** (morning) and again at **22:00** (night). One tap logs attendance, awards +5 XP, unlocks the app, and stamps the exact tap time.
-- **Wake-up log** — Stats lists every stamped wake-up time (newest first) with the average, and Today shows today’s time next to the date. Days saved before the stamp existed stay out of the log.
+- **Wake-up times** — Today shows today's tap time next to the date, and the Activity calendar keeps every stamped wake-up in its hover preview and day detail. Days saved before the stamp existed have no time to show.
 - The gate has no footline text; it shows the date, the current streak, and a single action.
 
 ### Stats, reflection, and focus
 
-- **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, the wake-up log, weekly goal meters, a 52-week activity heatmap, per-day bars, and the achievement grid.
+- **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, weekly goal meters, a 52-week activity calendar that gets the most room on the page, and the achievement grid.
 - **Activity calendar** — hover a square for the day's habit count and wake/bed times, click it for a full breakdown (wake-up, bedtime, habits done, side quests, reflection, XP), and step through neighbouring days with the arrows.
 - **17 achievements** grouped into Habits, Streaks, Quests, Reflection, Attendance, and Progression, with bronze/silver/gold weight and a progress bar on every locked badge. Unlocks appear as toasts.
 - **Campfire Tales** — nightly reflection with "what happened" and "what to fix tomorrow", optional mood/energy 1–5, and a past-entry accordion.
@@ -112,7 +112,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 
 ```
 src/
-  components/  Layout, Hud, HabitCard, WakeLog, HabitForm, TaskList, QuoteCard, AscentCard,
+  components/  Layout, Hud, HabitCard, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
                Heatmap, DayDetail, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
                GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,

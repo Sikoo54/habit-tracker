@@ -10,12 +10,10 @@ import {
   attendedDates,
   attendanceFor,
   attendanceXp,
-  averageWake,
   clockLabel,
   gateFor,
   stampAttendance,
   toggleAttendance,
-  wakeLog,
 } from './attendance';
 
 const day = (date: string, morning = false, night = false): Attendance => ({
@@ -111,36 +109,12 @@ describe('stampAttendance', () => {
   });
 });
 
-describe('wake history', () => {
+describe('clockLabel', () => {
   it('formats a stamp as local HH:MM', () => {
     expect(clockLabel(at(19, 5, 7))).toBe('05:07');
     expect(clockLabel(at(19, 22, 45))).toBe('22:45');
     expect(clockLabel(undefined)).toBe('');
     expect(clockLabel('not-a-date')).toBe('');
-  });
-
-  it('lists stamped mornings newest first and skips days without a time', () => {
-    const rows: Attendance[] = [
-      { date: '2026-11-17', morning: true, night: false, morningAt: at(17, 6, 15) },
-      { date: '2026-11-18', morning: true, night: true, morningAt: at(18, 5, 40) },
-      { date: '2026-11-16', morning: true, night: false },
-      { date: '2026-11-15', morning: false, night: true, nightAt: at(15, 22, 0) },
-    ];
-    const log = wakeLog(rows);
-    expect(log.map((entry) => entry.date)).toEqual(['2026-11-18', '2026-11-17']);
-    expect(log[0]?.time).toBe('05:40');
-    expect(wakeLog(rows, 1).map((entry) => entry.date)).toEqual(['2026-11-18']);
-  });
-
-  it('averages the clock times and ignores unusable rows', () => {
-    expect(averageWake([])).toBe('');
-    expect(
-      averageWake([
-        { date: '2026-11-18', time: '05:40' },
-        { date: '2026-11-17', time: '06:15' },
-      ]),
-    ).toBe('05:58');
-    expect(averageWake([{ date: '2026-11-18', time: 'bad' }])).toBe('');
   });
 });
 

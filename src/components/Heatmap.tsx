@@ -84,7 +84,7 @@ export function Heatmap({ habits, checkins, attendance, today, onSelectDay }: Pr
               return (
                 <span
                   key={i}
-                  className="w-[11px] text-[10px] font-medium text-ink-500 dark:text-slate-400"
+                  className="w-[14px] text-[10px] font-medium text-ink-500 dark:text-slate-400"
                 >
                   {label ? label.label : ''}
                 </span>
@@ -92,13 +92,13 @@ export function Heatmap({ habits, checkins, attendance, today, onSelectDay }: Pr
             })}
           </div>
 
-          <div className="mt-[3px] flex gap-[3px]">
+          <div className="mt-1 flex gap-[3px]">
             {/* Weekday labels */}
             <div className="mr-1 flex w-7 flex-col gap-[3px]">
               {DAY_LABELS.map((l, i) => (
                 <span
                   key={i}
-                  className="h-[11px] text-[10px] leading-[11px] text-ink-500 dark:text-slate-400"
+                  className="h-[14px] text-[10px] leading-[14px] text-ink-500 dark:text-slate-400"
                 >
                   {l}
                 </span>
@@ -113,7 +113,7 @@ export function Heatmap({ habits, checkins, attendance, today, onSelectDay }: Pr
                     <span
                       key={c.date}
                       aria-hidden="true"
-                      className={`h-[11px] w-[11px] rounded-[2px] opacity-40 ${LEVEL_CLS[c.level]}`}
+                      className={`h-[14px] w-[14px] rounded-[3px] opacity-40 ${LEVEL_CLS[c.level]}`}
                     />
                   ) : (
                     <button
@@ -138,7 +138,7 @@ export function Heatmap({ habits, checkins, attendance, today, onSelectDay }: Pr
                       }}
                       onMouseLeave={() => setHover(null)}
                       onBlur={() => setHover(null)}
-                      className={`h-[11px] w-[11px] rounded-[2px] transition-transform hover:scale-125 hover:ring-2 hover:ring-sage-600 focus-visible:ring-2 focus-visible:ring-sage-600 dark:hover:ring-emerald-300 dark:focus-visible:ring-emerald-300 ${LEVEL_CLS[c.level]}`}
+                      className={`h-[14px] w-[14px] rounded-[3px] transition-transform hover:scale-125 hover:ring-2 hover:ring-sage-600 focus-visible:ring-2 focus-visible:ring-sage-600 dark:hover:ring-emerald-300 dark:focus-visible:ring-emerald-300 ${LEVEL_CLS[c.level]}`}
                     />
                   ),
                 )}
@@ -152,7 +152,7 @@ export function Heatmap({ habits, checkins, attendance, today, onSelectDay }: Pr
       <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-ink-500 dark:text-slate-400">
         <span>Less</span>
         {LEVEL_CLS.map((cls, i) => (
-          <span key={i} className={`h-[11px] w-[11px] rounded-[2px] ${cls}`} aria-hidden="true" />
+          <span key={i} className={`h-[14px] w-[14px] rounded-[3px] ${cls}`} aria-hidden="true" />
         ))}
         <span>More</span>
       </div>

@@ -9,7 +9,6 @@ import { AchievementsGrid } from '../components/AchievementsGrid';
 import { DayDetail } from '../components/DayDetail';
 import { EmptyState } from '../components/EmptyState';
 import { Heatmap } from '../components/Heatmap';
-import { WakeLog } from '../components/WakeLog';
 import { daysLeftInWeek, weeklyGoalSummary, weeklyGoals } from '../game/weeklyGoals';
 import type { GameStats } from '../hooks/useGame';
 import type { useAttendance } from '../hooks/useAttendance';
@@ -18,7 +17,7 @@ import type { useHabits } from '../hooks/useHabits';
 import type { useReflections } from '../hooks/useReflections';
 import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
-import { addDays, parseDateKey, startOfWeekMonday, todayKey } from '../utils/dates';
+import { addDays, parseDateKey, todayKey } from '../utils/dates';
 import { compareWeeks, formatPercent } from '../utils/stats';
 
 const HARI_SINGKAT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -80,9 +79,6 @@ export function StatsPage({
           message="No active habits to measure yet."
           hint="Add a habit on the Today page first. 🌱"
         />
-        <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
-          <WakeLog attendance={attendanceApi.attendance} today={today} />
-        </div>
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
@@ -192,42 +188,19 @@ export function StatsPage({
         </>
       ) : null}
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
-        <Heatmap
-          habits={habits}
-          checkins={checkins}
-          attendance={attendanceApi.attendance}
-          today={today}
-          onSelectDay={setOpenDay}
-        />
-        <div className="mt-8 border-t border-cream-200 pt-6 dark:border-slate-800">
-          <WakeLog attendance={attendanceApi.attendance} today={today} />
+        <div className="rounded-3xl border border-cream-200 bg-cream-50/60 p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900/40">
+          <Heatmap
+            habits={habits}
+            checkins={checkins}
+            attendance={attendanceApi.attendance}
+            today={today}
+            onSelectDay={setOpenDay}
+          />
         </div>
       </div>
-      <h2 className="section-title mt-10 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">
-        This week · from {cmp.thisWeek.monday}
-      </h2>{' '}
-      <ul className="mt-2 divide-y divide-cream-200 dark:divide-slate-800">
-        {cmp.thisWeek.days.map((day, i) => (
-          <li key={day.date} className="flex items-center gap-3 py-2">
-            <span className="w-8 text-sm font-medium text-ink-500 sm:w-10">{HARI_SINGKAT[i]}</span>
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-slate-800">
-              <div
-                className="h-full rounded-full bg-sage-500 dark:bg-emerald-400"
-                style={{ width: `${Math.round(day.rate * 100)}%` }}
-              />
-            </div>
-            <span className="w-14 text-right text-[13px] text-slate-400 tabular-nums sm:w-20">
-              {day.done}/{day.total}
-            </span>
-          </li>
-        ))}
-      </ul>
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
         <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
       </div>
-      <p className="mt-4 text-xs text-slate-400">
-        Weeks start Monday ({startOfWeekMonday(today)}).
-      </p>
       {detail}
     </div>
   );
