@@ -56,6 +56,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 ### Stats, reflection, and focus
 
 - **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, the wake-up log, weekly goal meters, a 52-week activity heatmap, per-day bars, and the achievement grid.
+- **Activity calendar** — hover a square for the day's habit count and wake/bed times, click it for a full breakdown (wake-up, bedtime, habits done, side quests, reflection, XP), and step through neighbouring days with the arrows.
 - **17 achievements** grouped into Habits, Streaks, Quests, Reflection, Attendance, and Progression, with bronze/silver/gold weight and a progress bar on every locked badge. Unlocks appear as toasts.
 - **Campfire Tales** — nightly reflection with "what happened" and "what to fix tomorrow", optional mood/energy 1–5, and a past-entry accordion.
 - **Focus arena** — a 25/5 Pomodoro linked to an open main quest, a side quest, or a custom focus. The timer survives refresh, navigation, and tab switches; remaining time is recalculated from a saved end timestamp.
@@ -113,7 +114,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 src/
   components/  Layout, Hud, HabitCard, WakeLog, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
-               Heatmap, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
+               Heatmap, DayDetail, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
                GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,
                ConfirmDialog, EmptyState, RankInfo
   pages/       TodayPage, StatsPage, ReflectionPage, FocusPage
@@ -121,7 +122,7 @@ src/
                useGoals, useGame, useDarkMode, useAchievementToasts, usePomodoro
   game/        xp, achievements, attendance, decay, trainingStreak, dailyStreak,
                weeklyGoals (+ tests)
-  utils/       dates, streak, checkins, habitHistory, stats, tasks, backup, goals,
+  utils/       dates, streak, checkins, habitHistory, stats, dayDetail, tasks, backup, goals,
                pomodoro, quote (+ tests)
   storage/     types (StorageAdapter), localStorageAdapter, importPreview, validation,
                supabaseAdapter (placeholder), StorageContext

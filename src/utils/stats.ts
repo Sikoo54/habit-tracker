@@ -87,6 +87,8 @@ export function formatPercent(rate: number): string {
 export interface HeatCell {
   date: string;
   count: number;
+  /** Habits that were due that day, used for "2 of 3" labels. */
+  total: number;
   level: 0 | 1 | 2 | 3 | 4;
   future: boolean;
 }
@@ -171,7 +173,7 @@ export function annualHeatmap(
       const count = doneSet ? [...doneSet].filter((id) => dueIds.has(id)).length : 0;
       if (count > 0) totalActiveDays += 1;
       if (count > maxCount) maxCount = count;
-      cells.push({ date, count, level: 0, future: date > today });
+      cells.push({ date, count, total: dueIds.size, level: 0, future: date > today });
     }
 
     // Month label on the first week whose Monday starts a new month.

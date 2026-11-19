@@ -27,6 +27,12 @@ export function xpForTask(priority: boolean): number {
   return priority ? XP.taskPriority : XP.taskOther;
 }
 
+/** XP awarded for a saved reflection, with the bonus when both scores are filled. */
+export function xpForReflection(reflection: Pick<Reflection, 'mood' | 'energy'>): number {
+  const bonus = reflection.mood !== null && reflection.energy !== null ? XP.reflectionBonus : 0;
+  return XP.reflection + bonus;
+}
+
 /** Computes total gross XP accumulated across all activities */
 export function totalXp(
   checkins: Checkin[],
@@ -38,8 +44,7 @@ export function totalXp(
   xp += xpForCheckin() * checkins.length;
   for (const t of tasks) if (t.done) xp += xpForTask(t.priority);
   for (const r of reflections) {
-    xp += XP.reflection;
-    if (r.mood !== null && r.energy !== null) xp += XP.reflectionBonus;
+    xp += xpForReflection(r);
   }
   return xp + attendanceXp(attendance);
 }
@@ -84,7 +89,13 @@ export function levelProgress(xp: number): LevelProgress {
   const next = xpThreshold(level + 1);
   const current = xp - base;
   const needed = next - base;
-  return { level, xp, current, needed, pct: needed === 0 ? 100 : Math.round((current / needed) * 100) };
+  return {
+    level,
+    xp,
+    current,
+    needed,
+    pct: needed === 0 ? 100 : Math.round((current / needed) * 100),
+  };
 }
 
 // --- Ascent: your level is how high up the mountain you stand ---

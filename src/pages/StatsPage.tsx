@@ -4,8 +4,9 @@
  * annual activity heatmap, and unlocked achievement badges.
  */
 
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
+import { DayDetail } from '../components/DayDetail';
 import { EmptyState } from '../components/EmptyState';
 import { Heatmap } from '../components/Heatmap';
 import { WakeLog } from '../components/WakeLog';
@@ -14,6 +15,8 @@ import type { GameStats } from '../hooks/useGame';
 import type { useAttendance } from '../hooks/useAttendance';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { useHabits } from '../hooks/useHabits';
+import type { useReflections } from '../hooks/useReflections';
+import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
 import { addDays, parseDateKey, startOfWeekMonday, todayKey } from '../utils/dates';
 import { compareWeeks, formatPercent } from '../utils/stats';
@@ -24,14 +27,41 @@ interface Props {
   habitsApi: Pick<ReturnType<typeof useHabits>, 'habits'>;
   checkinsApi: Pick<ReturnType<typeof useCheckins>, 'checkins'>;
   attendanceApi: Pick<ReturnType<typeof useAttendance>, 'attendance'>;
+  tasksApi: Pick<ReturnType<typeof useTasks>, 'tasks'>;
+  reflectionsApi: Pick<ReturnType<typeof useReflections>, 'reflections'>;
   game: GameStats;
 }
 
 /** Statistics and historical performance analytics page */
-export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props): ReactNode {
+export function StatsPage({
+  habitsApi,
+  checkinsApi,
+  attendanceApi,
+  tasksApi,
+  reflectionsApi,
+  game,
+}: Props): ReactNode {
   const { habits } = habitsApi;
   const { checkins } = checkinsApi;
+  const { tasks } = tasksApi;
+  const { reflections } = reflectionsApi;
   const today = todayKey();
+  const [openDay, setOpenDay] = useState<string | null>(null);
+
+  const detail =
+    openDay === null ? null : (
+      <DayDetail
+        date={openDay}
+        today={today}
+        habits={habits}
+        checkins={checkins}
+        tasks={tasks}
+        reflections={reflections}
+        attendance={attendanceApi.attendance}
+        onSelectDate={setOpenDay}
+        onClose={() => setOpenDay(null)}
+      />
+    );
 
   const cmp = useMemo(() => compareWeeks(habits, checkins, today), [habits, checkins, today]);
   const goals = useMemo(() => weeklyGoals(habits, checkins, today), [habits, checkins, today]);
@@ -56,6 +86,7 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
+        {detail}
       </div>
     );
   }
@@ -103,10 +134,13 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
           const full = total > 0 && capped === total;
           const some = capped > 0 && !full;
           return (
-            <li key={date} title={`${date}: ${capped}/${total}`} className="text-center">
+            <li key={date} className="text-center">
               <span className="text-xs font-medium text-slate-400">{HARI_SINGKAT[idx]}</span>
-              <span
-                className={`mx-auto mt-1 flex h-11 w-11 items-center justify-center rounded-full text-lg max-sm:h-9 max-sm:w-9 max-sm:text-base ${
+              <button
+                type="button"
+                onClick={() => setOpenDay(date)}
+                title={`Open ${date}: ${capped} of ${total} habits`}
+                className={`mx-auto mt-1 flex h-11 w-11 items-center justify-center rounded-full text-lg max-sm:h-9 max-sm:w-9 max-sm:text-base hover:ring-2 hover:ring-sage-500 focus-visible:ring-2 focus-visible:ring-sage-500 dark:hover:ring-emerald-400 dark:focus-visible:ring-emerald-400 ${
                   full
                     ? 'bg-sage-500 text-white dark:bg-emerald-500'
                     : some
@@ -116,9 +150,9 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
               >
                 <span aria-hidden="true">{full ? '●' : some ? '◐' : '○'}</span>
                 <span className="sr-only">
-                  {date}: {capped} of {total} done
+                  Open {date}: {capped} of {total} done
                 </span>
-              </span>
+              </button>
               <span className="mt-0.5 block text-xs text-slate-400 tabular-nums">
                 {d.getDate()}
               </span>
@@ -126,9 +160,6 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
           );
         })}
       </ol>
-      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
-        <WakeLog attendance={attendanceApi.attendance} today={today} />
-      </div>
       {goals.length > 0 ? (
         <>
           <div className="mt-10 flex items-baseline justify-between gap-3 border-t border-cream-200 pt-8 dark:border-slate-800">
@@ -161,7 +192,16 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
         </>
       ) : null}
       <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
-        <Heatmap habits={habits} checkins={checkins} today={today} />
+        <Heatmap
+          habits={habits}
+          checkins={checkins}
+          attendance={attendanceApi.attendance}
+          today={today}
+          onSelectDay={setOpenDay}
+        />
+        <div className="mt-8 border-t border-cream-200 pt-6 dark:border-slate-800">
+          <WakeLog attendance={attendanceApi.attendance} today={today} />
+        </div>
       </div>
       <h2 className="section-title mt-10 border-t border-cream-200 pt-8 text-slate-400 dark:border-slate-800 dark:text-slate-500">
         This week · from {cmp.thisWeek.monday}
@@ -188,6 +228,7 @@ export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props
       <p className="mt-4 text-xs text-slate-400">
         Weeks start Monday ({startOfWeekMonday(today)}).
       </p>
+      {detail}
     </div>
   );
 }

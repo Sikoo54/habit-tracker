@@ -126,6 +126,8 @@ describe('annual heatmap', () => {
     const all = h.weeks.flatMap((w) => w.cells);
     const sep8 = all.find((c) => c.date === '2026-09-08');
     expect(sep8?.count).toBe(2);
+    expect(sep8?.total).toBe(2);
+    expect(all.find((c) => c.date === '2026-01-05')?.total).toBe(2);
     expect(sep8?.level).toBe(4);
     expect(all.some((c) => c.future)).toBe(true);
     expect(all.some((c) => c.date === '2026-09-09' && c.future)).toBe(false);

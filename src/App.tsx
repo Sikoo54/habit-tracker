@@ -164,6 +164,8 @@ function Shell({
           habitsApi={habitsApi}
           checkinsApi={checkinsApi}
           attendanceApi={attendanceApi}
+          tasksApi={tasksApi}
+          reflectionsApi={reflectionsApi}
           game={game}
         />
       ) : (
