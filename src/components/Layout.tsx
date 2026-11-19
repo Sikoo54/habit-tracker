@@ -19,7 +19,17 @@ interface Props {
 
 function Icon({ d }: { d: string }): ReactNode {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d={d} />
     </svg>
   );
@@ -41,18 +51,19 @@ function BrandMark(): ReactNode {
 
 const ITEMS: { key: PageKey; label: string; icon: string }[] = [
   { key: 'today', label: 'Today', icon: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
-  { key: 'focus', label: 'Focus', icon: 'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z' },
   { key: 'stats', label: 'Stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
+  {
+    key: 'focus',
+    label: 'Focus',
+    icon: 'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z',
+  },
   { key: 'reflection', label: 'Reflect', icon: 'M20 13A8 8 0 0 1 11 4a6.5 6.5 0 0 0 9 9Z' },
 ];
 
 // One nav language for both breakpoints: same colours, radii and hover states.
-const NAV_ITEM =
-  'flex items-center justify-center gap-0.5 rounded-xl font-bold transition-colors';
-const NAV_ACTIVE =
-  'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300';
-const NAV_IDLE =
-  'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900';
+const NAV_ITEM = 'flex items-center justify-center gap-0.5 rounded-xl font-bold transition-colors';
+const NAV_ACTIVE = 'bg-cream-200/80 text-sage-700 dark:bg-slate-800 dark:text-emerald-300';
+const NAV_IDLE = 'text-ink-500 hover:bg-cream-200/50 dark:text-slate-400 dark:hover:bg-slate-900';
 
 /** Main layout shell wrapping all page routes with top nav and settings drawer */
 export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: Props): ReactNode {
@@ -71,7 +82,7 @@ export function Layout({ page, onNavigate, dark, onToggleDark, hud, children }: 
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [open ]);
+  }, [open]);
 
   return (
     <div className="min-h-screen bg-cream-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100">
