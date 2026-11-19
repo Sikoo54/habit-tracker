@@ -84,6 +84,10 @@ export interface Attendance {
   date: string; // YYYY-MM-DD, unique per day
   morning: boolean;
   night: boolean;
+  /** ISO timestamp of the morning tap. Missing in records saved before it existed. */
+  morningAt?: string;
+  /** ISO timestamp of the night tap. Missing in records saved before it existed. */
+  nightAt?: string;
 }
 
 /** A long-range goal shown at the top of Today so the reason stays visible. */

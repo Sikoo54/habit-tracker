@@ -69,6 +69,12 @@ export function formatTanggalID(key: string): string {
   return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+/** Compact date label for lists, such as "19 Nov 2026". */
+export function formatDateShort(key: string): string {
+  const d = parseDateKey(key);
+  return `${d.getDate()} ${BULAN[d.getMonth()]?.slice(0, 3)} ${d.getFullYear()}`;
+}
+
 /** Generates a unique collision-resistant ID with a given prefix */
 export function createId(prefix: string): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;

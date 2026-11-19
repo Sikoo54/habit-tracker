@@ -40,14 +40,79 @@ export function toggleAttendance(
   slot: AttendanceSlot,
 ): Attendance[] {
   const cur = attendanceFor(attendance, date);
-  const next: Attendance = {
-    date,
-    morning: slot === 'morning' ? !(cur?.morning ?? false) : (cur?.morning ?? false),
-    night: slot === 'night' ? !(cur?.night ?? false) : (cur?.night ?? false),
-  };
+  const morning = slot === 'morning' ? !(cur?.morning ?? false) : (cur?.morning ?? false);
+  const night = slot === 'night' ? !(cur?.night ?? false) : (cur?.night ?? false);
+  const next: Attendance = { date, morning, night };
+  // A stamp belongs to its slot: turning the slot off drops the old time.
+  if (morning && cur?.morningAt) next.morningAt = cur.morningAt;
+  if (night && cur?.nightAt) next.nightAt = cur.nightAt;
   const others = attendance.filter((a) => a.date !== date);
   if (!next.morning && !next.night) return others;
   return [...others, next];
+}
+
+/**
+ * Marks one slot done and stores the moment it was tapped. Used by the daily
+ * gate so the wake-up time is the real clock time, not a guess. Re-tapping a
+ * slot keeps the first stamp.
+ */
+export function stampAttendance(
+  attendance: Attendance[],
+  date: string,
+  slot: AttendanceSlot,
+  at: string,
+): Attendance[] {
+  const cur = attendanceFor(attendance, date);
+  const morning = slot === 'morning' ? true : (cur?.morning ?? false);
+  const night = slot === 'night' ? true : (cur?.night ?? false);
+  const next: Attendance = { date, morning, night };
+  const morningAt = slot === 'morning' ? (cur?.morningAt ?? at) : cur?.morningAt;
+  const nightAt = slot === 'night' ? (cur?.nightAt ?? at) : cur?.nightAt;
+  if (morning && morningAt) next.morningAt = morningAt;
+  if (night && nightAt) next.nightAt = nightAt;
+  const others = attendance.filter((a) => a.date !== date);
+  return [...others, next];
+}
+
+/** Local clock time as HH:MM; empty when the timestamp is missing or unreadable. */
+export function clockLabel(iso: string | undefined): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+/** One recorded wake-up: the day and the clock time of its morning tap. */
+export interface WakeEntry {
+  date: string;
+  time: string;
+}
+
+/**
+ * Wake-up history from the morning tap times, newest day first. Days saved
+ * before timestamps existed carry no time, so they stay out of the log.
+ */
+export function wakeLog(attendance: Attendance[], limit = 30): WakeEntry[] {
+  return attendance
+    .filter((a) => a.morning && clockLabel(a.morningAt))
+    .map((a) => ({ date: a.date, time: clockLabel(a.morningAt) }))
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+    .slice(0, limit);
+}
+
+/** Average wake time as HH:MM; empty when the list has no readable times. */
+export function averageWake(entries: WakeEntry[]): string {
+  const minutes = entries
+    .map((entry) => {
+      const [hours, mins] = entry.time.split(':');
+      const h = Number(hours);
+      const m = Number(mins);
+      return Number.isFinite(h) && Number.isFinite(m) ? h * 60 + m : null;
+    })
+    .filter((value): value is number => value !== null);
+  if (minutes.length === 0) return '';
+  const avg = Math.round(minutes.reduce((sum, value) => sum + value, 0) / minutes.length);
+  return `${String(Math.floor(avg / 60) % 24).padStart(2, '0')}:${String(avg % 60).padStart(2, '0')}`;
 }
 
 /** Days with any absen — counts as activity for the global daily streak. */
@@ -72,7 +137,11 @@ export const NIGHT_START_HOUR = 22;
  * Night (22:00+) wins; otherwise morning from 04:00. Night means the
  * morning slot was missed, so it is not retroactively gated.
  */
-export function gateFor(attendance: Attendance[], date: string, hour: number): AttendanceSlot | null {
+export function gateFor(
+  attendance: Attendance[],
+  date: string,
+  hour: number,
+): AttendanceSlot | null {
   const a = attendanceFor(attendance, date);
   if (hour >= NIGHT_START_HOUR) return a?.night === true ? null : 'night';
   if (hour >= MORNING_START_HOUR) return a?.morning === true ? null : 'morning';

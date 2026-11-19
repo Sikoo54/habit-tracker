@@ -18,8 +18,10 @@ import { LeftoverBanner } from '../components/LeftoverBanner';
 import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import { YesterdayBackfill } from '../components/YesterdayBackfill';
+import { clockLabel } from '../game/attendance';
 import type { AppliedPenalty } from '../game/decay';
 import { streakReset } from '../game/trainingStreak';
+import type { useAttendance } from '../hooks/useAttendance';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
 import type { useGoals } from '../hooks/useGoals';
@@ -40,6 +42,7 @@ interface Props {
   habitsApi: ReturnType<typeof useHabits>;
   tasksApi: ReturnType<typeof useTasks>;
   checkinsApi: ReturnType<typeof useCheckins>;
+  attendanceApi: Pick<ReturnType<typeof useAttendance>, 'attendanceOn'>;
   goalsApi: ReturnType<typeof useGoals>;
   game: GameStats;
   penaltyNotice: AppliedPenalty[] | null;
@@ -51,6 +54,7 @@ export function TodayPage({
   habitsApi,
   tasksApi,
   checkinsApi,
+  attendanceApi,
   goalsApi,
   game,
   penaltyNotice,
@@ -65,6 +69,7 @@ export function TodayPage({
   const { checkins, toggleCheckin, setCheckin, checkinFor, removeCheckinsForHabit } = checkinsApi;
   const yesterday = addDays(today, -1);
   const backfillHabits = habitsOn(habits, yesterday);
+  const wakeTime = clockLabel(attendanceApi.attendanceOn(today)?.morningAt);
 
   // Permanent delete also removes the habit's check-ins so no orphan XP or
   // invisible history is left behind. Archive remains the history-safe option.
@@ -164,9 +169,16 @@ export function TodayPage({
       {/* Hero: greeting + companion side by side */}
       <div className="grid grid-cols-5 items-stretch gap-6 max-md:grid-cols-1">
         <div className="col-span-3 flex flex-col justify-center max-md:col-span-1">
-          <p className="section-title text-sage-600 dark:text-emerald-300">
-            {formatTanggalID(today)}
-          </p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="section-title text-sage-600 dark:text-emerald-300">
+              {formatTanggalID(today)}
+            </p>
+            {wakeTime ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-cream-200/70 px-2 py-0.5 text-[11px] font-bold tabular-nums text-ink-600 dark:bg-slate-800 dark:text-slate-300">
+                <span aria-hidden="true">🌅</span> Awake {wakeTime}
+              </span>
+            ) : null}
+          </div>
           <h1 className="mt-1 font-display text-5xl font-semibold leading-[1.05] tracking-tight max-md:text-4xl">
             {greeting(new Date().getHours())}. {headline}
           </h1>

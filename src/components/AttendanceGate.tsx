@@ -51,7 +51,7 @@ export function AttendanceGate({ slot, date, streak, onConfirm }: Props): ReactN
 
         <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-cream-200/75">
           {morning
-            ? 'Sign the logbook before the climb. One tap starts the day.'
+            ? 'Sign the logbook before the climb. One tap starts the day and saves your wake-up time.'
             : 'Close the logbook before sleep. One tap ends the day.'}
         </p>
 

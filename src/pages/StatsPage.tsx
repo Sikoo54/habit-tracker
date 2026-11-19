@@ -8,8 +8,10 @@ import { useMemo, type ReactNode } from 'react';
 import { AchievementsGrid } from '../components/AchievementsGrid';
 import { EmptyState } from '../components/EmptyState';
 import { Heatmap } from '../components/Heatmap';
+import { WakeLog } from '../components/WakeLog';
 import { daysLeftInWeek, weeklyGoalSummary, weeklyGoals } from '../game/weeklyGoals';
 import type { GameStats } from '../hooks/useGame';
+import type { useAttendance } from '../hooks/useAttendance';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { useHabits } from '../hooks/useHabits';
 import { habitsOn } from '../utils/checkins';
@@ -21,11 +23,12 @@ const HARI_SINGKAT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 interface Props {
   habitsApi: Pick<ReturnType<typeof useHabits>, 'habits'>;
   checkinsApi: Pick<ReturnType<typeof useCheckins>, 'checkins'>;
+  attendanceApi: Pick<ReturnType<typeof useAttendance>, 'attendance'>;
   game: GameStats;
 }
 
 /** Statistics and historical performance analytics page */
-export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
+export function StatsPage({ habitsApi, checkinsApi, attendanceApi, game }: Props): ReactNode {
   const { habits } = habitsApi;
   const { checkins } = checkinsApi;
   const today = todayKey();
@@ -47,6 +50,9 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           message="No active habits to measure yet."
           hint="Add a habit on the Today page first. 🌱"
         />
+        <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
+          <WakeLog attendance={attendanceApi.attendance} today={today} />
+        </div>
         <div className="mt-8 border-t border-cream-200 pt-8 dark:border-slate-800">
           <AchievementsGrid achievements={game.achievements} unlockedCount={game.unlockedCount} />
         </div>
@@ -120,6 +126,9 @@ export function StatsPage({ habitsApi, checkinsApi, game }: Props): ReactNode {
           );
         })}
       </ol>
+      <div className="mt-10 border-t border-cream-200 pt-8 dark:border-slate-800">
+        <WakeLog attendance={attendanceApi.attendance} today={today} />
+      </div>
       {goals.length > 0 ? (
         <>
           <div className="mt-10 flex items-baseline justify-between gap-3 border-t border-cream-200 pt-8 dark:border-slate-800">

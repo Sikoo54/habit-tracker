@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { attendanceFor, toggleAttendance, type AttendanceSlot } from '../game/attendance';
+import { attendanceFor, stampAttendance, type AttendanceSlot } from '../game/attendance';
 import { useStorage } from '../storage/StorageContext';
 import type { Attendance } from '../types';
 
@@ -39,9 +39,9 @@ export function useAttendance() {
     void storage.saveAttendance(attendance).catch(() => undefined);
   }, [attendance, storage]);
 
-  /** Toggle absen: pagi (morning) atau malam (night) untuk tanggal itu. */
+  /** Marks a slot for that day and stores the exact tap time. */
   const mark = useCallback((date: string, slot: AttendanceSlot) => {
-    setAttendance((prev) => toggleAttendance(prev, date, slot));
+    setAttendance((prev) => stampAttendance(prev, date, slot, new Date().toISOString()));
   }, []);
 
   const attendanceOn = useCallback(

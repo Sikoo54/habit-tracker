@@ -49,12 +49,13 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 
 ### Attendance gate
 
-- A full-screen logbook opens at **04:00** (morning) and again at **22:00** (night). One tap logs attendance, awards +5 XP, and unlocks the app.
+- A full-screen logbook opens at **04:00** (morning) and again at **22:00** (night). One tap logs attendance, awards +5 XP, unlocks the app, and stamps the exact tap time.
+- **Wake-up log** — Stats lists every stamped wake-up time (newest first) with the average, and Today shows today’s time next to the date. Days saved before the stamp existed stay out of the log.
 - The gate has no footline text; it shows the date, the current streak, and a single action.
 
 ### Stats, reflection, and focus
 
-- **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, weekly goal meters, a 52-week activity heatmap, per-day bars, and the achievement grid.
+- **Adventure Log** — this week's completion rate, delta vs last week, a 7-day mini calendar, the wake-up log, weekly goal meters, a 52-week activity heatmap, per-day bars, and the achievement grid.
 - **17 achievements** grouped into Habits, Streaks, Quests, Reflection, Attendance, and Progression, with bronze/silver/gold weight and a progress bar on every locked badge. Unlocks appear as toasts.
 - **Campfire Tales** — nightly reflection with "what happened" and "what to fix tomorrow", optional mood/energy 1–5, and a past-entry accordion.
 - **Focus arena** — a 25/5 Pomodoro linked to an open main quest, a side quest, or a custom focus. The timer survives refresh, navigation, and tab switches; remaining time is recalculated from a saved end timestamp.
@@ -110,7 +111,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 
 ```
 src/
-  components/  Layout, Hud, HabitCard, HabitForm, TaskList, QuoteCard, AscentCard,
+  components/  Layout, Hud, HabitCard, WakeLog, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
                Heatmap, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
                GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,

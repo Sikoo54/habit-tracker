@@ -6,9 +6,27 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Attendance } from '../types';
-import { attendedDates, attendanceFor, attendanceXp, gateFor, toggleAttendance } from './attendance';
+import {
+  attendedDates,
+  attendanceFor,
+  attendanceXp,
+  averageWake,
+  clockLabel,
+  gateFor,
+  stampAttendance,
+  toggleAttendance,
+  wakeLog,
+} from './attendance';
 
-const day = (date: string, morning = false, night = false): Attendance => ({ date, morning, night });
+const day = (date: string, morning = false, night = false): Attendance => ({
+  date,
+  morning,
+  night,
+});
+
+/** Local wall-clock timestamp, so the label assertion holds in any timezone. */
+const at = (dayOfMonth: number, hour: number, minute: number): string =>
+  new Date(2026, 10, dayOfMonth, hour, minute).toISOString();
 
 describe('attendance xp', () => {
   it('gives 5 per marked slot', () => {
@@ -28,7 +46,11 @@ describe('toggleAttendance', () => {
   it('adds the other slot without touching the first', () => {
     let list = toggleAttendance([], '2026-10-20', 'morning');
     list = toggleAttendance(list, '2026-10-20', 'night');
-    expect(attendanceFor(list, '2026-10-20')).toEqual({ date: '2026-10-20', morning: true, night: true });
+    expect(attendanceFor(list, '2026-10-20')).toEqual({
+      date: '2026-10-20',
+      morning: true,
+      night: true,
+    });
   });
 
   it('unmarks a slot', () => {
@@ -47,6 +69,78 @@ describe('toggleAttendance', () => {
     const next = toggleAttendance(start, '2026-10-20', 'morning');
     expect(attendanceFor(next, '2026-10-19')?.morning).toBe(true);
     expect(attendanceFor(next, '2026-10-20')?.morning).toBe(true);
+  });
+
+  it('keeps a stamp while the other slot toggles, and drops it with its slot', () => {
+    const start: Attendance[] = [
+      { date: '2026-10-20', morning: true, night: false, morningAt: at(20, 5, 30) },
+    ];
+    const withNight = toggleAttendance(start, '2026-10-20', 'night');
+    expect(attendanceFor(withNight, '2026-10-20')?.morningAt).toBe(at(20, 5, 30));
+    expect(toggleAttendance(withNight, '2026-10-20', 'morning')).toEqual([
+      { date: '2026-10-20', morning: false, night: true },
+    ]);
+  });
+});
+
+describe('stampAttendance', () => {
+  it('marks the slot and stores the tap time', () => {
+    expect(stampAttendance([], '2026-11-19', 'morning', at(19, 5, 42))).toEqual([
+      { date: '2026-11-19', morning: true, night: false, morningAt: at(19, 5, 42) },
+    ]);
+  });
+
+  it('keeps both stamps when the second slot is tapped', () => {
+    let list = stampAttendance([], '2026-11-19', 'morning', at(19, 5, 42));
+    list = stampAttendance(list, '2026-11-19', 'night', at(19, 22, 10));
+    expect(attendanceFor(list, '2026-11-19')).toMatchObject({
+      morningAt: at(19, 5, 42),
+      nightAt: at(19, 22, 10),
+    });
+  });
+
+  it('keeps the first tap time instead of overwriting it', () => {
+    const first = stampAttendance([], '2026-11-19', 'morning', at(19, 5, 42));
+    const again = stampAttendance(first, '2026-11-19', 'morning', at(19, 7, 15));
+    expect(attendanceFor(again, '2026-11-19')?.morningAt).toBe(at(19, 5, 42));
+  });
+
+  it('never touches other days', () => {
+    const start = [day('2026-11-18', true, false)];
+    expect(stampAttendance(start, '2026-11-19', 'morning', at(19, 6, 0))[0]).toEqual(start[0]);
+  });
+});
+
+describe('wake history', () => {
+  it('formats a stamp as local HH:MM', () => {
+    expect(clockLabel(at(19, 5, 7))).toBe('05:07');
+    expect(clockLabel(at(19, 22, 45))).toBe('22:45');
+    expect(clockLabel(undefined)).toBe('');
+    expect(clockLabel('not-a-date')).toBe('');
+  });
+
+  it('lists stamped mornings newest first and skips days without a time', () => {
+    const rows: Attendance[] = [
+      { date: '2026-11-17', morning: true, night: false, morningAt: at(17, 6, 15) },
+      { date: '2026-11-18', morning: true, night: true, morningAt: at(18, 5, 40) },
+      { date: '2026-11-16', morning: true, night: false },
+      { date: '2026-11-15', morning: false, night: true, nightAt: at(15, 22, 0) },
+    ];
+    const log = wakeLog(rows);
+    expect(log.map((entry) => entry.date)).toEqual(['2026-11-18', '2026-11-17']);
+    expect(log[0]?.time).toBe('05:40');
+    expect(wakeLog(rows, 1).map((entry) => entry.date)).toEqual(['2026-11-18']);
+  });
+
+  it('averages the clock times and ignores unusable rows', () => {
+    expect(averageWake([])).toBe('');
+    expect(
+      averageWake([
+        { date: '2026-11-18', time: '05:40' },
+        { date: '2026-11-17', time: '06:15' },
+      ]),
+    ).toBe('05:58');
+    expect(averageWake([{ date: '2026-11-18', time: 'bad' }])).toBe('');
   });
 });
 

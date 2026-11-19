@@ -151,6 +151,7 @@ function Shell({
           habitsApi={habitsApi}
           tasksApi={tasksApi}
           checkinsApi={checkinsApi}
+          attendanceApi={attendanceApi}
           goalsApi={goalsApi}
           game={game}
           penaltyNotice={decay.notice}
@@ -159,7 +160,12 @@ function Shell({
       ) : page === 'focus' ? (
         <FocusPage tasksApi={tasksApi} habitsApi={habitsApi} checkinsApi={checkinsApi} />
       ) : page === 'stats' ? (
-        <StatsPage habitsApi={habitsApi} checkinsApi={checkinsApi} game={game} />
+        <StatsPage
+          habitsApi={habitsApi}
+          checkinsApi={checkinsApi}
+          attendanceApi={attendanceApi}
+          game={game}
+        />
       ) : (
         <ReflectionPage reflectionsApi={reflectionsApi} />
       )}

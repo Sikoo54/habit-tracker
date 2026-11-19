@@ -91,9 +91,16 @@ export function validReflection(v: unknown): v is Reflection {
   );
 }
 
-/** True when the value has every required attendance field. */
+/** True when the value has every required attendance field; tap times are optional. */
 export function validAttendance(v: unknown): v is Attendance {
-  return isRecord(v) && isString(v.date) && isBoolean(v.morning) && isBoolean(v.night);
+  return (
+    isRecord(v) &&
+    isString(v.date) &&
+    isBoolean(v.morning) &&
+    isBoolean(v.night) &&
+    (v.morningAt === undefined || isString(v.morningAt)) &&
+    (v.nightAt === undefined || isString(v.nightAt))
+  );
 }
 
 /** True when the value has a usable goal shape (target date is optional). */

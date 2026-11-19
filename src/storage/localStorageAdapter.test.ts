@@ -199,6 +199,23 @@ describe('LocalStorageAdapter', () => {
     expect(await a.getGoals()).toEqual([goal]);
   });
 
+  it('keeps the morning tap time through save, export, and import', async () => {
+    const a = new LocalStorageAdapter();
+    const row = {
+      date: '2026-11-19',
+      morning: true,
+      night: false,
+      morningAt: '2026-11-19T05:42:00.000Z',
+    };
+    await a.saveAttendance([row]);
+
+    expect(await a.getAttendance()).toEqual([row]);
+    const dump = await a.exportAll();
+    await a.clearAll();
+    await a.importAll(dump);
+    expect(await a.getAttendance()).toEqual([row]);
+  });
+
   it('importing an older backup without decay clears stale frost', async () => {
     const a = new LocalStorageAdapter();
     window.localStorage.setItem(
