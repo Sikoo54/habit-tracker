@@ -110,7 +110,7 @@ export interface GoalInput {
 }
 
 /** Available navigation pages */
-export type PageKey = 'today' | 'stats' | 'reflection' | 'focus';
+export type PageKey = 'today' | 'focus' | 'goals' | 'stats' | 'reflection';
 
 /** Complete backup schema for export/import */
 export interface ExportPayload {

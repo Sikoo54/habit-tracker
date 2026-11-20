@@ -1,6 +1,6 @@
 /**
  * Goals Card
- * The goals signpost on Today. The lead goal carries the display type and its
+ * The goals signpost on the Goals page. The lead goal carries the display type and its
  * reason; the rest wait in a quiet list so the reminder stays scannable.
  */
 

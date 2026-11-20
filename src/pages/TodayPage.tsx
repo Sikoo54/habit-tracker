@@ -10,12 +10,10 @@ import { ArchivedHabits } from '../components/ArchivedHabits';
 import { AscentTrail } from '../components/AscentTrail';
 import { AscentCard } from '../components/AscentCard';
 import { EmptyState } from '../components/EmptyState';
-import { GoalsCard } from '../components/GoalsCard';
 import { HabitCard } from '../components/HabitCard';
 import { HabitDetail } from '../components/HabitDetail';
 import { HabitForm } from '../components/HabitForm';
 import { LeftoverBanner } from '../components/LeftoverBanner';
-import { QuoteCard } from '../components/QuoteCard';
 import { TaskList } from '../components/TaskList';
 import { YesterdayBackfill } from '../components/YesterdayBackfill';
 import { clockLabel } from '../game/attendance';
@@ -24,7 +22,6 @@ import { streakReset } from '../game/trainingStreak';
 import type { useAttendance } from '../hooks/useAttendance';
 import type { useCheckins } from '../hooks/useCheckins';
 import type { GameStats } from '../hooks/useGame';
-import type { useGoals } from '../hooks/useGoals';
 import { MAX_ACTIVE_HABITS, type useHabits } from '../hooks/useHabits';
 import type { useTasks } from '../hooks/useTasks';
 import { habitsOn } from '../utils/checkins';
@@ -43,7 +40,6 @@ interface Props {
   tasksApi: ReturnType<typeof useTasks>;
   checkinsApi: ReturnType<typeof useCheckins>;
   attendanceApi: Pick<ReturnType<typeof useAttendance>, 'attendanceOn'>;
-  goalsApi: ReturnType<typeof useGoals>;
   game: GameStats;
   penaltyNotice: AppliedPenalty[] | null;
   onDismissPenalty: () => void;
@@ -55,7 +51,6 @@ export function TodayPage({
   tasksApi,
   checkinsApi,
   attendanceApi,
-  goalsApi,
   game,
   penaltyNotice,
   onDismissPenalty,
@@ -201,10 +196,6 @@ export function TodayPage({
           />
         </div>
       </div>
-
-      <GoalsCard goalsApi={goalsApi} todayKey={today} />
-
-      <QuoteCard todayKey={today} />
 
       <LeftoverBanner
         leftovers={leftovers}

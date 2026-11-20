@@ -1,7 +1,7 @@
 /**
  * Goals Panel
  * Full-screen editor for the long-range goals: add a goal, edit one in place,
- * or remove it with a confirmation. Closing returns to the Today card.
+ * or remove it with a confirmation. Closing returns to the goals card.
  */
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
@@ -187,7 +187,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
               </span>
             </h2>
             <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-              Write what the climb is for. The first goal is shown big on Today; ★ moves any goal to
+              Write what the climb is for. The first goal is shown big at the top; ★ moves any goal to
               the top.
             </p>
           </div>
@@ -223,7 +223,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
             <EmptyState
               icon="🎯"
               message="No goals yet."
-              hint="Write one clear goal above. It will greet you on Today."
+              hint="Write one clear goal above. It will greet you here."
             />
           ) : (
             <ul className="space-y-3">

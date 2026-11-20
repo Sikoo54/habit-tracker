@@ -17,6 +17,10 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 
 ## Features
 
+### Pages
+
+- **Five destinations** — Focus, Goals, Today, Stats, Reflect, in that order. Today is the daily quest board; Goals holds the long-range goals and the daily trail note.
+
 ### Main Quest and Side Quests
 
 - **Main Quest** is the habit board. One tap marks a habit done and awards a flat **+20 XP**. There is one target per habit — no "small version" / "full version" split.
@@ -29,7 +33,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 
 ### Goals
 
-- **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown at the top of Today so the reason for the climb is the first thing visible on every open. The first goal is shown big; ★ moves any goal to the top. One button opens the full-screen editor, and goals live in local storage and travel with exports.
+- **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown on the Goals page so the reason for the climb is always one tap from the daily board. The first goal is shown big; ★ moves any goal to the top. One button opens the full-screen editor, and goals live in local storage and travel with exports.
 
 ### Progression
 
@@ -117,7 +121,7 @@ src/
                Heatmap, DayDetail, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
                GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,
                ConfirmDialog, EmptyState, RankInfo
-  pages/       TodayPage, StatsPage, ReflectionPage, FocusPage
+  pages/       TodayPage, GoalsPage, StatsPage, ReflectionPage, FocusPage
   hooks/       useHabits, useTasks, useCheckins, useReflections, useAttendance,
                useGoals, useGame, useDarkMode, useAchievementToasts, usePomodoro
   game/        xp, achievements, attendance, decay, trainingStreak, dailyStreak,
@@ -153,7 +157,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] Import preview + automatic pre-import backup
 - [x] Pomodoro persistence across refresh and tab switches
 - [x] Reorder main quest habits (drag or move up/down)
-- [x] Goals card on Today
+- [x] Goals page with goals and the daily trail note
 
 ## Author
 

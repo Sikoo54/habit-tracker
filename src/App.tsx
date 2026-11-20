@@ -22,6 +22,7 @@ import { useHabits } from './hooks/useHabits';
 import { useReflections } from './hooks/useReflections';
 import { useTasks } from './hooks/useTasks';
 import { FocusPage } from './pages/FocusPage';
+import { GoalsPage } from './pages/GoalsPage';
 import { ReflectionPage } from './pages/ReflectionPage';
 import { StatsPage } from './pages/StatsPage';
 import { TodayPage } from './pages/TodayPage';
@@ -152,13 +153,14 @@ function Shell({
           tasksApi={tasksApi}
           checkinsApi={checkinsApi}
           attendanceApi={attendanceApi}
-          goalsApi={goalsApi}
           game={game}
           penaltyNotice={decay.notice}
           onDismissPenalty={decay.dismissNotice}
         />
       ) : page === 'focus' ? (
         <FocusPage tasksApi={tasksApi} habitsApi={habitsApi} checkinsApi={checkinsApi} />
+      ) : page === 'goals' ? (
+        <GoalsPage goalsApi={goalsApi} />
       ) : page === 'stats' ? (
         <StatsPage
           habitsApi={habitsApi}

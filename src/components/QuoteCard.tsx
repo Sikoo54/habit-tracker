@@ -1,7 +1,7 @@
 /**
  * Daily Quote Strip
  * Shows one deterministic line per day with a refresh button that skips to the
- * next one. Sits between the hero and the quest board as a quiet trail note.
+ * next one. Sits under the goals as a quiet trail note.
  */
 
 import { useState, type ReactNode } from 'react';

@@ -1,6 +1,6 @@
 /**
  * App Layout & Shell Component
- * Provides responsive site frame, navigation bar with tabs (Today, Focus, Stats, Reflect),
+ * Provides responsive site frame, navigation bar with tabs (Focus, Goals, Today, Stats, Reflect),
  * player HUD bar, settings drawer, theme toggle, and keyboard shortcuts.
  */
 
@@ -50,13 +50,18 @@ function BrandMark(): ReactNode {
 }
 
 const ITEMS: { key: PageKey; label: string; icon: string }[] = [
-  { key: 'today', label: 'Today', icon: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
-  { key: 'stats', label: 'Stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
   {
     key: 'focus',
     label: 'Focus',
     icon: 'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z',
   },
+  {
+    key: 'goals',
+    label: 'Goals',
+    icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 4a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 4a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z',
+  },
+  { key: 'today', label: 'Today', icon: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
+  { key: 'stats', label: 'Stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
   { key: 'reflection', label: 'Reflect', icon: 'M20 13A8 8 0 0 1 11 4a6.5 6.5 0 0 0 9 9Z' },
 ];
 
