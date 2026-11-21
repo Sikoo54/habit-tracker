@@ -33,7 +33,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 
 ### Goals
 
-- **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown on the Goals page so the reason for the climb is always one tap from the daily board. The first goal is shown big; ★ moves any goal to the top. One button opens the full-screen editor, and goals live in local storage and travel with exports.
+- **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown on the Goals page so the reason for the climb is always one tap from the daily board. Star any goal to show it big — as many as you like; the rest wait in a quiet list. One button opens the full-screen editor, and goals live in local storage and travel with exports.
 
 ### Progression
 

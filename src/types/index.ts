@@ -90,7 +90,7 @@ export interface Attendance {
   nightAt?: string;
 }
 
-/** A long-range goal shown at the top of Today so the reason stays visible. */
+/** A long-range goal shown on the Goals page; starred goals are featured big. */
 export interface Goal {
   id: string;
   title: string;
@@ -98,6 +98,8 @@ export interface Goal {
   why: string;
   /** Optional YYYY-MM-DD target date. */
   targetDate?: string;
+  /** Featured big on the Goals page. Missing in goals saved before starring existed. */
+  starred?: boolean;
   createdAt: string; // ISO timestamp
 }
 

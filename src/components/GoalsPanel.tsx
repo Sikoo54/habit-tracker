@@ -134,7 +134,7 @@ function GoalForm({
 
 /** Panel that lets the user write and maintain their goals. */
 export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
-  const { goals, addGoal, updateGoal, removeGoal, promoteGoal } = goalsApi;
+  const { goals, addGoal, updateGoal, removeGoal, toggleGoalStar } = goalsApi;
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -187,8 +187,8 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
               </span>
             </h2>
             <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-              Write what the climb is for. The first goal is shown big at the top; ★ moves any goal to
-              the top.
+              Write what the climb is for. Star any goal to show it big on the Goals page — as many as
+              you like.
             </p>
           </div>
           <button
@@ -227,7 +227,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
             />
           ) : (
             <ul className="space-y-3">
-              {goals.map((goal, index) => {
+              {goals.map((goal) => {
                 const date = formatGoalDate(goal.targetDate);
                 const countdown = goalDeadlineLabel(goal.targetDate, todayKey);
 
@@ -264,25 +264,28 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
                           </p>
                         ) : null}
                         <div className="mt-3 flex flex-wrap items-stretch gap-2">
-                          {index === 0 ? (
-                            <span
-                              title="This goal leads Today"
-                              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-amber-300/80 bg-amber-50 text-lg text-amber-700 select-none dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300"
-                            >
-                              <span aria-hidden="true">★</span>
-                              <span className="sr-only">Shown first on Today</span>
-                            </span>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => promoteGoal(goal.id)}
-                              aria-label={`Show "${goal.title}" first on Today`}
-                              title="Show this goal first on Today"
-                              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cream-300 text-lg text-ink-500 hover:bg-cream-100 hover:text-summit-600 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-300"
-                            >
-                              <span aria-hidden="true">★</span>
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => toggleGoalStar(goal.id)}
+                            aria-pressed={Boolean(goal.starred)}
+                            aria-label={
+                              goal.starred
+                                ? `Stop featuring "${goal.title}"`
+                                : `Feature "${goal.title}"`
+                            }
+                            title={
+                              goal.starred
+                                ? 'Featured big on the Goals page'
+                                : 'Show this goal big on the Goals page'
+                            }
+                            className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border text-lg ${
+                              goal.starred
+                                ? 'border-amber-300/80 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300'
+                                : 'border-cream-300 text-ink-500 hover:bg-cream-100 hover:text-summit-600 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-300'
+                            }`}
+                          >
+                            <span aria-hidden="true">★</span>
+                          </button>
                           <button
                             type="button"
                             onClick={() => setEditingId(goal.id)}
@@ -312,7 +315,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
         <ConfirmDialog
           tone="danger"
           title={`Remove "${confirmingGoal.title}"?`}
-          description="It disappears from Today. Habits, check-ins, and XP are not touched."
+          description="It disappears from your goals. Habits, check-ins, and XP are not touched."
           confirmLabel="Remove goal"
           onConfirm={() => {
             removeGoal(confirmingGoal.id);

@@ -1,12 +1,12 @@
 /**
  * Goal Helper Test Suite
- * Checks deadline wording and compact date labels, including the missing and
- * malformed date paths that real backups can contain.
+ * Checks deadline wording, compact date labels, and the multi-goal star toggle,
+ * including the missing and malformed date paths that real backups can contain.
  */
 
 import { describe, expect, it } from 'vitest';
 import type { Goal } from '../types';
-import { daysUntil, formatGoalDate, goalDeadlineLabel, moveGoalToFront } from './goals';
+import { daysUntil, formatGoalDate, goalDeadlineLabel, toggleGoalStar } from './goals';
 
 const TODAY = '2026-11-18';
 
@@ -47,16 +47,17 @@ describe('goal helpers', () => {
     expect(goalDeadlineLabel('not-a-date', TODAY)).toBe('');
   });
 
-  it('moves the chosen goal to the top of the list', () => {
+  it('stars a goal without disturbing the others', () => {
     const goals = [goal('a'), goal('b'), goal('c')];
-    expect(moveGoalToFront(goals, 'c').map((g) => g.id)).toEqual(['c', 'a', 'b']);
-    expect(moveGoalToFront(goals, 'b').map((g) => g.id)).toEqual(['b', 'a', 'c']);
+    const starred = toggleGoalStar(goals, 'b');
+    expect(starred.map((g) => g.id)).toEqual(['a', 'b', 'c']);
+    expect(starred.map((g) => g.starred)).toEqual([undefined, true, undefined]);
+    expect(toggleGoalStar(starred, 'c').map((g) => g.starred)).toEqual([undefined, true, true]);
   });
 
-  it('keeps the same list when the goal already leads or is gone', () => {
-    const goals = [goal('a'), goal('b')];
-    expect(moveGoalToFront(goals, 'a')).toBe(goals);
-    expect(moveGoalToFront(goals, 'missing')).toBe(goals);
-    expect(moveGoalToFront([], 'a')).toEqual([]);
+  it('unstars a starred goal and keeps the list when the goal is gone', () => {
+    const goals = [{ ...goal('a'), starred: true }, goal('b')];
+    expect(toggleGoalStar(goals, 'a')[0]?.starred).toBe(false);
+    expect(toggleGoalStar(goals, 'missing')).toBe(goals);
   });
 });

@@ -1,16 +1,16 @@
 /**
  * Goals Hook
- * Loads the long-range goals and keeps every add, edit, and removal saved, so
- * the Today card still reads the same after a refresh or restart.
+ * Loads the long-range goals and keeps every add, edit, star, and removal saved,
+ * so the Goals page still reads the same after a refresh or restart.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStorage } from '../storage/StorageContext';
 import type { Goal, GoalInput } from '../types';
 import { createId } from '../utils/dates';
-import { moveGoalToFront } from '../utils/goals';
+import { toggleGoalStar as toggleStar } from '../utils/goals';
 
-/** Keeps the Today card scannable and the goal editor short. */
+/** Keeps the Goals page scannable and the goal editor short. */
 export const MAX_GOALS = 5;
 
 /** Trims input and drops an empty target date instead of saving a blank one. */
@@ -37,7 +37,11 @@ export function useGoals() {
       .getGoals()
       .then((saved) => {
         if (!alive) return;
-        setGoals(saved);
+        // Old saves have no star flag; keep their first goal featured as before.
+        const normalized = saved.some((goal) => typeof goal.starred === 'boolean')
+          ? saved
+          : saved.map((goal, index) => (index === 0 ? { ...goal, starred: true } : goal));
+        setGoals(normalized);
         setLoading(false);
         loaded.current = true;
       })
@@ -61,7 +65,8 @@ export function useGoals() {
         return { ok: false, reason: `Max ${MAX_GOALS} goals. Remove one first.` };
       }
       const goal = toGoal(input, createId('goal'), new Date().toISOString());
-      setGoals((prev) => [...prev, goal]);
+      // The very first goal is featured by default, matching the old lead slot.
+      setGoals((prev) => [...prev, goals.length === 0 ? { ...goal, starred: true } : goal]);
       return { ok: true };
     },
     [goals.length],
@@ -82,9 +87,9 @@ export function useGoals() {
     setGoals((prev) => prev.filter((goal) => goal.id !== id));
   }, []);
 
-  /** Moves a goal to the front of the list, the slot the Today card leads with. */
-  const promoteGoal = useCallback((id: string) => {
-    setGoals((prev) => moveGoalToFront(prev, id));
+  /** Stars or unstars a goal; any number of goals can be featured at once. */
+  const toggleGoalStar = useCallback((id: string) => {
+    setGoals((prev) => toggleStar(prev, id));
   }, []);
 
   return {
@@ -93,6 +98,6 @@ export function useGoals() {
     addGoal,
     updateGoal,
     removeGoal,
-    promoteGoal,
+    toggleGoalStar,
   };
 }

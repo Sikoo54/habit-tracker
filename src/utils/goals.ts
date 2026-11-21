@@ -1,7 +1,7 @@
 /**
  * Goal Helpers
- * Pure date formatting for goal deadlines, kept out of the card so the wording
- * is reusable and easy to test. Missing or malformed dates render as nothing.
+ * Pure date formatting for goal deadlines and the star toggle, kept out of the
+ * card so the wording and list updates are reusable and easy to test.
  */
 
 import type { Goal } from '../types';
@@ -59,15 +59,14 @@ export function goalDeadlineLabel(targetDate: string | undefined, today: string)
 }
 
 /**
- * Moves one goal to the front so it leads the Today card.
- * Returns the same array when that goal is already first or no longer exists.
+ * Flips a goal's starred flag so any number of goals can be featured.
+ * Returns the same array when the goal no longer exists.
  */
-export function moveGoalToFront(goals: Goal[], id: string): Goal[] {
+export function toggleGoalStar(goals: Goal[], id: string): Goal[] {
   const index = goals.findIndex((goal) => goal.id === id);
-  if (index <= 0) return goals;
+  const current = goals[index];
+  if (!current) return goals;
   const next = goals.slice();
-  const [goal] = next.splice(index, 1);
-  if (!goal) return goals;
-  next.unshift(goal);
+  next[index] = { ...current, starred: !current.starred };
   return next;
 }

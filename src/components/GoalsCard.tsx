@@ -1,7 +1,7 @@
 /**
  * Goals Card
- * The goals signpost on the Goals page. The lead goal carries the display type and its
- * reason; the rest wait in a quiet list so the reminder stays scannable.
+ * The goals signpost on the Goals page. Starred goals carry the display type
+ * and their reason; the rest wait in a quiet list so the reminder stays scannable.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -37,12 +37,13 @@ function PencilIcon(): ReactNode {
   );
 }
 
-/** Goals card: one lead goal, then the supporting ones as a quiet list. */
+/** Goals card: starred goals get the big treatment, the rest a quiet list. */
 export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { goals } = goalsApi;
-  const [lead, ...supporting] = goals;
+  const featured = goals.filter((goal) => goal.starred);
+  const supporting = goals.filter((goal) => !goal.starred);
 
   const folded = !expanded && supporting.length > VISIBLE_SUPPORTING;
   const shownSupporting = folded ? supporting.slice(0, VISIBLE_SUPPORTING) : supporting;
@@ -70,31 +71,60 @@ export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
         </button>
       </div>
 
-      {lead ? (
+      {goals.length === 0 ? (
+        <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
+          Name the reason you climb — it greets you here, every day.
+        </p>
+      ) : (
         <>
-          <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h3 className="min-w-0 flex-1 font-display text-xl font-semibold leading-snug tracking-tight text-ink-700 sm:text-[22px] dark:text-slate-100">
-              {lead.title}
-            </h3>
-            {formatGoalDate(lead.targetDate) ? (
-              <span className="shrink-0 rounded-full bg-amber-100/80 px-2.5 py-0.5 text-[11px] font-bold tabular-nums text-amber-900 dark:bg-amber-950/60 dark:text-amber-200">
-                {formatGoalDate(lead.targetDate)}
-                {goalDeadlineLabel(lead.targetDate, todayKey)
-                  ? ` · ${goalDeadlineLabel(lead.targetDate, todayKey)}`
-                  : ''}
-              </span>
-            ) : null}
-          </div>
+          {featured.length > 0 ? (
+            <ul className="mt-2 space-y-3">
+              {featured.map((goal, index) => (
+                <li
+                  key={goal.id}
+                  className={
+                    index > 0
+                      ? 'border-t border-amber-200/60 pt-3 dark:border-amber-900/40'
+                      : undefined
+                  }
+                >
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 className="min-w-0 flex-1 font-display text-xl font-semibold leading-snug tracking-tight text-ink-700 sm:text-[22px] dark:text-slate-100">
+                      {goal.title}
+                    </h3>
+                    {formatGoalDate(goal.targetDate) ? (
+                      <span className="shrink-0 rounded-full bg-amber-100/80 px-2.5 py-0.5 text-[11px] font-bold tabular-nums text-amber-900 dark:bg-amber-950/60 dark:text-amber-200">
+                        {formatGoalDate(goal.targetDate)}
+                        {goalDeadlineLabel(goal.targetDate, todayKey)
+                          ? ` · ${goalDeadlineLabel(goal.targetDate, todayKey)}`
+                          : ''}
+                      </span>
+                    ) : null}
+                  </div>
 
-          {lead.why ? (
-            <p className="mt-0.5 max-w-2xl text-[13px] leading-relaxed text-ink-500 dark:text-slate-400">
-              {lead.why}
+                  {goal.why ? (
+                    <p className="mt-0.5 max-w-2xl text-[13px] leading-relaxed text-ink-500 dark:text-slate-400">
+                      {goal.why}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
+              Star a goal to show it big here. Everything else stays in the quiet list.
             </p>
-          ) : null}
+          )}
 
           {supporting.length > 0 ? (
             <>
-              <ul className="mt-3 space-y-0.5 border-t border-amber-200/70 pt-2 dark:border-amber-900/40">
+              <ul
+                className={`space-y-0.5 ${
+                  featured.length > 0
+                    ? 'mt-3 border-t border-amber-200/70 pt-2 dark:border-amber-900/40'
+                    : 'mt-2'
+                }`}
+              >
                 {shownSupporting.map((goal) => {
                   const date = formatGoalDate(goal.targetDate);
                   return (
@@ -141,10 +171,6 @@ export function GoalsCard({ goalsApi, todayKey }: Props): ReactNode {
             </>
           ) : null}
         </>
-      ) : (
-        <p className="mt-1 text-[13px] text-ink-500 dark:text-slate-400">
-          Name the reason you climb — it greets you here, every day.
-        </p>
       )}
 
       {open ? (

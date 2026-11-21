@@ -111,6 +111,7 @@ export function validGoal(v: unknown): v is Goal {
     isString(v.title) &&
     isString(v.why) &&
     (v.targetDate === undefined || isString(v.targetDate)) &&
+    (v.starred === undefined || typeof v.starred === 'boolean') &&
     isString(v.createdAt)
   );
 }
