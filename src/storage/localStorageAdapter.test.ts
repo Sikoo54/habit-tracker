@@ -199,6 +199,55 @@ describe('LocalStorageAdapter', () => {
     expect(await a.getGoals()).toEqual([goal]);
   });
 
+  it('export carries quotes and import restores them', async () => {
+    const a = new LocalStorageAdapter();
+    const quote = {
+      id: 'q1',
+      text: 'Keep going.',
+      author: null,
+      createdAt: '2026-11-21T00:00:00.000Z',
+    };
+    await a.saveQuotes([quote]);
+
+    const dump = await a.exportAll();
+    expect(dump.quotes).toEqual([quote]);
+
+    await a.clearAll();
+    expect(await a.getQuotes()).toBeNull();
+
+    await a.importAll(dump);
+    expect(await a.getQuotes()).toEqual([quote]);
+  });
+
+  it('keeps an intentionally emptied quote rotation empty', async () => {
+    const a = new LocalStorageAdapter();
+    await a.saveQuotes([]);
+    expect(await a.getQuotes()).toEqual([]);
+  });
+
+  it('keeps the current quotes when importing an older backup without them', async () => {
+    const a = new LocalStorageAdapter();
+    const quote = {
+      id: 'q1',
+      text: 'Keep going.',
+      author: 'Me',
+      createdAt: '2026-11-21T00:00:00.000Z',
+    };
+    await a.saveQuotes([quote]);
+    const legacy: ExportPayload = {
+      schemaVersion: 1,
+      exportedAt: '2026-09-10T00:00:00.000Z',
+      habits: [],
+      tasks: [],
+      checkins: [],
+      reflections: [],
+      attendance: [],
+    };
+
+    await a.importAll(legacy);
+    expect(await a.getQuotes()).toEqual([quote]);
+  });
+
   it('keeps the morning tap time through save, export, and import', async () => {
     const a = new LocalStorageAdapter();
     const row = {

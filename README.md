@@ -34,6 +34,7 @@ Most habit apps punish users: one forgotten tap erases weeks of consistency, end
 ### Goals
 
 - **Goals** — up to five long-range goals, each with a short "why" and an optional target date, shown on the Goals page so the reason for the climb is always one tap from the daily board. Star any goal to show it big — as many as you like; the rest wait in a quiet list. One button opens the full-screen editor, and goals live in local storage and travel with exports.
+- **Editable quotes** — the daily trail note ships with a starter rotation, and every line can be added, edited, or removed from the pencil on the quote strip. A blank author shows as "Trail note", and quotes travel with exports.
 
 ### Progression
 
@@ -97,7 +98,7 @@ npm run build && npm run preview   # production build + service worker on :4173
 
 - Everything is stored on the device in `localStorage`; nothing is sent to a server.
 - Clearing browser data wipes the app, so export a JSON backup regularly from Settings.
-- One export covers habits, side quests, check-ins, reflections, attendance, goals, and the frost-decay ledger (`schemaVersion: 1`).
+- One export covers habits, side quests, check-ins, reflections, attendance, goals, quotes, and the frost-decay ledger (`schemaVersion: 1`).
 - Import **replaces** all local data and requires a reload. Devices do not sync.
 - Before replacing, the import dialog summarizes the file and Settings saves one local snapshot of the outgoing data. If the snapshot cannot be written, the import is cancelled.
 
@@ -119,11 +120,11 @@ src/
   components/  Layout, Hud, HabitCard, HabitForm, TaskList, QuoteCard, AscentCard,
                AscentTrail, AttendanceGate, YesterdayBackfill, LeftoverBanner,
                Heatmap, DayDetail, AchievementsGrid, AchievementToast, Pomodoro, ScorePicker,
-               GoalsCard, GoalsPanel, DataTools, ArchivedHabits, HabitDetail,
+               GoalsCard, GoalsPanel, QuotesPanel, DataTools, ArchivedHabits, HabitDetail,
                ConfirmDialog, EmptyState, RankInfo
   pages/       TodayPage, GoalsPage, StatsPage, ReflectionPage, FocusPage
   hooks/       useHabits, useTasks, useCheckins, useReflections, useAttendance,
-               useGoals, useGame, useDarkMode, useAchievementToasts, usePomodoro
+               useGoals, useQuotes, useGame, useDarkMode, useAchievementToasts, usePomodoro
   game/        xp, achievements, attendance, decay, trainingStreak, dailyStreak,
                weeklyGoals (+ tests)
   utils/       dates, streak, checkins, habitHistory, stats, dayDetail, tasks, backup, goals,
@@ -158,6 +159,7 @@ Or connect the GitHub repo in the Vercel dashboard (framework preset: Vite).
 - [x] Pomodoro persistence across refresh and tab switches
 - [x] Reorder main quest habits (drag or move up/down)
 - [x] Goals page with goals and the daily trail note
+- [x] Add, edit, and delete quotes from the Goals page
 
 ## Author
 

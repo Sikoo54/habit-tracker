@@ -363,6 +363,7 @@ export function DataTools({ onResetDone }: { onResetDone: () => void }): ReactNo
             <SummaryStat label="Reflections" value={candidate.summary.reflections} />
             <SummaryStat label="Attendance" value={candidate.summary.attendance} />
             <SummaryStat label="Goals" value={candidate.summary.goals} />
+            <SummaryStat label="Quotes" value={candidate.summary.quotes} />
             <SummaryStat label="Invalid" value={candidate.summary.skipped} hint="will be skipped" />
           </div>
         </ConfirmDialog>

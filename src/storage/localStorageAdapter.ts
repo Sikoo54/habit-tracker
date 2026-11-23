@@ -5,7 +5,7 @@
  */
 
 import { DECAY_KEY, type DecayLedger } from '../game/decay';
-import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Quote, Reflection, Task } from '../types';
 import { previewImport } from './importPreview';
 import type { StorageAdapter } from './types';
 import {
@@ -14,6 +14,7 @@ import {
   validDecay,
   validGoal,
   validHabit,
+  validQuote,
   validReflection,
   validTask,
 } from './validation';
@@ -28,6 +29,7 @@ const KEYS = {
   reflections: `${PREFIX}reflections`,
   attendance: `${PREFIX}attendance`,
   goals: `${PREFIX}goals`,
+  quotes: `${PREFIX}quotes`,
   seeded: `${PREFIX}seeded`,
   tasksSeeded: `${PREFIX}tasksSeeded`,
 } as const;
@@ -145,15 +147,28 @@ export class LocalStorageAdapter implements StorageAdapter {
   async saveGoals(goals: Goal[]): Promise<void> {
     writeArray(KEYS.goals, goals);
   }
+  async getQuotes(): Promise<Quote[] | null> {
+    try {
+      // A missing key means "never seeded"; a saved empty array means "all deleted".
+      if (window.localStorage.getItem(KEYS.quotes) === null) return null;
+    } catch {
+      return [];
+    }
+    return readArray(KEYS.quotes, validQuote);
+  }
+  async saveQuotes(quotes: Quote[]): Promise<void> {
+    writeArray(KEYS.quotes, quotes);
+  }
 
   async exportAll(): Promise<ExportPayload> {
-    const [habits, tasks, checkins, reflections, attendance, goals] = await Promise.all([
+    const [habits, tasks, checkins, reflections, attendance, goals, quotes] = await Promise.all([
       this.getHabits(),
       this.getTasks(),
       this.getCheckins(),
       this.getReflections(),
       this.getAttendance(),
       this.getGoals(),
+      this.getQuotes(),
     ]);
     const decay = readDecay();
     return {
@@ -165,6 +180,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       reflections,
       attendance,
       goals,
+      quotes: quotes ?? [],
       ...(decay ? { decay } : {}),
     };
   }
@@ -181,6 +197,8 @@ export class LocalStorageAdapter implements StorageAdapter {
       this.saveAttendance(p.attendance),
       this.saveGoals(p.goals ?? []),
     ]);
+    // Old backups have no quotes; keep the current rotation instead of wiping it.
+    if (p.quotes !== undefined) await this.saveQuotes(p.quotes);
     // Older backups carry no ledger: clearing it prevents stale frost from
     // eating the freshly imported XP.
     writeDecay(p.decay);

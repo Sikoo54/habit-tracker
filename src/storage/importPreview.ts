@@ -4,7 +4,7 @@
  * adapter replaces any local data. Invalid records are counted, never hidden.
  */
 
-import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Quote, Reflection, Task } from '../types';
 import {
   isRecord,
   isString,
@@ -13,6 +13,7 @@ import {
   validDecay,
   validGoal,
   validHabit,
+  validQuote,
   validReflection,
   validTask,
 } from './validation';
@@ -29,6 +30,7 @@ export interface ImportSummary {
   reflections: number;
   attendance: number;
   goals: number;
+  quotes: number;
   /** Records dropped because they failed validation. */
   skipped: number;
 }
@@ -62,6 +64,9 @@ export function previewImport(raw: unknown): ImportPreview {
   if (raw.goals !== undefined && !Array.isArray(raw.goals)) {
     return { ok: false, reason: 'Import file is corrupt: goals are invalid.' };
   }
+  if (raw.quotes !== undefined && !Array.isArray(raw.quotes)) {
+    return { ok: false, reason: 'Import file is corrupt: quotes are invalid.' };
+  }
 
   const rawHabits = raw.habits;
   const rawTasks = raw.tasks;
@@ -69,6 +74,7 @@ export function previewImport(raw: unknown): ImportPreview {
   const rawReflections = raw.reflections;
   const rawAttendance: unknown[] = Array.isArray(raw.attendance) ? raw.attendance : [];
   const rawGoals: unknown[] = Array.isArray(raw.goals) ? raw.goals : [];
+  const rawQuotes: unknown[] = Array.isArray(raw.quotes) ? raw.quotes : [];
 
   const habits = rawHabits.filter(validHabit) as Habit[];
   const tasks = rawTasks.filter(validTask) as Task[];
@@ -76,6 +82,7 @@ export function previewImport(raw: unknown): ImportPreview {
   const reflections = rawReflections.filter(validReflection) as Reflection[];
   const attendance = rawAttendance.filter(validAttendance) as Attendance[];
   const goals = rawGoals.filter(validGoal) as Goal[];
+  const quotes = rawQuotes.filter(validQuote) as Quote[];
   const archivedHabits = habits.filter((h) => h.archivedAt).length;
 
   const skipped =
@@ -85,7 +92,8 @@ export function previewImport(raw: unknown): ImportPreview {
     (rawCheckins.length - checkins.length) +
     (rawReflections.length - reflections.length) +
     (rawAttendance.length - attendance.length) +
-    (rawGoals.length - goals.length);
+    (rawGoals.length - goals.length) +
+    (rawQuotes.length - quotes.length);
 
   const exportedAt = isString(raw.exportedAt) ? raw.exportedAt : null;
   const payload: ExportPayload = {
@@ -97,6 +105,7 @@ export function previewImport(raw: unknown): ImportPreview {
     reflections,
     attendance,
     ...(Array.isArray(raw.goals) ? { goals } : {}),
+    ...(Array.isArray(raw.quotes) ? { quotes } : {}),
     ...(raw.decay ? { decay: raw.decay } : {}),
   };
 
@@ -113,6 +122,7 @@ export function previewImport(raw: unknown): ImportPreview {
       reflections: reflections.length,
       attendance: attendance.length,
       goals: goals.length,
+      quotes: quotes.length,
       skipped,
     },
   };

@@ -1,17 +1,18 @@
 /**
  * Quote Data
  * Curated trail notes: real, widely-attributed lines plus original AscendHabit
- * aphorisms (author: null -> shown as "Trail note").
+ * aphorisms (author: null -> shown as "Trail note"). Used only to seed the
+ * editable rotation the first time the app opens.
  */
 
-/** One quotable line and who said it. `null` author means an in-app aphorism. */
-export interface Quote {
+/** A starter line and who said it; the hook adds ids and timestamps. */
+export interface QuoteSeed {
   text: string;
   author: string | null;
 }
 
-/** The full rotation shown by the daily quote strip. */
-export const QUOTES: Quote[] = [
+/** Starter rotation copied into local storage on first launch. */
+export const DEFAULT_QUOTES: QuoteSeed[] = [
   { text: 'A journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
   {
     text: 'You do not rise to the level of your goals. You fall to the level of your systems.',

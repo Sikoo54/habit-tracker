@@ -111,6 +111,21 @@ export interface GoalInput {
   targetDate: string;
 }
 
+/** A motivational line in the daily rotation; author null shows "Trail note". */
+export interface Quote {
+  id: string;
+  text: string;
+  author: string | null;
+  createdAt: string; // ISO timestamp
+}
+
+/** Input payload for creating or updating a quote */
+export interface QuoteInput {
+  text: string;
+  /** Empty string means no author, shown as "Trail note". */
+  author: string;
+}
+
 /** Available navigation pages */
 export type PageKey = 'today' | 'focus' | 'goals' | 'stats' | 'reflection';
 
@@ -127,4 +142,6 @@ export interface ExportPayload {
   decay?: DecayLedger;
   /** Long-range goals; absent in backups made before they were included. */
   goals?: Goal[];
+  /** Daily rotation; absent in backups made before quotes were editable. */
+  quotes?: Quote[];
 }

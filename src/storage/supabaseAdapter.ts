@@ -4,7 +4,7 @@
  * cloud-based persistence with Supabase Auth and PostgreSQL tables.
  */
 
-import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Quote, Reflection, Task } from '../types';
 import type { StorageAdapter } from './types';
 
 // ============================================================================
@@ -66,6 +66,12 @@ export class SupabaseAdapter implements StorageAdapter {
     throw this.notReady();
   }
   async saveGoals(): Promise<void> {
+    throw this.notReady();
+  }
+  async getQuotes(): Promise<Quote[] | null> {
+    throw this.notReady();
+  }
+  async saveQuotes(): Promise<void> {
     throw this.notReady();
   }
   async exportAll(): Promise<ExportPayload> {

@@ -67,6 +67,14 @@ function payload(overrides: Record<string, unknown> = {}): Record<string, unknow
         createdAt: '2026-09-10T08:00:00.000Z',
       },
     ],
+    quotes: [
+      {
+        id: 'q1',
+        text: 'One honest day beats seven imagined ones.',
+        author: null,
+        createdAt: '2026-09-10T08:00:00.000Z',
+      },
+    ],
     ...overrides,
   };
 }
@@ -86,6 +94,7 @@ describe('import preview', () => {
       reflections: 1,
       attendance: 1,
       goals: 1,
+      quotes: 1,
       skipped: 0,
     });
   });
@@ -168,6 +177,38 @@ describe('import preview', () => {
     if (result.ok) {
       expect(result.summary.goals).toBe(0);
       expect(result.payload.goals).toBeUndefined();
+    }
+  });
+
+  it('counts valid quotes, drops broken ones, and rejects a bad quotes field', () => {
+    const result = previewImport(
+      payload({
+        quotes: [
+          habit('not-a-quote'),
+          { id: 'q2', text: 'Keep going.', author: 'Me', createdAt: 'x' },
+        ],
+      }),
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.summary.quotes).toBe(1);
+    expect(result.summary.skipped).toBe(1);
+    expect(result.payload.quotes?.map((q) => q.id)).toEqual(['q2']);
+
+    expect(previewImport(payload({ quotes: 'nope' }))).toEqual({
+      ok: false,
+      reason: 'Import file is corrupt: quotes are invalid.',
+    });
+  });
+
+  it('leaves quotes out when an older backup has none', () => {
+    const raw = payload();
+    delete raw.quotes;
+    const result = previewImport(raw);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.summary.quotes).toBe(0);
+      expect(result.payload.quotes).toBeUndefined();
     }
   });
 

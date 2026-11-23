@@ -11,6 +11,7 @@ import type {
   Goal,
   Habit,
   HabitArchivePeriod,
+  Quote,
   Reflection,
   Task,
 } from '../types';
@@ -112,6 +113,17 @@ export function validGoal(v: unknown): v is Goal {
     isString(v.why) &&
     (v.targetDate === undefined || isString(v.targetDate)) &&
     (v.starred === undefined || typeof v.starred === 'boolean') &&
+    isString(v.createdAt)
+  );
+}
+
+/** True when the value has a usable quote shape (author may be null). */
+export function validQuote(v: unknown): v is Quote {
+  return (
+    isRecord(v) &&
+    isString(v.id) &&
+    isString(v.text) &&
+    (v.author === null || isString(v.author)) &&
     isString(v.createdAt)
   );
 }

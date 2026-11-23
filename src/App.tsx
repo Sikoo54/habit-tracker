@@ -19,6 +19,7 @@ import { useDarkMode } from './hooks/useDarkMode';
 import { useDecayLedger, useGameStats, useLevelUp } from './hooks/useGame';
 import { useGoals } from './hooks/useGoals';
 import { useHabits } from './hooks/useHabits';
+import { useQuotes } from './hooks/useQuotes';
 import { useReflections } from './hooks/useReflections';
 import { useTasks } from './hooks/useTasks';
 import { FocusPage } from './pages/FocusPage';
@@ -70,6 +71,7 @@ function Shell({
   const reflectionsApi = useReflections();
   const attendanceApi = useAttendance();
   const goalsApi = useGoals();
+  const quotesApi = useQuotes();
 
   // Storage readiness check across all domain collections
   const ready =
@@ -78,7 +80,8 @@ function Shell({
     !checkinsApi.loading &&
     !reflectionsApi.loading &&
     !attendanceApi.loading &&
-    !goalsApi.loading;
+    !goalsApi.loading &&
+    !quotesApi.loading;
 
   // Active dates calculation for global streak and decay tracking
   const dates = useMemo(
@@ -160,7 +163,7 @@ function Shell({
       ) : page === 'focus' ? (
         <FocusPage tasksApi={tasksApi} habitsApi={habitsApi} checkinsApi={checkinsApi} />
       ) : page === 'goals' ? (
-        <GoalsPage goalsApi={goalsApi} />
+        <GoalsPage goalsApi={goalsApi} quotesApi={quotesApi} />
       ) : page === 'stats' ? (
         <StatsPage
           habitsApi={habitsApi}

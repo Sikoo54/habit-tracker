@@ -4,7 +4,7 @@
  * allowing seamless swapping of backend implementations.
  */
 
-import type { Attendance, Checkin, ExportPayload, Goal, Habit, Reflection, Task } from '../types';
+import type { Attendance, Checkin, ExportPayload, Goal, Habit, Quote, Reflection, Task } from '../types';
 
 // Storage abstraction. Components/hooks only talk to this interface,
 // never localStorage / Supabase directly.
@@ -24,6 +24,9 @@ export interface StorageAdapter {
   saveAttendance(attendance: Attendance[]): Promise<void>;
   getGoals(): Promise<Goal[]>;
   saveGoals(goals: Goal[]): Promise<void>;
+  /** Null means this device has never stored quotes, so the defaults should be seeded. */
+  getQuotes(): Promise<Quote[] | null>;
+  saveQuotes(quotes: Quote[]): Promise<void>;
   exportAll(): Promise<ExportPayload>;
   importAll(payload: ExportPayload): Promise<void>;
   clearAll(): Promise<void>;

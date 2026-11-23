@@ -8,14 +8,16 @@ import type { ReactNode } from 'react';
 import { GoalsCard } from '../components/GoalsCard';
 import { QuoteCard } from '../components/QuoteCard';
 import type { useGoals } from '../hooks/useGoals';
+import type { useQuotes } from '../hooks/useQuotes';
 import { todayKey } from '../utils/dates';
 
 interface Props {
   goalsApi: ReturnType<typeof useGoals>;
+  quotesApi: ReturnType<typeof useQuotes>;
 }
 
 /** Goals and quotes page: what the climb is for, in one place. */
-export function GoalsPage({ goalsApi }: Props): ReactNode {
+export function GoalsPage({ goalsApi, quotesApi }: Props): ReactNode {
   const today = todayKey();
 
   return (
@@ -30,7 +32,7 @@ export function GoalsPage({ goalsApi }: Props): ReactNode {
 
       <GoalsCard goalsApi={goalsApi} todayKey={today} />
 
-      <QuoteCard todayKey={today} />
+      <QuoteCard quotesApi={quotesApi} todayKey={today} />
     </div>
   );
 }
