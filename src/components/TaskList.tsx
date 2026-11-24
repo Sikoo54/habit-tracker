@@ -17,12 +17,14 @@ interface Props {
   onRemove: (id: string) => void;
   onAdd: (title: string) => { ok: boolean; reason?: string };
   icon: string;
-  /** Renders the list as secondary content: smaller, muted heading. */
+  /** Renders the list as secondary content: smaller heading, amber accents. */
   quiet?: boolean;
+  /** Optional label above the title, such as "Optional detour". */
+  eyebrow?: string;
 }
 
 /** Render a grouped quest list (side quests) with add, toggle and delete */
-export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon, quiet = false }: Props): ReactNode {
+export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, icon, quiet = false, eyebrow }: Props): ReactNode {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -41,11 +43,19 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
 
   return (
     <section aria-label={title}>
-      <div className="flex items-baseline justify-between gap-3">
+      {eyebrow ? (
+        <p className="section-title flex items-center gap-1.5 text-summit-600 dark:text-amber-300">
+          <span aria-hidden="true" className="text-[11px] leading-none">
+            ◆
+          </span>
+          {eyebrow}
+        </p>
+      ) : null}
+      <div className="mt-1 flex items-baseline justify-between gap-3">
         <h2
           className={
             quiet
-              ? 'text-[13px] font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500'
+              ? 'font-display text-xl font-semibold tracking-tight text-ink-700 dark:text-slate-200'
               : 'text-base font-bold text-slate-800 dark:text-slate-100'
           }
         >
@@ -53,12 +63,16 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
           {title}
         </h2>
         {tasks.length > 0 ? (
-          <span className="text-xs font-medium text-slate-400 tabular-nums dark:text-slate-500">
+          <span
+            className={`text-xs font-bold tabular-nums ${
+              quiet ? 'text-summit-600 dark:text-amber-300' : 'text-slate-400 dark:text-slate-500'
+            }`}
+          >
             {doneCount}/{tasks.length}
           </span>
         ) : null}
       </div>
-      <p className={quiet ? 'mt-0.5 text-[13px] text-slate-400 dark:text-slate-500' : 'mt-0.5 text-sm text-ink-500 dark:text-slate-400'}>
+      <p className={quiet ? 'mt-0.5 text-[13px] text-ink-500 dark:text-slate-400' : 'mt-0.5 text-sm text-ink-500 dark:text-slate-400'}>
         {subtitle}
       </p>
 
@@ -77,7 +91,11 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
         <button
           type="submit"
           aria-label="Add task"
-          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-slate-800 text-lg text-white hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+          className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-lg text-white ${
+            quiet
+              ? 'bg-summit-600 hover:bg-summit-500'
+              : 'bg-slate-800 hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500'
+          }`}
         >
           <span aria-hidden="true">+</span>
         </button>
@@ -101,7 +119,9 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
                 aria-label={t.done ? `Reopen ${t.title}` : `Complete ${t.title}`}
                 className={`check-pop flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 max-md:h-8 max-md:w-8 ${
                   t.done
-                    ? 'border-sage-600 bg-sage-500 text-white dark:border-emerald-400 dark:bg-emerald-500'
+                    ? quiet
+                      ? 'border-summit-600 bg-summit-500 text-white dark:border-amber-400 dark:bg-amber-500'
+                      : 'border-sage-600 bg-sage-500 text-white dark:border-emerald-400 dark:bg-emerald-500'
                     : 'border-cream-300 dark:border-slate-600'
                 }`}
               >

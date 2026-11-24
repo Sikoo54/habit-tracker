@@ -207,11 +207,14 @@ export function TodayPage({
       <div className="mx-auto mt-8 max-w-4xl space-y-6 border-t border-cream-200 pt-8 dark:border-slate-800">
         <section
           aria-label="Main quest"
-          className="rounded-3xl border border-cream-200 bg-cream-50/80 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/40"
+          className="relative overflow-hidden rounded-3xl border border-sage-200/80 border-l-4 border-l-sage-500 bg-gradient-to-br from-cream-50 via-cream-50 to-sage-50/70 p-5 max-md:p-4 dark:border-slate-700 dark:border-l-emerald-500 dark:from-slate-900/70 dark:via-slate-900/50 dark:to-emerald-950/20"
         >
           <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
             <div className="min-w-0">
-              <p className="section-title text-sage-600 dark:text-emerald-300">Primary</p>
+              <p className="section-title flex items-center gap-1.5 text-sage-600 dark:text-emerald-300">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-sage-500" />
+                Primary route
+              </p>
               <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
                 <span aria-hidden="true">🗡️ </span>Main Quest
               </h2>
@@ -236,7 +239,7 @@ export function TodayPage({
                 </span>
               ) : null}
               {mainTotal > 0 ? (
-                <span className="text-xs font-medium text-slate-400 tabular-nums dark:text-slate-500">
+                <span className="rounded-full bg-sage-100 px-2.5 py-1 text-xs font-bold text-sage-700 tabular-nums dark:bg-emerald-950/50 dark:text-emerald-200">
                   {mainDone}/{mainTotal} · +20 XP each
                 </span>
               ) : null}
@@ -290,10 +293,11 @@ export function TodayPage({
 
         <section
           aria-label="Side quests"
-          className="rounded-3xl border border-cream-200/70 bg-cream-50/40 p-5 max-md:p-4 dark:border-slate-800 dark:bg-slate-900/30"
+          className="rounded-3xl border border-dashed border-cream-300 bg-cream-100/25 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/20"
         >
           <TaskList
             quiet
+            eyebrow="Optional detour"
             title="Side Quests"
             subtitle="Optional extras · +15 XP each."
             tasks={quests}
