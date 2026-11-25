@@ -13,6 +13,8 @@ import { EmptyState } from './EmptyState';
 interface Props {
   quotesApi: ReturnType<typeof useQuotes>;
   onClose: () => void;
+  /** Receives the id of a freshly added quote so the strip can show it at once. */
+  onAdded?: (id: string) => void;
 }
 
 /** Shared field styling for the add and edit forms. */
@@ -111,7 +113,7 @@ function QuoteForm({
 }
 
 /** Panel that lets the user write and maintain the daily quote rotation. */
-export function QuotesPanel({ quotesApi, onClose }: Props): ReactNode {
+export function QuotesPanel({ quotesApi, onClose, onAdded }: Props): ReactNode {
   const { quotes, addQuote, updateQuote, removeQuote } = quotesApi;
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
@@ -185,7 +187,11 @@ export function QuotesPanel({ quotesApi, onClose }: Props): ReactNode {
           <div className="mb-4 rounded-2xl border border-cream-200 bg-cream-100/50 p-3 dark:border-slate-700 dark:bg-slate-800/40">
             <QuoteForm
               submitLabel={quotes.length === 0 ? 'Save first quote' : 'Add quote'}
-              onSubmit={addQuote}
+              onSubmit={(input) => {
+                const result = addQuote(input);
+                if (result.ok && result.quote) onAdded?.(result.quote.id);
+                return result;
+              }}
             />
           </div>
 

@@ -39,9 +39,19 @@ function PencilIcon(): ReactNode {
 export function QuoteCard({ quotesApi, todayKey }: Props): ReactNode {
   const { quotes } = quotesApi;
   const [offset, setOffset] = useState(0);
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const total = quotes.length;
-  const quote = total > 0 ? quotes[(quoteIndexForDate(todayKey, total) + offset) % total] : undefined;
+  // A just-saved quote wins over the date rotation so the writer sees it at once.
+  const pinned = pinnedId ? quotes.find((item) => item.id === pinnedId) : undefined;
+  const quote =
+    pinned ?? (total > 0 ? quotes[(quoteIndexForDate(todayKey, total) + offset) % total] : undefined);
+
+  /** Leave the pinned line and step through the rotation again. */
+  const showAnother = (): void => {
+    setPinnedId(null);
+    setOffset((value) => value + 1);
+  };
 
   return (
     <section
@@ -64,7 +74,7 @@ export function QuoteCard({ quotesApi, todayKey }: Props): ReactNode {
         {quote ? (
           <button
             type="button"
-            onClick={() => setOffset((value) => value + 1)}
+            onClick={showAnother}
             aria-label="Show another quote"
             title="Show another quote"
             className="-my-1 flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-cream-200/70 hover:text-ink-700 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
@@ -86,7 +96,13 @@ export function QuoteCard({ quotesApi, todayKey }: Props): ReactNode {
         </button>
       </div>
 
-      {open ? <QuotesPanel quotesApi={quotesApi} onClose={() => setOpen(false)} /> : null}
+      {open ? (
+        <QuotesPanel
+          quotesApi={quotesApi}
+          onClose={() => setOpen(false)}
+          onAdded={setPinnedId}
+        />
+      ) : null}
     </section>
   );
 }

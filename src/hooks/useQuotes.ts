@@ -63,12 +63,16 @@ export function useQuotes() {
     void storage.saveQuotes(quotes).catch(() => undefined);
   }, [quotes, storage]);
 
-  const addQuote = useCallback((input: QuoteInput): { ok: boolean; reason?: string } => {
-    if (!input.text.trim()) return { ok: false, reason: 'Quote text is required.' };
-    const quote = toQuote(input, createId('quote'), new Date().toISOString());
-    setQuotes((prev) => [...prev, quote]);
-    return { ok: true };
-  }, []);
+  const addQuote = useCallback(
+    (input: QuoteInput): { ok: boolean; reason?: string; quote?: Quote } => {
+      if (!input.text.trim()) return { ok: false, reason: 'Quote text is required.' };
+      const quote = toQuote(input, createId('quote'), new Date().toISOString());
+      // Prepend so a fresh line also leads the fallback rotation.
+      setQuotes((prev) => [quote, ...prev]);
+      return { ok: true, quote };
+    },
+    [],
+  );
 
   const updateQuote = useCallback(
     (id: string, input: QuoteInput): { ok: boolean; reason?: string } => {
