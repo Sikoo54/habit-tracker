@@ -15,6 +15,8 @@ interface Props {
   goalsApi: ReturnType<typeof useGoals>;
   todayKey: string;
   onClose: () => void;
+  /** Optional title to prefill in the add form when starting from an example. */
+  starterTitle?: string;
 }
 
 /** Shared field styling for the add and edit forms. */
@@ -27,16 +29,18 @@ const inputCls =
  */
 function GoalForm({
   initial,
+  initialTitle,
   submitLabel,
   onSubmit,
   onCancel,
 }: {
   initial?: Goal;
+  initialTitle?: string;
   submitLabel: string;
   onSubmit: (input: GoalInput) => { ok: boolean; reason?: string };
   onCancel?: () => void;
 }): ReactNode {
-  const [title, setTitle] = useState(initial?.title ?? '');
+  const [title, setTitle] = useState(initial?.title ?? initialTitle ?? '');
   const [why, setWhy] = useState(initial?.why ?? '');
   const [targetDate, setTargetDate] = useState(initial?.targetDate ?? '');
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +137,7 @@ function GoalForm({
 }
 
 /** Panel that lets the user write and maintain their goals. */
-export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
+export function GoalsPanel({ goalsApi, todayKey, onClose, starterTitle }: Props): ReactNode {
   const { goals, addGoal, updateGoal, removeGoal, toggleGoalStar } = goalsApi;
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
@@ -214,6 +218,7 @@ export function GoalsPanel({ goalsApi, todayKey, onClose }: Props): ReactNode {
             <div className="mb-4 rounded-2xl border border-cream-200 bg-cream-100/50 p-3 dark:border-slate-700 dark:bg-slate-800/40">
               <GoalForm
                 submitLabel={goals.length === 0 ? 'Save first goal' : 'Add goal'}
+                initialTitle={starterTitle}
                 onSubmit={addGoal}
               />
             </div>

@@ -56,45 +56,69 @@ export function QuoteCard({ quotesApi, todayKey }: Props): ReactNode {
   return (
     <section
       aria-label="Daily motivational quote"
-      className="mt-6 border-l-2 border-summit-500/70 pl-4 max-md:mt-5 max-md:pl-3"
+      className="mt-5 rounded-2xl border border-cream-200 bg-cream-50/80 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/40"
     >
-      {quote ? (
-        <p aria-live="polite" className="font-display text-xl italic leading-snug text-ink-700 dark:text-slate-200 max-md:text-lg">
-          “{quote.text}”
+      <div className="flex items-center justify-between gap-2">
+        <p className="section-title flex items-center gap-1.5 text-summit-600 dark:text-amber-300">
+          <span aria-hidden="true" className="text-[13px] leading-none">
+            ✦
+          </span>
+          Today&rsquo;s trail note
         </p>
-      ) : (
-        <p className="font-display text-lg italic leading-snug text-ink-500 dark:text-slate-400">
-          No quotes yet. Add a line you want to read on a hard day.
-        </p>
-      )}
-      <div className="mt-1.5 flex items-center gap-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500 dark:text-slate-400">
-          {quote?.author ? `— ${quote.author}` : '— Trail note'}
-        </p>
-        {quote ? (
+        <div className="flex items-center gap-1">
+          {quote ? (
+            <button
+              type="button"
+              onClick={showAnother}
+              aria-label="Show another quote"
+              title="Show another quote"
+              className="-my-1 flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-cream-200/70 hover:text-ink-700 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-3-6.7" />
+                <path d="M21 3v6h-6" />
+              </svg>
+            </button>
+          ) : null}
           <button
             type="button"
-            onClick={showAnother}
-            aria-label="Show another quote"
-            title="Show another quote"
+            onClick={() => setOpen(true)}
+            aria-label={total === 0 ? 'Add a quote' : 'Edit quotes'}
+            title={total === 0 ? 'Add a quote' : 'Edit quotes'}
             className="-my-1 flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-cream-200/70 hover:text-ink-700 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M21 12a9 9 0 1 1-3-6.7" />
-              <path d="M21 3v6h-6" />
-            </svg>
+            <PencilIcon />
           </button>
-        ) : null}
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label={total === 0 ? 'Add a quote' : 'Edit quotes'}
-          title={total === 0 ? 'Add a quote' : 'Edit quotes'}
-          className="-my-1 flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-cream-200/70 hover:text-ink-700 max-md:min-h-[44px] max-md:min-w-[44px] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-        >
-          <PencilIcon />
-        </button>
+        </div>
       </div>
+
+      {quote ? (
+        <blockquote className="mt-3 border-l-2 border-summit-500/60 pl-3.5">
+          <p
+            aria-live="polite"
+            className="font-display text-xl italic leading-snug text-ink-700 max-md:text-lg dark:text-slate-200"
+          >
+            &ldquo;{quote.text}&rdquo;
+          </p>
+          <footer className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500 dark:text-slate-400">
+            {quote.author ? `— ${quote.author}` : '— Trail note'}
+          </footer>
+        </blockquote>
+      ) : (
+        <div className="mt-3 border-l-2 border-cream-300 pl-3.5 dark:border-slate-700">
+          <p className="font-display text-lg italic leading-snug text-ink-500 dark:text-slate-400">
+            No quotes yet. Add a line you want to read on a hard day.
+          </p>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="mt-2 flex min-h-[32px] items-center gap-1 text-[12px] font-semibold text-summit-600 hover:underline dark:text-amber-300"
+          >
+            Add your first line
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      )}
 
       {open ? (
         <QuotesPanel
