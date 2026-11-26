@@ -2,10 +2,10 @@
  * Habit Card Component
  * Interactive Main Quest row: one tap marks the habit done, with streak,
  * risk warning, weekly goal chip, and inline edit dialog. The menu offers
- * Edit, Delete, and Archive; archive keeps history, delete does not.
+ * Edit, Archive, and Delete; archive keeps history, delete does not.
  */
 
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { xpForCheckin } from '../game/xp';
 import { goalProgress } from '../game/weeklyGoals';
 import type { Checkin, Habit, HabitInput } from '../types';
@@ -55,6 +55,8 @@ export function HabitCard({
   onDropHabit,
 }: Props): ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [confirming, setConfirming] = useState<'delete' | 'archive' | null>(null);
   // Highlight while another row hovers over this one during a drag.
   const [dragOver, setDragOver] = useState(false);
@@ -73,6 +75,25 @@ export function HabitCard({
   const goal = goalProgress(habit, checkins, weekMonday);
   const checkinCount = checkins.filter((c) => c.habitId === habit.id).length;
   const checkinXp = checkinCount * xpForCheckin();
+
+  // Dismiss the options menu on an outside pointer or Escape; Escape restores focus.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onPointerDown = (e: PointerEvent): void => {
+      if (!menuRef.current?.contains(e.target as Node)) setMenuOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent): void => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [menuOpen]);
 
   const submitEdit = (e: FormEvent): void => {
     e.preventDefault();
@@ -285,8 +306,9 @@ export function HabitCard({
             </form>
           ) : null}
         </div>
-        <div className="relative shrink-0">
+        <div ref={menuRef} className="relative shrink-0">
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={`Options for ${habit.name}`}
@@ -337,22 +359,22 @@ export function HabitCard({
               <button
                 type="button"
                 onClick={() => {
-                  setConfirming('delete');
-                  setMenuOpen(false);
-                }}
-                className="block min-h-[44px] w-full px-3 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950"
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                onClick={() => {
                   setConfirming('archive');
                   setMenuOpen(false);
                 }}
                 className="block min-h-[44px] w-full px-3 text-left text-sm text-amber-700 hover:bg-amber-50 dark:text-amber-300 dark:hover:bg-amber-950"
               >
                 Archive
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirming('delete');
+                  setMenuOpen(false);
+                }}
+                className="block min-h-[44px] w-full border-t border-cream-200 px-3 text-left text-sm text-red-600 hover:bg-red-50 dark:border-slate-700 dark:text-red-300 dark:hover:bg-red-950"
+              >
+                Delete
               </button>
             </div>
           ) : null}
