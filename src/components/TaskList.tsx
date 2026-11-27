@@ -65,7 +65,9 @@ export function TaskList({ title, subtitle, tasks, onToggle, onRemove, onAdd, ic
         {tasks.length > 0 ? (
           <span
             className={`text-xs font-bold tabular-nums ${
-              quiet ? 'text-summit-600 dark:text-amber-300' : 'text-slate-400 dark:text-slate-500'
+              quiet
+                ? 'rounded-full bg-amber-100/70 px-2.5 py-1 text-summit-700 dark:bg-amber-950/30 dark:text-amber-200'
+                : 'text-slate-400 dark:text-slate-500'
             }`}
           >
             {doneCount}/{tasks.length}

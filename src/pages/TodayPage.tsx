@@ -293,7 +293,7 @@ export function TodayPage({
 
         <section
           aria-label="Side quests"
-          className="rounded-3xl border border-dashed border-cream-300 bg-cream-100/25 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/20"
+          className="relative overflow-hidden rounded-3xl border border-dashed border-amber-200/70 border-l-4 border-l-summit-500/60 bg-gradient-to-br from-cream-50/80 via-cream-50/60 to-amber-100/40 p-5 max-md:p-4 dark:border-slate-700 dark:border-l-amber-500/70 dark:from-slate-900/55 dark:via-slate-900/35 dark:to-amber-950/15"
         >
           <TaskList
             quiet
