@@ -20,17 +20,17 @@ export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
   return (
     <section
       aria-label="Pomodoro timer"
-      className="relative overflow-hidden rounded-3xl border border-sage-200/80 border-l-4 border-l-sage-500 bg-gradient-to-br from-sage-50/80 via-cream-50 to-cream-50 p-8 text-center max-sm:p-5 dark:border-slate-700 dark:border-l-emerald-500 dark:from-emerald-950/20 dark:via-slate-900/50 dark:to-slate-900/40"
+      className="relative overflow-hidden rounded-3xl border border-lake-200/80 border-l-4 border-l-lake-500 bg-gradient-to-br from-lake-50/80 via-cream-50 to-cream-50 p-8 text-center max-sm:p-5 dark:border-slate-700 dark:border-l-lake-500 dark:from-lake-950/25 dark:via-slate-900/50 dark:to-slate-900/40"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-sage-300/30 dark:border-emerald-800/30"
+        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-lake-300/30 dark:border-lake-800/30"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full border border-sage-300/20 dark:border-emerald-800/20"
+        className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full border border-lake-300/20 dark:border-lake-800/20"
       />
-      <h2 className="section-title relative text-sage-600 dark:text-emerald-300">Pomodoro 25 / 5</h2>
+      <h2 className="section-title relative text-lake-600 dark:text-lake-300">Pomodoro 25 / 5</h2>
       <p className="mt-1 text-sm text-ink-500 dark:text-slate-400">
         Focusing on{' '}
         <span className="font-semibold text-slate-700 dark:text-slate-200">
@@ -52,7 +52,7 @@ export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
         <button
           type="button"
           onClick={running ? pause : start}
-          className="min-h-[48px] flex-1 rounded-full bg-sage-600 px-4 font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+          className="min-h-[48px] flex-1 rounded-full bg-lake-600 px-4 font-semibold text-white hover:bg-lake-700 dark:bg-lake-400 dark:text-slate-950 dark:hover:bg-lake-300"
         >
           {running ? 'Pause' : 'Start'}
         </button>
@@ -73,7 +73,7 @@ export function Pomodoro({ focusTitle }: { focusTitle: string }): ReactNode {
           5′
         </button>
       </div>
-      <div className="mx-auto mt-8 max-w-xs border-t border-sage-600/15 pt-5 dark:border-slate-700">
+      <div className="mx-auto mt-8 max-w-xs border-t border-lake-600/15 pt-5 dark:border-slate-700">
         <p className="text-sm text-ink-500 dark:text-slate-400">
           🎧 Try to focus with cozy lofi hiphop songs?
         </p>

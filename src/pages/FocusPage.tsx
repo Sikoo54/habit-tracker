@@ -24,7 +24,7 @@ function FocusMark(): ReactNode {
     <svg
       viewBox="0 0 120 120"
       aria-hidden="true"
-      className="pointer-events-none absolute right-4 top-1/2 hidden h-32 w-32 -translate-y-1/2 text-sage-500/30 sm:block dark:text-emerald-300/20"
+      className="pointer-events-none absolute right-4 top-1/2 hidden h-32 w-32 -translate-y-1/2 text-lake-500/30 sm:block dark:text-lake-300/20"
     >
       <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" strokeWidth="1.5" />
       <circle
@@ -78,11 +78,11 @@ export function FocusPage({
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-5">
-      <header className="relative overflow-hidden rounded-3xl border border-sage-200/80 border-l-4 border-l-sage-500 bg-gradient-to-br from-cream-50 via-cream-50 to-sage-50/70 p-6 max-md:p-4 dark:border-slate-700 dark:border-l-emerald-500 dark:from-slate-900/70 dark:via-slate-900/50 dark:to-emerald-950/20">
+      <header className="relative overflow-hidden rounded-3xl border border-lake-200/80 border-l-4 border-l-lake-500 bg-gradient-to-br from-cream-50 via-cream-50 to-lake-50/70 p-6 max-md:p-4 dark:border-slate-700 dark:border-l-lake-500 dark:from-slate-900/70 dark:via-slate-900/50 dark:to-lake-950/25">
         <FocusMark />
         <div className="relative max-w-xl sm:pr-32">
-          <p className="section-title flex items-center gap-1.5 text-sage-600 dark:text-emerald-300">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-sage-500" />
+          <p className="section-title flex items-center gap-1.5 text-lake-600 dark:text-lake-300">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lake-500" />
             Focus session
           </p>
           <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight max-sm:text-3xl">
@@ -92,7 +92,7 @@ export function FocusPage({
             One quest, 25 minutes. Then rest 5. Small steps finish big things.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center rounded-full bg-sage-100/80 px-2.5 py-1 text-[11px] font-bold text-sage-700 dark:bg-emerald-950/40 dark:text-emerald-200">
+            <span className="inline-flex items-center rounded-full bg-lake-100/80 px-2.5 py-1 text-[11px] font-bold text-lake-700 dark:bg-lake-950/50 dark:text-lake-200">
               25 min focus
             </span>
             <span className="inline-flex items-center rounded-full bg-cream-200/70 px-2.5 py-1 text-[11px] font-bold text-ink-600 dark:bg-slate-800 dark:text-slate-300">
@@ -111,8 +111,8 @@ export function FocusPage({
         className="rounded-3xl border border-cream-200 bg-cream-50/80 p-5 max-md:p-4 dark:border-slate-700 dark:bg-slate-900/40"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="section-title flex items-center gap-1.5 text-sage-600 dark:text-emerald-300">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-sage-500" />
+          <h2 className="section-title flex items-center gap-1.5 text-lake-600 dark:text-lake-300">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lake-500" />
             Choose your target
           </h2>
           <span className="text-[11px] font-semibold text-ink-500 tabular-nums dark:text-slate-400">
@@ -132,7 +132,7 @@ export function FocusPage({
               id="focus-task"
               value={selectedId}
               onChange={(e) => setFocusId(e.target.value)}
-              className="mt-1.5 min-h-[48px] w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
+              className="mt-1.5 min-h-[48px] w-full rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] focus:border-lake-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
             >
               {trainings.length > 0 ? (
                 <optgroup label="Main quest">
@@ -169,7 +169,7 @@ export function FocusPage({
             Or a custom focus
           </label>
           {custom ? (
-            <div className="mt-2 flex items-center gap-2 rounded-2xl border border-sage-200/70 bg-sage-100/70 px-4 py-3 dark:border-emerald-900/40 dark:bg-emerald-950/40">
+            <div className="mt-2 flex items-center gap-2 rounded-2xl border border-lake-200/70 bg-lake-100/70 px-4 py-3 dark:border-lake-900/40 dark:bg-lake-950/40">
               <span className="flex-1 text-[15px] font-semibold">{custom}</span>
               <button
                 type="button"
@@ -201,11 +201,11 @@ export function FocusPage({
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="e.g. Read chapter 4, fix login bug…"
                 maxLength={120}
-                className="min-h-[48px] flex-1 rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] placeholder:text-slate-400 focus:border-sage-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
+                className="min-h-[48px] flex-1 rounded-2xl border border-cream-200 bg-cream-50 px-4 text-[15px] placeholder:text-slate-400 focus:border-lake-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"
               />
               <button
                 type="submit"
-                className="min-h-[48px] rounded-2xl bg-sage-600 px-5 text-sm font-semibold text-white hover:bg-sage-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+                className="min-h-[48px] rounded-2xl bg-lake-600 px-5 text-sm font-semibold text-white hover:bg-lake-700 dark:bg-lake-400 dark:text-slate-950 dark:hover:bg-lake-300"
               >
                 Set
               </button>

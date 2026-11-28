@@ -25,6 +25,18 @@
   --color-pine-800: #22332b;
   --color-summit-500: #c8871c;
   --color-summit-600: #a96f14;
+  /* Cool lake accent: focus surfaces stay distinct from sage action and amber goals. */
+  --color-lake-50: #f1f6f9;
+  --color-lake-100: #dfebf2;
+  --color-lake-200: #c1d8e4;
+  --color-lake-300: #98bccd;
+  --color-lake-400: #729fb6;
+  --color-lake-500: #5a7d94;
+  --color-lake-600: #496a80;
+  --color-lake-700: #3b5669;
+  --color-lake-800: #2f4656;
+  --color-lake-900: #233542;
+  --color-lake-950: #152630;
   /* Readable secondary text (>= 4.5:1 on cream). */
   --color-ink-500: #6b6355;
   --color-ink-600: #524b3f;
